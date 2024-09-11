@@ -22,7 +22,7 @@ To make frontend & backend canister:
 npm start
 ```
 
-Note: Hot reload will not work on WSL 2
+# Note: Hot reload will not work on WSL 2, UNLESS the project is under the home folder [ /mnt/c ]
 
 
 # Vite + React + Motoko
