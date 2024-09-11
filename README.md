@@ -1,11 +1,19 @@
 ## How to run:
 
 First time running WSL:
+```
 dfx start --clean --background
 npm run setup
+```
 
-Frontend (Powershell): npm run start-frontend
-Backend (WSL): npm run start-backend
+Frontend (Powershell): 
+```
+npm run start-frontend
+```
+Backend (WSL): 
+```
+npm run start-backend
+```
 
 This will enable hot reload for frontend while making the backend canister
 
