@@ -1,13 +1,28 @@
 ## How to run:
 
-# Frontend (Powershell): npm run start-frontend
-# Backend (WSL): npm run start-backend
+First time running WSL:
+```
+dfx start --clean --background
+npm run setup
+```
+
+Frontend (Powershell): 
+```
+npm run start-frontend
+```
+Backend (WSL): 
+```
+npm run start-backend
+```
 
 This will enable hot reload for frontend while making the backend canister
 
-# To make frontend & backend canister: npm start
+To make frontend & backend canister: 
+```
+npm start
+```
 
-Note: this will unable hot reload for the frontend
+# Note: Hot reload will not work on WSL 2, UNLESS the project is under the home folder [ /mnt/c ]
 
 
 # Vite + React + Motoko
