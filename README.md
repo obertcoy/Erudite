@@ -17,9 +17,12 @@ npm run start-backend
 
 This will enable hot reload for frontend while making the backend canister
 
-# To make frontend & backend canister: npm start
+To make frontend & backend canister: 
+```
+npm start
+```
 
-Note: this will unable hot reload for the frontend
+Note: Hot reload will not work on WSL 2
 
 
 # Vite + React + Motoko
