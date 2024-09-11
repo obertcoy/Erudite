@@ -8,11 +8,11 @@ npm run setup
 
 Frontend (Powershell): 
 ```
-npm run start-frontend
+npm run frontend
 ```
 Backend (WSL): 
 ```
-npm run start-backend
+npm run backend
 ```
 
 This will enable hot reload for frontend while making the backend canister
@@ -20,6 +20,11 @@ This will enable hot reload for frontend while making the backend canister
 To make frontend & backend canister: 
 ```
 npm start
+```
+
+Update backend code:
+```
+npm run restart-backend
 ```
 
 # Note: Hot reload will not work on WSL 2, UNLESS the project is under the home folder [ /mnt/c ]
