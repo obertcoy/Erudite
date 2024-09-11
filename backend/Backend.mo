@@ -8,7 +8,7 @@ actor class Backend() {
 
   // Increment the count by one
   public func inc() : async () {
-    counter += 1;
+    counter += 5;
   };
 
   // Add `n` to the current count

@@ -40,7 +40,7 @@ function App() {
           </span>
         </a>
       </div>
-      <h1>Vite + React + helo</h1>
+      <h1>Vite + React + Irvin</h1>
       <div className="card">
         <button onClick={increment} disabled={loading}>
           count is {count?.toString() ?? 'loading...'}

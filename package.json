@@ -1,5 +1,5 @@
 {
-  "name": "vite-react-motoko",
+  "name": "erudite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,8 +15,7 @@
     "format": "prettier --write \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\" \"backend/**/*.mo\"",
     "sources": "mops sources",
     "postinstall": "mops install",
-    "start-frontend": "vite --port 3000",
-    "start-backend": "mo-dev --generate --deploy -y"
+    "restart-backend": "CANISTER_LOCAL_ID=$(grep CANISTER_LOCAL_ID .env | cut -d '=' -f2) && dfx canister stop $CANISTER_LOCAL_ID && dfx canister start $CANISTER_LOCAL_ID && dfx deploy"
   },
   "dependencies": {
     "@ic-reactor/react": "^1.7.8",
