@@ -6,6 +6,7 @@ import { ActorProvider, AgentProvider } from '@ic-reactor/react';
 import { idlFactory, canisterId } from './declarations/backend';
 import './index.scss'; 
 
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <AgentProvider withProcessEnv>
