@@ -2,7 +2,7 @@
 import React from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import {
   IconBrandGithub,
   IconBrandGoogle,
@@ -39,7 +39,7 @@ export function LoginForm() {
     console.log("Form submitted");
   };
   return (
-    <div className="max-w-lg w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+    <div className="max-w-lg w-full m-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
       <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
         Welcome to Erudite
       </h2>
