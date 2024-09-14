@@ -1,42 +1,41 @@
-"use client";
-import React from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { cn } from "@/lib/utils/cn";
+'use client';
+import React from 'react';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { cn } from '@/lib/utils';
 import {
   IconBrandGithub,
   IconBrandGoogle,
   IconBrandOnlyfans,
-} from "@tabler/icons-react";
+} from '@tabler/icons-react';
 
 const BottomGradient = () => {
-    return (
-      <>
-        <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-        <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-      </>
-    );
-  };
-  
-  const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex flex-col space-y-2 w-full", className)}>
-        {children}
-      </div>
-    );
-  };
-  
+  return (
+    <>
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+    </>
+  );
+};
+
+const LabelInputContainer = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn('flex flex-col space-y-2 w-full', className)}>
+      {children}
+    </div>
+  );
+};
 
 export function SignupForm() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+    console.log('Form submitted');
   };
   return (
     <div className="max-w-md w-full m-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black ">
@@ -86,10 +85,10 @@ export function SignupForm() {
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
       </form>
       <div className="flex flex-col space-y-4">
-          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              Already have an account? Sign In
-          </span>
-          <BottomGradient />
+        <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+          Already have an account? Sign In
+        </span>
+        <BottomGradient />
       </div>
     </div>
   );
