@@ -15,13 +15,13 @@ const createGroupRoutes = (group: GroupRoutes[]): JSX.Element[] => {
   return group.flatMap((group: GroupRoutes) => {
     switch (group.layout) {
       case LayoutEnum.PUBLIC:
-
-      <PublicLayout>
-
-        {group.children.map((route: RouteInterface) => (
-          <Route key={group.prefix + route.path} path={route.path} element={route.element} />
-        ))}
-      </PublicLayout>
+        return group.children.map((route: RouteInterface) => (
+          <Route
+            key={group.prefix + route.path}
+            path={route.path}
+            element={<PublicLayout>{route.element}</PublicLayout>}
+          />
+        ));
 
       default:
         return group.children.map((route: RouteInterface) => (

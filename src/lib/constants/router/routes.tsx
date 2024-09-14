@@ -11,7 +11,7 @@ export const GROUP_ROUTES: GroupRoutes[] = [
         layout: LayoutEnum.PUBLIC,
         children: [
             {
-                path: "/",
+                path: "",
                 element: <HomePage />
             }
         ]
