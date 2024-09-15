@@ -1,5 +1,3 @@
-'use client';
-
 import { ModeToggle } from '@/components/mode-toggle';
 import { SheetMenu } from './sheet-menu';
 import { Coins } from 'lucide-react';
@@ -9,6 +7,7 @@ interface NavbarProps {
   title: string;
 }
 import { Icons } from '@/components/icons';
+import { UserNav } from './user-nav';
 
 export function Navbar({ title }: NavbarProps) {
   // const { userId } = useAuth();
@@ -69,8 +68,10 @@ export function Navbar({ title }: NavbarProps) {
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>
         </div>
-        <div className="flex flex-1 items-center justify-end gap-x-6"></div>
-        <ModeToggle />
+        <div className="flex flex-1 items-center justify-end gap-x-6">
+          <ModeToggle />
+          <UserNav />
+        </div>
       </div>
     </header>
   );
