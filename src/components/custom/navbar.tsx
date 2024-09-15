@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { ModeToggle } from "@/components/mode-toggle";
-import { SheetMenu } from "./sheet-menu";
-import { Coins } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ModeToggle } from '@/components/mode-toggle';
+import { SheetMenu } from './sheet-menu';
+import { Coins } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface NavbarProps {
   title: string;
 }
-import { Icons } from "@/components/icons";
+import { Icons } from '@/components/icons';
 
 export function Navbar({ title }: NavbarProps) {
   // const { userId } = useAuth();
@@ -69,9 +69,8 @@ export function Navbar({ title }: NavbarProps) {
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>
         </div>
-        <div className="flex flex-1 items-center justify-end gap-x-6">
-          
-        </div>
+        <div className="flex flex-1 items-center justify-end gap-x-6"></div>
+        <ModeToggle />
       </div>
     </header>
   );
