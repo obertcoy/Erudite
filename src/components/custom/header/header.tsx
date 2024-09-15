@@ -4,7 +4,7 @@ import { MessageCircleMore } from 'lucide-react';
 
 export default function Header() {
   return (
-    <div className="absolute w-full h-fit py-2 px-6 items-center shadow-sm">
+    <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
       <div className='flex '>
         <div className="flex flex-row w-fit h-full items-center space-x-2">
           <img src={EruditeIcon} alt="" className="w-full h-10" />
@@ -19,6 +19,6 @@ export default function Header() {
             <HeaderIcon icon={<MessageCircleMore />} tooltip="Chat with others"/>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

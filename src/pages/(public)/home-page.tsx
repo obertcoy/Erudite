@@ -1,8 +1,12 @@
+import { ContentLayout } from "@/components/custom/content-layout";
+
 export default function HomePage(){
 
     return (
-        <div>
+        <ContentLayout title="Home">
+
             Test
-        </div>
+        
+        </ContentLayout>
     )
 }

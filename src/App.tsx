@@ -3,6 +3,7 @@ import { useQueryCall, useUpdateCall } from '@ic-reactor/react';
 import { BrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom';
 import { router } from './lib/constants/router/router';
 import RegisterPage from './pages/(public)/register_page';
+import { ThemeProvider } from './components/theme-provider';
 
 function App() {
   // const { data: count, call: refetchCount } = useQueryCall({
@@ -17,14 +18,16 @@ function App() {
   // });
 
   return (
-    <div className="flex min-h-screen">
-      <RouterProvider router={router}/>
-      {/* <BrowserRouter>
+    <>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+        {/* <BrowserRouter>
         <Routes>
-          <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         </Routes>
-      </BrowserRouter> */}
-    </div>
+        </BrowserRouter> */}
+      </ThemeProvider>
+    </>
   );
 }
 

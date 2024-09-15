@@ -1,30 +1,27 @@
-import { LayoutEnum } from "@/lib/enum/layout-enum";
-import { Route, GroupRoutes } from "@/lib/model/interfaces/route";
-import HomePage from "@/pages/(public)/home-page";
-import LoginPage from "@/pages/(public)/login_page";
-import RegisterPage from "@/pages/(public)/register_page";
+import MainLayout from '@/layout/main-layout';
+import HomePage from '@/pages/(public)/home-page';
+import LoginPage from '@/pages/(public)/login_page';
+import RegisterPage from '@/pages/(public)/register_page';
+import { RouteObject } from 'react-router-dom';
 
-
-export const GROUP_ROUTES: GroupRoutes[] = [
-    {
-        prefix: "/",
-        layout: LayoutEnum.PUBLIC,
-        children: [
-            {
-                path: "",
-                element: <HomePage />
-            }
-        ]
-    }
-];
-
-export const INDEPENDENT_ROUTES: Route[] = [
-    {
-        path: "/login",
-        element: <LoginPage />
-    },
-    {
-        path: "/register",
-        element: <RegisterPage />
-    }
+export const ROUTES: RouteObject[] = [
+  {
+    path: '/',
+    element: <MainLayout />,
+    loader: false,
+    children: [
+      {
+        path: '',
+        element: <HomePage />,
+      },
+    ],
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/register',
+    element: <RegisterPage />,
+  },
 ];
