@@ -3,6 +3,9 @@ export enum RouteEnum{
     LOGIN = '/login',
     REGISTER = '/register',
     HOME = '/',
+    SEARCH = '/search',
     CREATE_POST = '/create-post',
-    CREATE_HUB = ''
+    CREATE_HUB = '',
+    HUB = '/hub',
+    USER = '/user'
 }

@@ -1,10 +1,11 @@
 import { ModeToggle } from '@/components/mode-toggle';
 import { SheetMenu } from '../sheet-menu';
-import { SquarePen } from 'lucide-react';
+import { Loader2, SquarePen } from 'lucide-react';
 import { UserNav } from '../user-nav';
-import SearchBar from '../search-bar';
+import SearchBar from './search-bar';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import NavbarIcon from './navbar-icon';
+import SearchResult from './search-result';
 interface NavbarProps {
   title: string;
 }
@@ -62,7 +63,7 @@ export function Navbar({ title }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
-      <div className="mx-4 flex h-14 items-center justify-between sm:mx-8">
+      <div className="mx-4 flex h-14 items-center justify-between gap-x-4 sm:mx-8">
         <div className="flex items-center space-x-4 lg:space-x-0">
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>
@@ -80,6 +81,7 @@ export function Navbar({ title }: NavbarProps) {
           <UserNav />
         </div>
       </div>
+      <SearchResult />
     </header>
   );
 }

@@ -1,4 +1,3 @@
-import Header from './navbar/header';
 import { Navbar } from './navbar/navbar';
 
 interface ContentLayoutProps {
