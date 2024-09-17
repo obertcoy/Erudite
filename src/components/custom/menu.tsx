@@ -11,14 +11,14 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface MenuProps {
   isOpen: boolean | undefined;
 }
 
 export function Menu({ isOpen }: MenuProps) {
-  const pathname = window.location.pathname;
+  const pathname = useLocation().pathname;
   const menuList = getMenuList(pathname);
 
   return (
@@ -48,7 +48,7 @@ export function Menu({ isOpen }: MenuProps) {
                 <p className="pb-2"></p>
               )}
               {menus.map(
-                ({ href, label, icon: Icon, active, submenus }, index) =>
+                ({ path, label, icon: Icon, active, submenus }, index) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
                       <TooltipProvider disableHoverableContent>
@@ -59,7 +59,7 @@ export function Menu({ isOpen }: MenuProps) {
                               className="mb-1 h-10 w-full justify-start"
                               asChild
                             >
-                              <Link to={href}>
+                              <Link to={path ?? ""}>
                                 <span
                                   className={cn(isOpen === false ? '' : 'mr-4')}
                                 >

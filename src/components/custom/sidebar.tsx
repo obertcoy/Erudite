@@ -33,7 +33,7 @@ export function Sidebar() {
           asChild
         >
           <Link
-            to="/dashboard"
+            to="/"
             className="flex select-none items-center gap-2 !no-underline"
           >
             <Icons.erudite className="mr-1 size-10 h-8 w-8 fill-primary dark:fill-primary-foreground" />

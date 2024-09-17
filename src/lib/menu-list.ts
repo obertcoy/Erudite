@@ -6,16 +6,16 @@ import {
   Coins,
   CreditCard,
   Settings,
-} from "lucide-react";
+  Plus,
+} from 'lucide-react';
+import { RouteObject } from 'react-router-dom';
 
-type Submenu = {
-  href: string;
+type Submenu = RouteObject & {
   label: string;
   active: boolean;
 };
 
-type Menu = {
-  href: string;
+type Menu = RouteObject & {
   label: string;
   active: boolean;
   icon: LucideIcon;
@@ -30,62 +30,56 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: "",
+      groupLabel: '',
       menus: [
         {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
+          path: '/create-community',
+          label: 'Create Community',
+          active: pathname.includes('/create-community'),
+          icon: Plus,
+          submenus: [],
+        },
+      ],
+    },
+    {
+      groupLabel: 'Recent',
+      menus: [
+        {
+          path: '/dashboard',
+          label: 'Dashboard',
+          active: pathname.includes('/dashboard'),
           icon: LayoutGrid,
           submenus: [],
         },
       ],
     },
     {
-      groupLabel: "Resume Analyzer",
+      groupLabel: 'Joined Communities',
       menus: [
         {
-          href: "/analyze",
-          label: "Analyzer",
-          active: pathname.includes("/analyze"),
+          path: '/analyze',
+          label: 'Analyzer',
+          active: pathname.includes('/analyze'),
           icon: Microscope,
           submenus: [],
         },
         {
-          href: "/history",
-          label: "Analysis Results",
-          active: pathname.includes("/history"),
+          path: '/history',
+          label: 'Analysis Results',
+          active: pathname.includes('/history'),
           icon: LibraryBig,
           submenus: [],
         },
       ],
     },
+    
     {
-      groupLabel: "Payment & Tokens",
+      groupLabel: 'Settings',
       menus: [
         {
-          href: "/tokens",
-          label: "Buy Tokens",
-          active: pathname.includes("/tokens"),
-          icon: Coins,
-          submenus: [],
-        },
-        {
-          href: "/payments",
-          label: "Payment History",
-          active: pathname.includes("/payments"),
-          icon: CreditCard,
-          submenus: [],
-        },
-      ],
-    },
-    {
-      groupLabel: "Settings",
-      menus: [
-        {
-          href: "/user-profile",
-          label: "Account",
-          active: pathname.includes("/user-profile"),
+          path: '/user-profile',
+          label: 'Account',
+          active: pathname.includes('/user-profile'),
           icon: Settings,
           submenus: [],
         },
