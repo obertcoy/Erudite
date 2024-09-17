@@ -158,7 +158,7 @@ export const Icons = {
         d="M0.5 169.5V57L99 114L198.5 57.5V170L99.5 227L0.5 169.5Z"
         fill="#002B53"
         stroke="#002B53"
-        stroke-width="0.12"
+        strokeWidth="0.12"
       />
       <path
         d="M1.5 57L38.5 78.5L99.5 43.5L161 78.5L197.5 57.5L99.5 1L1.5 57Z"
@@ -169,13 +169,13 @@ export const Icons = {
         d="M99 114L38.5 79L99 44L161 79L99 114Z"
         fill="white"
         stroke="white"
-        stroke-width="0.14"
+        strokeWidth="0.14"
       />
       <path
         d="M38.5 148V79L99 114L161 79V148L99.5 209.5V183L38.5 148Z"
         fill="#D4EEFF"
         stroke="#D4EEFF"
-        stroke-width="0.12"
+        strokeWidth="0.12"
       />
     </svg>
   ),

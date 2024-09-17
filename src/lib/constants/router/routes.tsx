@@ -1,3 +1,4 @@
+import ErrorBoundaryLayout from '@/layout/error-boundary-layout';
 import MainLayout from '@/layout/main-layout';
 import HomePage from '@/pages/(public)/home-page';
 import LoginPage from '@/pages/(public)/login_page';
@@ -7,26 +8,30 @@ import { RouteObject } from 'react-router-dom';
 
 export const ROUTES: RouteObject[] = [
   {
-    path: '*',
-    element: <NotFound />,
-  },
-  {
-    path: '/',
-    element: <MainLayout />,
-    loader: false,
+    element: <ErrorBoundaryLayout />,
     children: [
       {
-        path: '',
-        element: <HomePage />,
+        path: '*',
+        element: <NotFound />,
+      },
+      {
+        path: '/',
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <HomePage />,
+          },
+        ],
+      },
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+      {
+        path: '/register',
+        element: <RegisterPage />,
       },
     ],
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/register',
-    element: <RegisterPage />,
   },
 ];

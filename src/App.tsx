@@ -4,6 +4,7 @@ import { BrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom';
 import { router } from './lib/constants/router/router';
 import RegisterPage from './pages/(public)/register_page';
 import { ThemeProvider } from './components/theme-provider';
+import ErrorBoundary from './lib/error-boundary';
 
 function App() {
   // const { data: count, call: refetchCount } = useQueryCall({
@@ -20,8 +21,8 @@ function App() {
   return (
     <>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <RouterProvider router={router} />
-        {/* <BrowserRouter>
+          <RouterProvider router={router} />
+          {/* <BrowserRouter>
         <Routes>
         <Route path="/register" element={<RegisterPage />} />
         </Routes>

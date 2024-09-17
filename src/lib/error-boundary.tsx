@@ -1,27 +1,30 @@
-import React from 'react';
+import NotFound from '@/pages/(public)/not-found';
+import React, { ReactNode } from 'react';
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
+interface ErrorBoundaryProps {
+  children: ReactNode; 
+}
 
-  static getDerivedStateFromError() {
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError(error: any): ErrorBoundaryState {
+    console.log(error);
+    
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
-    // Log error details to an error reporting service
-    console.error("Uncaught error:", error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
-          <h1 className="text-4xl font-bold">Something went wrong.</h1>
-        </div>
-      );
+      return <NotFound />;
     }
 
     return this.props.children;
