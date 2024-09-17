@@ -9,6 +9,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { RouteObject } from 'react-router-dom';
+import { RouteEnum } from './enum/route-enum';
 
 type Submenu = RouteObject & {
   label: string;
@@ -30,18 +31,6 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   return [
     {
-      groupLabel: '',
-      menus: [
-        {
-          path: '/create-community',
-          label: 'Create Community',
-          active: pathname.includes('/create-community'),
-          icon: Plus,
-          submenus: [],
-        },
-      ],
-    },
-    {
       groupLabel: 'Recent',
       menus: [
         {
@@ -54,8 +43,15 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: 'Joined Communities',
+      groupLabel: 'Joined Hubs',
       menus: [
+        {
+          path: RouteEnum.CREATE_HUB,
+          label: 'Create Hub',
+          active: pathname.includes(RouteEnum.CREATE_HUB),
+          icon: Plus,
+          submenus: [],
+        },
         {
           path: '/analyze',
           label: 'Analyzer',

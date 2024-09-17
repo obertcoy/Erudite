@@ -1,5 +1,5 @@
-import Header from './header/header';
-import { Navbar } from './navbar';
+import Header from './navbar/header';
+import { Navbar } from './navbar/navbar';
 
 interface ContentLayoutProps {
   title: string;

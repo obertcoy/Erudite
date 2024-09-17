@@ -1,16 +1,13 @@
 import { ModeToggle } from '@/components/mode-toggle';
-import { SheetMenu } from './sheet-menu';
-import { Coins } from 'lucide-react';
-import { useEffect, useState } from 'react';
-
+import { SheetMenu } from '../sheet-menu';
+import { SquarePen } from 'lucide-react';
+import { UserNav } from '../user-nav';
+import SearchBar from '../search-bar';
+import { RouteEnum } from '@/lib/enum/route-enum';
+import NavbarIcon from './navbar-icon';
 interface NavbarProps {
   title: string;
 }
-import { Icons } from '@/components/icons';
-import { UserNav } from './user-nav';
-import { Input } from '../ui/input';
-import SearchBar from './search-bar';
-
 export function Navbar({ title }: NavbarProps) {
   // const { userId } = useAuth();
   // const [isFetching, setIsFetching] = useState(true);
@@ -72,7 +69,13 @@ export function Navbar({ title }: NavbarProps) {
         </div>
 
         <SearchBar />
-        <div className="flex items-center  gap-x-2">
+        <div className="flex items-center gap-x-2">
+          <NavbarIcon
+            icon={<SquarePen className="h-[1.2rem] w-[1.2rem]" />}
+            path={RouteEnum.CREATE_POST}
+            tooltip={`Create post in /${title}`}
+          />
+
           <ModeToggle />
           <UserNav />
         </div>
