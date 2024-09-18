@@ -5,7 +5,7 @@ export enum RouteEnum{
     HOME = '/',
     SEARCH = '/search',
     CREATE_POST = '/create-post',
-    CREATE_HUB = '',
-    HUB = '/hub',
-    USER = '/user'
+    CREATE_HUB = '/create-hub',
+    HUB = '/hub/:hubId',
+    USER = '/user/:userId',
 }

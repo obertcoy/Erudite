@@ -7,8 +7,10 @@ import {
   CreditCard,
   Settings,
   Plus,
+  Bookmark,
+  House,
 } from 'lucide-react';
-import { RouteObject } from 'react-router-dom';
+import { Route, RouteObject } from 'react-router-dom';
 import { RouteEnum } from './enum/route-enum';
 
 type Submenu = RouteObject & {
@@ -30,6 +32,18 @@ type Group = {
 
 export function getMenuList(pathname: string): Group[] {
   return [
+    {
+      groupLabel: '',
+      menus: [
+        {
+          path: RouteEnum.HOME,
+          label: 'Home',
+          active: pathname.includes(RouteEnum.HOME),
+          icon: House,
+          submenus: [],
+        }
+      ],
+    },
     {
       groupLabel: 'Recent',
       menus: [
