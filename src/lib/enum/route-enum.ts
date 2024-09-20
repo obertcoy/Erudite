@@ -6,6 +6,7 @@ export enum RouteEnum{
     SEARCH = '/search',
     CREATE_POST = '/create-post',
     CREATE_HUB = '/create-hub',
-    HUB = '/hub/:hubId',
+    HUB = '/hub/:hub-id',
     USER = '/user/:userId',
+    EDIT_PROFILE = '/user/:userId/edit'
 }

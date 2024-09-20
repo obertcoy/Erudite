@@ -1,12 +1,5 @@
-import { ContentLayout } from "@/components/custom/content-layout";
+import { ContentLayout } from '@/components/custom/content-layout';
 
-export default function HomePage(){
-
-    return (
-        <ContentLayout title="Home">
-
-            Test
-        
-        </ContentLayout>
-    )
+export default function HomePage() {
+  return <div className='flex w-full h-full'>Home</div>;
 }

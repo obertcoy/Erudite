@@ -14,5 +14,18 @@ export const generateDynamicRoutePath = (
   for (const key in params) {
     path = path.replace(`:${key}`, params[key]);
   }
+
+  console.log(path);
+  
+
   return path;
 };
+
+export function formatShortNumber(prestige: number): string {
+  if (prestige >= 1_000_000) {
+    return (prestige / 1_000_000).toFixed(1).replace(/\.0$/, "") + "m";
+  } else if (prestige >= 1_000) {
+    return (prestige / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+  }
+  return prestige.toString();
+}

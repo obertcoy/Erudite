@@ -18,6 +18,7 @@
     "restart-backend": "dfx canister stop backend && dfx canister start backend && dfx deploy"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "@ic-reactor/react": "^1.7.8",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -36,9 +37,11 @@
     "lucide-react": "^0.439.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.2",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

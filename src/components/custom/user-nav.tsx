@@ -26,8 +26,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { generateDynamicRoutePath, generateRoutePath } from '@/lib/utils';
+import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
+import Profile from '@/assets/rukia.jpg';
+import Banner from '@/assets/bg.jpg';
+import Prestige from '../ui/prestige';
 
 export function UserNav() {
   return (
@@ -51,25 +54,25 @@ export function UserNav() {
         </Tooltip>
       </TooltipProvider>
 
-      <DropdownMenuContent className="w-64 p-0" align="end" forceMount>
+      <DropdownMenuContent className="w-64 p-2" align="end" forceMount>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex flex-col space-y-4 p-4">
+          <div className="flex flex-col space-y-4 p-2">
             <div className="relative h-24 w-full overflow-hidden rounded-t-lg">
-              {/* <img
-                src="/placeholder.svg?height=100&width=300"
+              <img
+                src={Banner}
                 alt="User banner"
                 className="object-cover w-full h-full"
-              /> */}
-              <div className="bg-muted w-full h-full object-cover"></div>
+              />
+              {/* <div className="bg-muted w-full h-full object-cover"></div> */}
 
               <div className="absolute bottom-4 left-4">
                 <Avatar className="h-12 w-12 rounded-full border-2 border-foreground">
                   <AvatarImage
-                    src="/placeholder.svg?height=64&width=64"
+                    src={Profile}
                     alt="@username"
                   />
                   <AvatarFallback>KE</AvatarFallback>
@@ -81,10 +84,7 @@ export function UserNav() {
                 <p className="text-lg font-semibold">Kelvinices</p>
                 <p className="text-sm text-muted-foreground">@kelvinices_</p>
               </div>
-              <div className="flex items-center space-x-1 bg-orange-100 text-orange-600 rounded-full px-2 py-1">
-                <Star className="h-4 w-4" />
-                <span className="text-xs font-medium">5.2k</span>
-              </div>
+              <Prestige prestige={5245}/>
             </div>
           </div>
           <DropdownMenuSeparator />

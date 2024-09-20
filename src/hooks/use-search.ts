@@ -1,4 +1,4 @@
-import { SearchResultsEntity } from '@/lib/entity/search-results-entity';
+import { SearchResultsEntity } from '@/lib/model/entity/search-results-entity';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
@@ -20,7 +20,7 @@ interface UseSearchStoreProps {
 }
 
 export const useSearchStore = create(
-  persist<UseSearchStoreProps>(
+  persist<Partial<UseSearchStoreProps>>(
     (set, get) => ({
       searchQuery: '',
       searchResults: {
@@ -43,7 +43,7 @@ export const useSearchStore = create(
         let url = '';
         const recentQueries = get().recentSearchQuery;
 
-        if (!query.trim()) return url;
+        if (!query.trim() || !recentQueries) return url;
 
         set({ recentSearchQuery: [query, ...recentQueries].slice(0, 3) });
 
@@ -63,7 +63,7 @@ export const useSearchStore = create(
       },
 
       fetchSearchResults: async () => {
-        const query = get().searchQuery.trim();
+        const query = get().searchQuery?.trim();
         const data: SearchResultsEntity = {
           users: [
             { userId: '123', username: 'Roberto' },
@@ -104,8 +104,12 @@ export const useSearchStore = create(
       },
     }),
     {
-      name: 'search',
-      storage: createJSONStorage(() => localStorage),
+      name: 'recent-search',
+
+      // Typescript error
+      partialize: (state: Partial<UseSearchStoreProps>) => ({
+        recentSearchQuery: state.recentSearchQuery,
+      }) as Partial<UseSearchStoreProps>,
     },
   ),
 );

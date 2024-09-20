@@ -1,7 +1,7 @@
 import './App.css';
 import { useQueryCall, useUpdateCall } from '@ic-reactor/react';
 import { BrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom';
-import { router } from './lib/constants/router/router';
+import { router } from './lib/router/router';
 import RegisterPage from './pages/(public)/register_page';
 import { ThemeProvider } from './components/theme-provider';
 import ErrorBoundary from './lib/error-boundary';

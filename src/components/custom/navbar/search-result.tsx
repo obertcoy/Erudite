@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useSearchStore } from '@/hooks/use-search';
-import { SearchResultsEntity } from '@/lib/entity/search-results-entity';
+import { SearchResultsEntity } from '@/lib/model/entity/search-results-entity';
 import { Clock, Loader2 } from 'lucide-react';
 
 export default function SearchResult() {
@@ -33,8 +33,9 @@ export default function SearchResult() {
                 Recent Search
               </h3>
               <div className="flex flex-col w-full h-fit">
-                {recentSearchQuery.map((recentSearch) => (
+                {recentSearchQuery.map((recentSearch, index) => (
                   <Button
+                    key={`recent-${index}`}
                     variant="ghost"
                     className="flex flex-row items-center text-start py-6 gap-x-2 hover:variant-secondary"
                   >
