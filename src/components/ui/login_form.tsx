@@ -8,7 +8,11 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from '@tabler/icons-react';
+import { Actor, ActorMethod, HttpAgent } from "@dfinity/agent";
+import { AuthClient } from "@dfinity/auth-client";
+import { Principal } from '@ic-reactor/react/dist/types';
 
+//buat gradient
 const BottomGradient = () => {
   return (
     <>
@@ -18,6 +22,7 @@ const BottomGradient = () => {
   );
 };
 
+//buat label
 const LabelInputContainer = ({
   children,
   className,
@@ -32,11 +37,49 @@ const LabelInputContainer = ({
   );
 };
 
+//inisialisasi
+const webapp_id = process.env.CANISTER_ID_BACKEND;
+const local_ii_url = `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943`;
+
+//interface
+const webapp_idl = ({ IDL } :any) => {
+  return IDL.Service({ whoami: IDL.Func([], [IDL.Principal], ["query"]) });
+};
+export const init = ({ IDL } :any) => {
+  return [];
+};
+
+export interface _SERVICE {
+  whoami: ActorMethod<[], Principal>;
+}
+
+document.body.onload = () => {
+
+}
 export function LoginForm() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("test")
+  
+    let iiUrl = local_ii_url;
+
+    const authClient = await AuthClient.create();
+
+    await new Promise<void>((resolve, reject) => {
+      authClient.login({
+        identityProvider: iiUrl,
+        onSuccess: resolve,
+        onError: reject,
+      });
+    });
+
+    console.log("test 2")
+    console.log("identity: "+ authClient.getIdentity().getPrincipal())
+
     console.log('Form submitted');
   };
+
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="max-w-lg w-full m-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -59,7 +102,7 @@ export function LoginForm() {
 
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
+            type='submit'
           >
             Sign in &rarr;
             <BottomGradient />
