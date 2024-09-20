@@ -3,34 +3,38 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Types "types";
 
+import UserProfileModule "../user-profile/interface";
+import UserProfileType "../user-profile/types";
+
 actor class UserMain() {
   type User = Types.User;
+  type UserProfile = UserProfileType.UserProfile;
   //uses principas as key, the value is the rest of the user's data
   let user_data = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
 
   //register function
-  public shared (msg) func register(first_name : Text, last_name : Text, username : Text, email : Text) : async Result.Result<User, Text> {
+  public shared ({caller}) func register(first_name : Text, last_name : Text, username : Text, email : Text, userProfileCanisterId: Text) : async Result.Result<User, Text> {
 
-    let internet_identity = msg.caller; 
+    let internet_identity = caller;
 
-    if(user_data.get(internet_identity) != null){
+    if (user_data.get(internet_identity) != null) {
       return #err("User already exists");
     };
 
-    for(user in user_data.vals()){
-      if(user.email == email){
+    for (user in user_data.vals()) {
+      if (user.email == email) {
         return #err("Email already exist");
       };
     };
 
-    for(user in user_data.vals()){
-      if(user.username == username){
+    for (user in user_data.vals()) {
+      if (user.username == username) {
         return #err("Username already exist");
       };
     };
 
-    let user = {
-      internet_identity= internet_identity;
+    let user : User = {
+      internet_identity = internet_identity;
       first_name = first_name;
       last_name = last_name;
       username = username;
@@ -38,6 +42,28 @@ actor class UserMain() {
     };
 
     user_data.put(user.internet_identity, user);
+
+    let userProfile : UserProfile = {
+      internetIdentity = user.internet_identity;
+      username = username;
+      bio = "";
+      profileImage = null;
+      bannerImage = null;
+    };
+
+
+    let userProfileActor = actor (userProfileCanisterId) : UserProfileModule.UserProfileActor;
+
+    let result = await userProfileActor.createUserProfile(internet_identity, userProfile);
+
+    switch (result) {
+      case (#ok(userProfile)) {
+        return #ok(user); 
+      };
+      case (#err(errorMessage)) {
+        return #err(errorMessage)
+      };
+    }; 
 
     return #ok(user);
   };
@@ -56,8 +82,8 @@ actor class UserMain() {
           case (?fetched_user) {
             return #ok(fetched_user);
           };
-        }
+        };
       };
-    }
-  }
+    };
+  };
 };
