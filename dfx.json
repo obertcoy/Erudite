@@ -17,8 +17,15 @@
         "node_compatibility": true
       }
     },
+    "userHubMembership": {
+      "type": "motoko",
+      "main": "backend/userHubMembership/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
     "frontend": {
-      "dependencies": ["user"],
+      "dependencies": ["user", "userHubMembership"],
       "type": "assets",
       "source": ["dist/"]
     }

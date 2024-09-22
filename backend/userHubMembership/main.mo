@@ -5,6 +5,7 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
+import Nat64 "mo:base/Nat64";
 
 import UserModule "../user/interface";
 import UserType "../user/types";
@@ -17,9 +18,10 @@ actor class UserHubMembershipMain(){
     let membershipData = HashMap.HashMap<Text, UserHubMembership>(0, Text.equal, Text.hash);
 
     //create membership
-    public shared({caller}) func createMembership(hubID: Text, membershipType: Text): async Result.Result<UserHubMembership, Text>{
+    public shared({caller}) func createMembership(hubID: Nat64, membershipType: Text): async Result.Result<UserHubMembership, Text>{
         let internetIdentity = Principal.toText(caller);  
-        let key = internetIdentity # "-" # hubID;   
+        let hubIDRepresentation: Text = Nat64.toText(hubID);
+        let key = internetIdentity # "-" # hubIDRepresentation;   
         if(membershipData.get(key) != null){
             return #err("Membership already exists");
         };
@@ -56,14 +58,15 @@ actor class UserHubMembershipMain(){
     };
 
     //get hub role
-    public func getMembershipRole(principal : ?Principal, hubID : Text):async  Result.Result<Text, Text>{
+    public func getMembershipRole(principal : ?Principal, hubID : Nat64):async  Result.Result<Text, Text>{
         switch principal {
             case null {
                 return #err("Principal is invalid");
             };
             case (?validPrincipal) {
               let internetIdentity = Principal.toText(validPrincipal);  
-              let key = internetIdentity # "-" # hubID;             
+              let hubIDRepresentation: Text = Nat64.toText(hubID);
+              let key = internetIdentity # "-" # hubIDRepresentation;           
                 switch (membershipData.get(key)) {
                     case null {
                         return #err("User not found");
@@ -76,8 +79,8 @@ actor class UserHubMembershipMain(){
         };
     };
 
-    //update role
-    public func updateRole(username : ?Text, newRole: Text, hubID:Text, userCanisterId: Text):async Result.Result<Text, Text>{
+    //update role -> Admin, Moderator, Member
+    public func updateRole(username : ?Text, newRole: Text, hubID:Nat64, userCanisterId: Text):async Result.Result<Text, Text>{
         let userActor = actor (userCanisterId) : UserModule.UserActor;
         let result : Result.Result<User, Text> = await userActor.getUserByUsername(username);
 
@@ -85,7 +88,8 @@ actor class UserHubMembershipMain(){
             case (#ok(user)) {  
                 let userIdentity = user.internetIdentity; 
                 let internetIdentity = Principal.toText(userIdentity);  
-                let key = internetIdentity # "-" # hubID; 
+                let hubIDRepresentation: Text = Nat64.toText(hubID);
+                let key = internetIdentity # "-" # hubIDRepresentation;  
 
                  let membership : UserHubMembership = {
                     hubID = hubID;
@@ -104,7 +108,7 @@ actor class UserHubMembershipMain(){
     };
 
     //get all joined users by role
-    public func getUserHubByRole(hubID: Text, role: Text, userCanisterId: Text): async Result.Result<[User], Text> {
+    public func getUserHubByRole(hubID: Nat64, role: Text, userCanisterId: Text): async Result.Result<[User], Text> {
         var buffer = Buffer.Buffer<User>(0);
         let userActor = actor (userCanisterId) : UserModule.UserActor;
 
