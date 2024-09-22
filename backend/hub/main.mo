@@ -2,6 +2,7 @@ import Types "types";
 import TrieMap "mo:base/TrieMap";
 import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
+import Buffer "mo:base/Buffer";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
@@ -13,7 +14,14 @@ actor class HubMain(){
     //dibuat counternya mulai dari 10 karena nanti akan ada data seeding
     var counter: Nat64 = 10;
 
+    //create hub
     public shared({caller}) func createHub(hubName: Text, userHubMembershipCanisterId: Text): async Result.Result<Hub, Text>{
+        for (hub in hubData.vals()) {
+            if (hub.hubName == hubName) {
+                return #err("Hub name already exist");
+            };
+        };
+
         let hub:Hub = {
             hubID = counter;
             hubName = hubName;
@@ -37,6 +45,7 @@ actor class HubMain(){
         };
     };
 
+    //edit hub
     public shared({caller}) func updateHubProfile(hubID:Nat64, hubDescription : Text, hubProfile : ?Blob, hubBanner : ?Blob, userHubMembershipCanisterId:Text): async Result.Result<(), Text> {
         switch (hubData.get(hubID)) {
         case (?res) {
@@ -73,6 +82,53 @@ actor class HubMain(){
             hubProfile = hubProfile;
             hubBanner = hubBanner;
         };
+    };
+
+    //get hub by Name
+    public func getHubByName(hubName:?Text):async Result.Result<Hub, Text>{
+        switch hubName {
+            case null {
+                return #err("Hub name is invalid");
+            };
+            case (?validHubName) {
+                for (hub in hubData.vals()) {
+                    if (hub.hubName == hubName) {
+                        return #ok(hub);
+                    };
+                };
+
+                return #err("User not found");
+            };
+        };
+    };
+
+    //get hub by ID
+    public func getHubByID(hubID:?Nat64):async Result.Result<Hub, Text>{
+        switch hubID {
+            case null {
+                return #err("Hub ID is invalid");
+            };
+            case (?validHubID) {
+                switch (hubData.get(validHubID)) {
+                    case null {
+                        return #err("Hub not found");
+                    };
+                    case (?fetched_hub) {
+                        return #ok(fetched_hub);
+                    };
+                };
+                return #err("Hub not found");
+            };
+        };
+    };
+
+    //get all hub
+    public func getAllHub():async Result.Result<[Hub], Text>{
+        var buffer = Buffer.Buffer<Hub>(0);
+        for (hub in hubData.vals()) {
+            buffer.add(hub);
+        };
+        return #ok(Buffer.toArray(buffer));
     };
 
 }
