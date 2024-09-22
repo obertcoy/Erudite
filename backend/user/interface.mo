@@ -8,6 +8,7 @@ module {
 
     public type UserActor = actor {
         getUser: (principal : ?Text) -> async Result<User, Text>;
+        getUserByUsername:(username: ?Text) -> async Result<User,Text>;
     };
 };
 

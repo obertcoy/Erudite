@@ -3,68 +3,43 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Types "types";
 
-import UserProfileModule "../user-profile/interface";
-import UserProfileType "../user-profile/types";
-
 actor class UserMain() {
   type User = Types.User;
-  type UserProfile = UserProfileType.UserProfile;
   //uses principas as key, the value is the rest of the user's data
-  let user_data = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
+  let userData = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
 
   //register function
-  public shared ({caller}) func register(first_name : Text, last_name : Text, username : Text, email : Text, userProfileCanisterId: Text) : async Result.Result<User, Text> {
+  public shared ({caller}) func register(username : Text, email : Text, userProfileCanisterId: Text) : async Result.Result<User, Text> {
 
-    let internet_identity = caller;
+    let internetIdentity = caller;
 
-    if (user_data.get(internet_identity) != null) {
+    if (userData.get(internetIdentity) != null) {
       return #err("User already exists");
     };
 
-    for (user in user_data.vals()) {
+    for (user in userData.vals()) {
       if (user.email == email) {
         return #err("Email already exist");
       };
     };
 
-    for (user in user_data.vals()) {
+    for (user in userData.vals()) {
       if (user.username == username) {
         return #err("Username already exist");
       };
     };
 
     let user : User = {
-      internet_identity = internet_identity;
-      first_name = first_name;
-      last_name = last_name;
+      internetIdentity = internetIdentity;
       username = username;
       email = email;
-    };
-
-    user_data.put(user.internet_identity, user);
-
-    let userProfile : UserProfile = {
-      internetIdentity = user.internet_identity;
-      username = username;
+      numJoinedHubs = 0;
       bio = "";
       profileImage = null;
       bannerImage = null;
     };
 
-
-    let userProfileActor = actor (userProfileCanisterId) : UserProfileModule.UserProfileActor;
-
-    let result = await userProfileActor.createUserProfile(internet_identity, userProfile);
-
-    switch (result) {
-      case (#ok(userProfile)) {
-        return #ok(user); 
-      };
-      case (#err(errorMessage)) {
-        return #err(errorMessage)
-      };
-    }; 
-
+    userData.put(user.internetIdentity, user);
     return #ok(user);
   };
 
@@ -75,7 +50,7 @@ actor class UserMain() {
         return #err("Principal is invalid");
       };
       case (?validPrincipal) {
-        switch (user_data.get(validPrincipal)) {
+        switch (userData.get(validPrincipal)) {
           case null {
             return #err("User not found");
           };
@@ -86,4 +61,71 @@ actor class UserMain() {
       };
     };
   };
+
+  //get num of joined hub
+  public func getNumJoinedHub(principal : ?Principal):async Result.Result<Nat, Text>{
+    switch principal {
+      case null {
+        return #err("Principal is invalid");
+      };
+      case (?validPrincipal) {
+        switch (userData.get(validPrincipal)) {
+          case null {
+            return #err("User not found");
+          };
+          case (?fetched_user) {
+            return #ok(fetched_user.numJoinedHubs);
+          };
+        };
+      };
+    };
+  };
+
+  //get user by username
+  public func getUserByUsername(username:?Text):async Result.Result<User, Text>{
+    switch username {
+      case null {
+        return #err("Username is invalid");
+      };
+      case (?validUsername) {
+        for (user in userData.vals()) {
+          if (user.username == validUsername) {
+            return #ok(user);
+          };
+        };
+
+        return #err("User not found");
+      };
+    };
+  };
+
+public shared query ({ caller }) func updateUserProfile(username : Text, bio : Text, profileImage : ?Blob, bannerImage : ?Blob) : async Result.Result<(), Text> {
+    switch (userData.get(caller)) {
+      case (?res) {
+        let user : User = res; 
+        let updatedUserProfile : User = _createUserObject(caller, username, bio, profileImage, bannerImage, user.email, user.numJoinedHubs);
+
+        userData.put(caller, updatedUserProfile);
+        return #ok();
+      };
+      case null {
+        return #err("Error, current user not found: " # Principal.toText(caller));
+      };
+    };
+  };
+
+
+  private func _createUserObject(internetIdentity : Principal, username : Text, bio : Text, profileImage : ?Blob, bannerImage : ?Blob, email: Text, numJoinedHub:Nat) : User {
+    return {
+      internetIdentity = internetIdentity;
+      username = username;
+      bio = bio;
+      profileImage = profileImage;
+      bannerImage = bannerImage;
+      email = email;
+      numJoinedHubs = numJoinedHub;
+    };
+  };
+
+
 };

@@ -1,14 +1,18 @@
 import Result "mo:base/Result";
+import Text "mo:base/Text";
+import Nat "mo:base/Nat";
 
 module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
     //user datatype
     public type User = {
-      internet_identity : Principal;
-      first_name : Text;
-      last_name : Text;
-      username : Text;
+      internetIdentity : Principal;
       email : Text;
+      numJoinedHubs : Nat;
+      username : Text;
+      bio: Text;
+      profileImage: ?Blob;
+      bannerImage: ?Blob;
    };
 };
