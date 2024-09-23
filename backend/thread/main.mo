@@ -4,21 +4,34 @@ import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 import Buffer "mo:base/Buffer";
+
+import HubThreadsModule "../hubThreads/interface";
+import HubThreadsType "../hubThreads/types";
 actor class ThreadMain(){
     type Thread = Types.Thread;
+    type HubThreads = HubThreadsType.HubThreads;
 
     let threadData= TrieMap.TrieMap<Nat64, Thread>(Nat64.equal, Nat64.toNat32);
     //dibuat counternya mulai dari 10 karena nanti akan ada data seeding
     var counter: Nat64 = 10;
 
     //create thread
-    public shared({caller}) func createThread(threadBody: Text, threadImage: ?Blob): async Result.Result<Thread, Text>{
+    public shared({caller}) func createThread(threadBody: Text, threadImage: ?Blob, hubID: Nat64, hubThreadsCanisterId : Text): async Result.Result<Thread, Text>{
         let thread: Thread = createThreadObject(counter, threadBody, threadImage, caller, 0,0,0);
-
         threadData.put(counter, thread);
-        counter += 1;
 
-        #ok(thread);
+        //sklian create relationship
+        let hubThreadsActor = actor (hubThreadsCanisterId) : HubThreadsModule.HubThreadsActor;
+        let result: Result.Result<HubThreads, Text> = await hubThreadsActor.createHubThreads(hubID, counter);
+        switch (result) {
+            case (#ok(_)){
+                counter += 1;
+                return #ok(thread);
+            };
+            case (#err(errorMessage)){
+                return #err("Failed to create thread: " # errorMessage);
+            };
+        };
     };
 
     private func createThreadObject(threadID: Nat64, threadBody: Text, threadImage: ?Blob, creatorIdentity: Principal, numUpVotes:Nat64, numDownVotes:Nat64, numComments:Nat64) : Thread {
@@ -78,6 +91,80 @@ actor class ThreadMain(){
                 return #err("Thread not found");
             };
         };
+    };
+
+    //update upvote num
+    public func updateUpvoteNum(threadID: Nat64, upvoteNum: Nat64):async Result.Result<Thread, Text>{
+        switch(threadData.get(threadID)){
+            case(?res){
+                let thread: Thread = res;
+
+                let updatedThread = {
+                    threadID = thread.threadID;
+                    threadBody = thread.threadBody;
+                    threadImage = thread.threadImage;
+                    internetIdentity = thread.internetIdentity;
+                    numUpVotes = upvoteNum;
+                    numDownVotes = thread.numDownVotes;
+                    numComments = thread.numComments;
+                };
+
+                threadData.put(updatedThread.threadID, updatedThread);
+                return #ok(updatedThread);
+            };
+            case null{
+                return #err("Error, thread not found" );
+            }
+        }
+    };
+    //update downvote num
+    public func updateDownvoteNum(threadID: Nat64, downvoteNum: Nat64):async Result.Result<Thread, Text>{
+        switch(threadData.get(threadID)){
+            case(?res){
+                let thread: Thread = res;
+
+                let updatedThread = {
+                    threadID = thread.threadID;
+                    threadBody = thread.threadBody;
+                    threadImage = thread.threadImage;
+                    internetIdentity = thread.internetIdentity;
+                    numUpVotes = thread.numUpVotes;
+                    numDownVotes = downvoteNum;
+                    numComments = thread.numComments;
+                };
+
+                threadData.put(updatedThread.threadID, updatedThread);
+                return #ok(updatedThread);
+            };
+            case null{
+                return #err("Error, thread not found" );
+            }
+        }
+    };
+
+    //update comment num
+    public func updateCommentNum(threadID: Nat64, commentNum: Nat64):async Result.Result<Thread, Text>{
+        switch(threadData.get(threadID)){
+            case(?res){
+                let thread: Thread = res;
+
+                let updatedThread = {
+                    threadID = thread.threadID;
+                    threadBody = thread.threadBody;
+                    threadImage = thread.threadImage;
+                    internetIdentity = thread.internetIdentity;
+                    numUpVotes = thread.numUpVotes;
+                    numDownVotes = thread.numDownVotes;
+                    numComments = commentNum;
+                };
+
+                threadData.put(updatedThread.threadID, updatedThread);
+                return #ok(updatedThread);
+            };
+            case null{
+                return #err("Error, thread not found" );
+            }
+        }
     };
 }
 

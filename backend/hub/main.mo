@@ -48,29 +48,29 @@ actor class HubMain(){
     //edit hub
     public shared({caller}) func updateHubProfile(hubID:Nat64, hubDescription : Text, hubProfile : ?Blob, hubBanner : ?Blob, userHubMembershipCanisterId:Text): async Result.Result<(), Text> {
         switch (hubData.get(hubID)) {
-        case (?res) {
-            let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
-            let result: Result.Result<Text, Text> = await userHubMembershipActor.getMembershipRole(?caller, hubID);
-            switch (result) {
-                case (#ok(role)) {
-                    if (role == "Admin" or role == "Moderator") {
-                        let hub: Hub = res;
-                        let updatedHubProfile: Hub = _createHubObject(hubID, hub.hubName, hubDescription, hubProfile, hubBanner);
+            case (?res) {
+                let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
+                let result: Result.Result<Text, Text> = await userHubMembershipActor.getMembershipRole(?caller, hubID);
+                switch (result) {
+                    case (#ok(role)) {
+                        if (role == "Admin" or role == "Moderator") {
+                            let hub: Hub = res;
+                            let updatedHubProfile: Hub = _createHubObject(hubID, hub.hubName, hubDescription, hubProfile, hubBanner);
 
-                        hubData.put(hubID, updatedHubProfile);
-                        return #ok(); 
-                    } else {
-                        return #err("Error: Insufficient permissions to update the hub profile.");
-                    }
-                };
-                case (#err(errorMessage)) {
-                    return #err("Failed to get membership role: " # errorMessage);
+                            hubData.put(hubID, updatedHubProfile);
+                            return #ok(); 
+                        } else {
+                            return #err("Error: Insufficient permissions to update the hub profile.");
+                        }
+                    };
+                    case (#err(errorMessage)) {
+                        return #err("Failed to get membership role: " # errorMessage);
+                    };
                 };
             };
-        };
-        case null {
-            return #err("Error, hub not found" );
-        };
+            case null {
+                return #err("Error, hub not found" );
+            };
         };
     };
 
