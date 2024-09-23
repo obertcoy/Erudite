@@ -13,7 +13,7 @@ export default function SearchResult() {
       showDropdown: state.showDropdown,
     }));
 
-  console.log(showDropdown, recentSearchQuery, searchResults);
+  // console.log(showDropdown, recentSearchQuery, searchResults);
 
   return (
     <div

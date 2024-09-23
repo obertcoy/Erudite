@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "setup": "npm i && dfx build && dfx canister create --all && dfx generate && dfx deps pull && dfx deps init && dfx deps deploy && dfx deploy",
+    "setup": "npm i && dfx canister create --all && dfx build && dfx generate && dfx deps pull && dfx deps init && dfx deps deploy && dfx deploy",
     "start": "run-p frontend backend",
     "frontend": "vite --port 3000",
     "backend": "mo-dev --generate --deploy -y",
@@ -34,6 +34,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "compressorjs": "^1.2.1",
     "framer-motion": "^11.5.4",
     "lucide": "^0.441.0",
     "lucide-react": "^0.439.0",

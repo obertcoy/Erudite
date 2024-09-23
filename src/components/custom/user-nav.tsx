@@ -69,17 +69,14 @@ export function UserNav({data}: UserNavProps) {
           <div className="flex flex-col space-y-4 p-2">
             <div className="relative h-24 w-full overflow-hidden rounded-t-lg">
               <img
-                src={Banner}
+                src={data.bannerImageUrl}
                 alt="User banner"
                 className="object-cover w-full h-full"
               />
               {/* <div className="bg-muted w-full h-full object-cover"></div> */}
 
-              <div className="absolute bottom-4 left-4">
-                <Avatar className="h-12 w-12 rounded-full border-2 border-foreground">
-                  <AvatarImage src={Profile} alt="@username" />
-                  <AvatarFallback>KE</AvatarFallback>
-                </Avatar>
+              <div className="absolute bottom-4 left-4 border rounded-full border-white">
+                <ProfileAvatar username={data.username} profileImageUrl={data.profileImageUrl} />
               </div>
             </div>
             <div className="flex justify-between items-center">

@@ -24,7 +24,11 @@ import { registerUserUpdate } from '@/services/user-service';
 import useAuthContext from '@/hooks/use-auth-context';
 import { RawUserEntity, UserEntity } from '@/lib/model/entity/user/user.entity';
 import { useForm } from 'react-hook-form';
-import { genders, UserDto, UserSchema } from '@/lib/model/schema/user/user.dto';
+import {
+  genders,
+  RegisterUserDto,
+  RegisterUserSchema,
+} from '@/lib/model/schema/user/register-user.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { Principal } from '@ic-reactor/react/dist/types';
@@ -70,13 +74,13 @@ export function SignupForm() {
   const { login, fetchUser, getIdentity } = useAuthContext();
   const { registerUser } = registerUserUpdate();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const form = useForm<UserDto>({
-    resolver: zodResolver(UserSchema),
+  const form = useForm<RegisterUserDto>({
+    resolver: zodResolver(RegisterUserSchema),
   });
 
-  const onSubmit = async (data: UserDto) => {
+  const onSubmit = async (data: RegisterUserDto) => {
     await login({
       onSuccess: async () => {
         const principal: Principal | undefined = getIdentity()?.getPrincipal();
@@ -98,14 +102,13 @@ export function SignupForm() {
           ]);
         }
 
-        console.log("Register: " + result);
-        
+        console.log('Register: ' + result);
 
         if (result && 'err' in result) {
           toast(result.err);
         } else {
           await fetchUser();
-          navigate(RouteEnum.HOME)
+          navigate(RouteEnum.HOME);
         }
       },
       onError: (error) => {
@@ -113,7 +116,7 @@ export function SignupForm() {
       },
     });
   };
-  
+
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="max-w-md w-full m-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">

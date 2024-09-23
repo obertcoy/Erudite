@@ -12,7 +12,7 @@ const gendersEnum = genders.map((gender) => gender.value) as [
   ...string[],
 ];
 
-export const UserSchema = z.object({
+export const RegisterUserSchema = z.object({
   username: z
     .string()
     .min(5, { message: 'Minimum of 5 chacters for username' }),
@@ -20,4 +20,4 @@ export const UserSchema = z.object({
   gender: z.enum(gendersEnum, { message: 'Select a valid gender' }),
 });
 
-export type UserDto = z.infer<typeof UserSchema>;
+export type RegisterUserDto = z.infer<typeof RegisterUserSchema>;

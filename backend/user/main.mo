@@ -3,12 +3,24 @@ import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
 import Blob "mo:base/Blob";
+import Debug "mo:base/Debug";
+import Int "mo:base/Int";
+import Iter "mo:base/Iter";
 import Types "types";
 
 actor class UserMain() {
+  stable var userEntries : [(Principal, Types.User)] = [];
+  var userMap = TrieMap.fromEntries<Principal, Types.User>(userEntries.vals(), Principal.equal, Principal.hash);
+
   type User = Types.User;
-  //uses principas as key, the value is the rest of the user's data
-  let userMap = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
+
+  system func preupgrade() {
+    userEntries := Iter.toArray(userMap.entries());
+  };
+
+  system func postupgrade() {
+    userMap := TrieMap.fromEntries<Principal, Types.User>(userEntries.vals(), Principal.equal, Principal.hash);
+  };
 
   //register function
   public shared ({ caller }) func registerUser(username : Text, email : Text, gender : Text, userPrincipal : ?Principal) : async Result.Result<User, Text> {
@@ -50,6 +62,7 @@ actor class UserMain() {
     };
 
     userMap.put(principal, newUser);
+
     return #ok(newUser);
   };
 
@@ -67,7 +80,7 @@ actor class UserMain() {
         if (strict) {
           return #err("No Principal provided and strict mode is enabled.");
         } else {
-          caller; 
+          caller;
         };
       };
     };
@@ -101,30 +114,43 @@ actor class UserMain() {
     };
   };
 
-  public shared query ({ caller }) func updateUserProfile(username : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : async Result.Result<(), Text> {
+  public shared ({ caller }) func updateUserProfile(username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : async Result.Result<(), Text> {
+
     switch (userMap.get(caller)) {
       case (?res) {
         let user : User = res;
-        let updatedUserProfile : User = _createUserObject(caller, username, gender, bio, profileImage, bannerImage, user.email);
+
+        let updatedUserProfile : User = _createUserObject(caller, username, email, gender, bio, profileImage, bannerImage);
+
+        Debug.print("--- Updated User Profile ---");
+        Debug.print("Updated username: " # updatedUserProfile.username);
+        Debug.print("Updated email: " # updatedUserProfile.email);
+        Debug.print("Updated gender: " # updatedUserProfile.gender);
+        Debug.print("Updated bio: " # updatedUserProfile.bio);
+        Debug.print("Updated profile image size: " # Int.toText(Blob.toArray(updatedUserProfile.profileImage).size()));
+        Debug.print("Updated banner image size: " # Int.toText(Blob.toArray(updatedUserProfile.bannerImage).size()));
+        Debug.print("--- End of Updated User Profile ---");
 
         userMap.put(caller, updatedUserProfile);
         return #ok();
       };
       case null {
-        return #err("Error, current user not found: " # Principal.toText(caller));
+
+        return #err("Error: Caller not found.: " # Principal.toText(caller));
       };
     };
   };
 
-  private func _createUserObject(internetIdentity : Principal, username : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob, email : Text) : User {
+  private func _createUserObject(internetIdentity : Principal, username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : User {
+
     return {
       internetIdentity = internetIdentity;
       username = username;
+      email = email;
       gender = gender;
       bio = bio;
       profileImage = profileImage;
       bannerImage = bannerImage;
-      email = email;
     };
   };
 

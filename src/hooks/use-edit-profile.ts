@@ -4,6 +4,9 @@ import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { EditUserProfileDto } from '@/lib/model/schema/user/edit/edit-user-profile.dto';
+import { RawUserEntity, UserEntity } from '@/lib/model/entity/user/user.entity';
+import { userProfileUpdate } from '@/services/user-service';
+import { convertImageURLToUint8Array } from '@/lib/utils';
 
 interface EditProfileStoreProps {
   initialize: (data: EditUserProfileDto) => void;
@@ -47,6 +50,8 @@ export const useEditProfileStore = create(
         const imageUrl = URL.createObjectURL(img);
         set({ bannerImageUrl: imageUrl });
       },
+
+    
     }),
     {
       name: 'edit-profile',

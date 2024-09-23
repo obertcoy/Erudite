@@ -13,7 +13,7 @@ import {
   EditUserProfileSchema,
 } from '@/lib/model/schema/user/edit/edit-user-profile.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import ProfileHeaderInformation, {
@@ -23,10 +23,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
 import { useEffect } from 'react';
 import { useFetchUser } from '@/hooks/use-fetch-user';
+import { userProfileUpdate } from '@/services/user-service';
+import {
+  compressImageURLToUint8Array,
+  convertImageURLToUint8Array,
+  generateDynamicRoutePath,
+} from '@/lib/utils';
+import { toast } from 'sonner';
+import { RouteEnum } from '@/lib/enum/route-enum';
+import useAuthContext from '@/hooks/use-auth-context';
 
 export default function EditProfilePage() {
   const { userId } = useParams();
-  const { userData, getUserLoading } = useFetchUser(userId);
+  const { fetchUser } = useAuthContext();
+  const { userData } = useFetchUser(userId);
+  const { updateUserProfile } = userProfileUpdate();
+
+  const navigate = useNavigate();
 
   const {
     initialize,
@@ -42,22 +55,45 @@ export default function EditProfilePage() {
     resolver: zodResolver(EditUserProfileSchema),
     defaultValues: {
       username: username || 'Kelvinices',
-      bio: bio || 'Hello! My name is Kelvin ...ackhsually 🤓'
+      bio: bio || 'Hello! My name is Kelvin ...ackhsually 🤓',
     },
   });
 
-  const onSubmit = (values: EditUserProfileDto) => {
-    console.log(values);
+  const onSubmit = async (values: EditUserProfileDto) => {
+    if (userData) {
+      let profileImage =
+        (await compressImageURLToUint8Array(profileImageUrl ?? '')) ??
+        new Uint8Array();
+      let bannerImage =
+        (await compressImageURLToUint8Array(bannerImageUrl ?? '')) ??
+        new Uint8Array();
+
+      const result = await updateUserProfile([
+        values.username ?? userData.username,
+        userData.email,
+        userData.gender,
+        values.bio ?? userData.bio,
+        profileImage,
+        bannerImage,
+      ]);
+
+      if (result && 'err' in result) {
+        console.log(result.err);
+      } else {
+        await fetchUser();
+
+        toast.success('Profile updated successfully');
+
+        navigate(
+          generateDynamicRoutePath(RouteEnum.USER, { userId: userId ?? '' }),
+        );
+      }
+    }
   };
 
   useEffect(() => {
     if (userData) initialize(userData);
   }, [userData]);
-
-  useEffect(() => {
-    form.setValue('profileImageUrl', profileImageUrl)
-    form.setValue('bannerImageUrl', bannerImageUrl)
-  }, [profileImageUrl, bannerImageUrl, userData])
 
   return (
     <div className="flex flex-col w-full h-full m-auto p-8">
@@ -69,10 +105,11 @@ export default function EditProfilePage() {
               internetIdentity: userData?.internetIdentity ?? '',
               email: userData?.email ?? '',
               gender: userData?.gender ?? '',
-              username: username,
-              bio: bio,
-              profileImageUrl: profileImageUrl,
-              bannerImageUrl: bannerImageUrl,
+              username: username ?? userData?.username ?? '',
+              bio: bio ?? userData?.bio ?? '',
+              profileImageUrl:
+                profileImageUrl ?? userData?.profileImageUrl ?? '',
+              bannerImageUrl: bannerImageUrl ?? userData?.bannerImageUrl ?? '',
             }}
             isCurrentUser={false}
             isEditing={true}
