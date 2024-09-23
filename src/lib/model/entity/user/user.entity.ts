@@ -2,6 +2,7 @@ import { convertUint8ArrayToImageURL } from '@/lib/utils';
 import { Principal } from '@ic-reactor/react/dist/types';
 
 export type RawUserEntity = {
+  internetIdentity: Principal
   bio: string;
   username: string;
   email: string;
@@ -11,6 +12,7 @@ export type RawUserEntity = {
 };
 
 export type UserEntity = {
+  internetIdentity: string
   bio: string;
   username: string;
   email: string;
@@ -20,6 +22,7 @@ export type UserEntity = {
 };
 
 export default class User {
+  internetIdentity: string
   bio: string;
   username: string;
   email: string;
@@ -28,6 +31,7 @@ export default class User {
   bannerImageUrl: string;
 
   constructor({
+    internetIdentity,
     username,
     email,
     gender,
@@ -35,6 +39,7 @@ export default class User {
     profileImage,
     bannerImage,
   }: RawUserEntity) {
+    this.internetIdentity = internetIdentity.toString();
     this.username = username;
     this.email = email;
     this.gender = gender;
@@ -45,6 +50,7 @@ export default class User {
 
   static castToUser(u: RawUserEntity): User {
     return new User({
+      internetIdentity: u.internetIdentity,
       username: u.username,
       email: u.email,
       gender: u.gender,

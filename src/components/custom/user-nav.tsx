@@ -24,7 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
@@ -32,10 +32,16 @@ import Profile from '@/assets/rukia.jpg';
 import Banner from '@/assets/bg.jpg';
 import Prestige from '../ui/prestige';
 import useAuthContext from '@/hooks/use-auth-context';
+import { UserEntity } from '@/lib/model/entity/user/user.entity';
+import ProfileAvatar from '../ui/profile-avatar';
 
-export function UserNav() {
+interface UserNavProps{
+  data: UserEntity
+}
+
+export function UserNav({data}: UserNavProps) {
   const { logout } = useAuthContext();
-
+  const navigate = useNavigate()
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -46,10 +52,7 @@ export function UserNav() {
                 variant="outline"
                 className="relative h-8 w-8 rounded-full"
               >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="#" alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">KE</AvatarFallback>
-                </Avatar>
+                <ProfileAvatar username={data.username} profileImageUrl={data.profileImageUrl}/>
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
@@ -81,8 +84,8 @@ export function UserNav() {
             </div>
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-lg font-semibold">Kelvinices</p>
-                <p className="text-sm text-muted-foreground">@kelvinices_</p>
+                <p className="text-lg font-semibold">{data.username}</p>
+                <p className="text-sm text-muted-foreground">{data.email}</p>
               </div>
               <Prestige prestige={5245} />
             </div>
@@ -91,7 +94,7 @@ export function UserNav() {
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
               <Link
-                to={generateDynamicRoutePath(RouteEnum.USER, { userId: '1' })}
+                to={generateDynamicRoutePath(RouteEnum.USER, { userId: data.internetIdentity })}
                 className="flex items-center"
               >
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
@@ -116,6 +119,7 @@ export function UserNav() {
             className="hover:cursor-pointer"
             onClick={async () => {
               await logout();
+              navigate(RouteEnum.LOGIN)
             }}
           >
             <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />

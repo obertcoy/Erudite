@@ -22,9 +22,12 @@ import ProfileHeaderInformation, {
 import { Textarea } from '@/components/ui/textarea';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
 import { useEffect } from 'react';
+import { useFetchUser } from '@/hooks/use-fetch-user';
 
 export default function EditProfilePage() {
   const { userId } = useParams();
+  const { userData, getUserLoading } = useFetchUser(userId);
+
   const {
     initialize,
     setUsername,
@@ -38,8 +41,8 @@ export default function EditProfilePage() {
   const form = useForm<EditUserProfileDto>({
     resolver: zodResolver(EditUserProfileSchema),
     defaultValues: {
-      username: 'Kelvinices',
-      bio: 'Hello! My name is Kelvin ...ackhsually 🤓',
+      username: username || 'Kelvinices',
+      bio: bio || 'Hello! My name is Kelvin ...ackhsually 🤓'
     },
   });
 
@@ -48,8 +51,13 @@ export default function EditProfilePage() {
   };
 
   useEffect(() => {
-    initialize(dummyUser);
-  }, [initialize]);
+    if (userData) initialize(userData);
+  }, [userData]);
+
+  useEffect(() => {
+    form.setValue('profileImageUrl', profileImageUrl)
+    form.setValue('bannerImageUrl', bannerImageUrl)
+  }, [profileImageUrl, bannerImageUrl, userData])
 
   return (
     <div className="flex flex-col w-full h-full m-auto p-8">
@@ -57,7 +65,15 @@ export default function EditProfilePage() {
       <div className="flex flex-col xl:flex-row gap-8 ">
         <div className="w-full p-8 border rounded-md">
           <ProfileHeaderInformation
-            data={dummyUser}
+            data={{
+              internetIdentity: userData?.internetIdentity ?? '',
+              email: userData?.email ?? '',
+              gender: userData?.gender ?? '',
+              username: username,
+              bio: bio,
+              profileImageUrl: profileImageUrl,
+              bannerImageUrl: bannerImageUrl,
+            }}
             isCurrentUser={false}
             isEditing={true}
           />
@@ -76,6 +92,7 @@ export default function EditProfilePage() {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
+                      placeholder="Change your username"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -100,6 +117,7 @@ export default function EditProfilePage() {
                   <FormControl>
                     <Textarea
                       className="h-32 resize-none"
+                      placeholder="Hello! My name is Kelvin ...ackhsually 🤓"
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);

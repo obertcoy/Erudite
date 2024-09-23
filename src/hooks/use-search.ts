@@ -28,7 +28,7 @@ export const useSearchStore = create<UseSearchStore>()(
   persist(
     (set, get) => ({
       searchQuery: '',
-      searchResults: {users: [], hubs: [], posts: []},
+      searchResults: { users: [], hubs: [], posts: [] },
       showDropdown: false,
       recentSearchQuery: [],
 
@@ -67,11 +67,51 @@ export const useSearchStore = create<UseSearchStore>()(
         const query = get().searchQuery?.trim();
         const data: SearchResultsEntity = {
           users: [
-            { username: 'Roberto', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
-            { username: 'Alice', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
-            { username: 'David', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
-            { username: 'Irvin', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: ''},
-            { username: 'Teresa', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
+            {
+              internetIdentity: '69',
+              username: 'Roberto',
+              bio: '',
+              email: 'test@email.com',
+              gender: 'male',
+              profileImageUrl: '',
+              bannerImageUrl: '',
+            },
+            {
+              internetIdentity: '12',
+              username: 'Alice',
+              bio: '',
+              email: 'test@email.com',
+              gender: 'male',
+              profileImageUrl: '',
+              bannerImageUrl: '',
+            },
+            {
+              internetIdentity: '23',
+              username: 'David',
+              bio: '',
+              email: 'test@email.com',
+              gender: 'male',
+              profileImageUrl: '',
+              bannerImageUrl: '',
+            },
+            {
+              internetIdentity: '44',
+              username: 'Irvin',
+              bio: '',
+              email: 'test@email.com',
+              gender: 'male',
+              profileImageUrl: '',
+              bannerImageUrl: '',
+            },
+            {
+              internetIdentity: '12',
+              username: 'Teresa',
+              bio: '',
+              email: 'test@email.com',
+              gender: 'male',
+              profileImageUrl: '',
+              bannerImageUrl: '',
+            },
           ],
           hubs: [
             { hubId: '234', hubName: 'AlamakHub' },
@@ -98,9 +138,9 @@ export const useSearchStore = create<UseSearchStore>()(
     {
       name: 'recent-search',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ 
-        recentSearchQuery: state.recentSearchQuery 
+      partialize: (state) => ({
+        recentSearchQuery: state.recentSearchQuery,
       }),
-    }
-  )
+    },
+  ),
 );

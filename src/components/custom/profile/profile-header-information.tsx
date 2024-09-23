@@ -11,18 +11,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Prestige from '@/components/ui/prestige';
 import { Button } from '@/components/ui/button';
-import {
-  formatShortNumber,
-  generateDynamicRoutePath,
-} from '@/lib/utils';
+import { formatShortNumber, generateDynamicRoutePath } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
 import React, { useRef } from 'react';
 import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProfileHeaderInformationProps {
-  data: UserEntity;
+  data: UserEntity | null;
   isCurrentUser: boolean;
   isEditing?: boolean;
 }
@@ -33,9 +31,6 @@ const ProfileHeaderInformation = React.memo(
     isEditing = false,
   }: ProfileHeaderInformationProps) => {
     const { setProfileImage, setBannerImage } = useEditProfileStore();
-
-    const profileImageInputRef = useRef<HTMLInputElement>(null);
-    const bannerImageInputRef = useRef<HTMLInputElement>(null);
 
     const handleProfileImageChange = (
       event: React.ChangeEvent<HTMLInputElement>,
@@ -57,19 +52,31 @@ const ProfileHeaderInformation = React.memo(
 
     return (
       <div className="flex flex-col">
-        <div className="relative">
-          <BannerImageSection
-            isEditing={isEditing}
-            onBannerImageChange={handleBannerImageChange}
-            bannerImageUrl={data.profileImageUrl}
-          />
-          <ProfileImageSection
-            isEditing={isEditing}
-            onProfileImageChange={handleProfileImageChange}
-            profileImageUrl={data.bannerImageUrl}
-          />
-        </div>
-        <ProfileDetailsSection data={data} isCurrentUser={isCurrentUser} />
+        {data ? (
+          <>
+            <div className="relative">
+              <BannerImageSection
+                isEditing={isEditing}
+                onBannerImageChange={handleBannerImageChange}
+                bannerImageUrl={data.bannerImageUrl}
+              />
+              <ProfileImageSection
+                isEditing={isEditing}
+                onProfileImageChange={handleProfileImageChange}
+                profileImageUrl={data.profileImageUrl}
+              />
+            </div>
+            <ProfileDetailsSection data={data} isCurrentUser={isCurrentUser} />
+          </>
+        ) : (
+          <>
+            <div className="relative">
+              <BannerImageSectionSkeleton />
+              <ProfileImageSectionSkeleton />
+            </div>
+            <ProfileDetailsSectionSkeleton />
+          </>
+        )}
       </div>
     );
   },
@@ -174,14 +181,14 @@ const ProfileDetailsSection = ({
       <p className="text-muted-foreground">
         {formatShortNumber(1500)} followers
       </p>
-      <div className="flex items-center mt-2 max-w-lg text-sm">{data?.bio}</div>
+      <div className="flex items-center mt-2 max-w-lg text-sm break-words">{data?.bio}</div>
     </div>
     <div className="flex gap-x-2 mt-4 md:mt-0">
       {isCurrentUser ? (
         <Button variant="secondary" asChild>
           <Link
             to={generateDynamicRoutePath(RouteEnum.EDIT_PROFILE, {
-              userId: '1',
+              userId: data.internetIdentity,
             })}
           >
             <NotebookPen className="mr-2 h-4 w-4" /> Edit Information
@@ -207,6 +214,7 @@ const ProfileDetailsSection = ({
 export default ProfileHeaderInformation;
 
 export const dummyUser: UserEntity = {
+  internetIdentity: '10001',
   username: 'Kelvinices Rawr',
   email: 'kelvin@ices.com',
   gender: 'male',
@@ -214,3 +222,32 @@ export const dummyUser: UserEntity = {
   profileImageUrl: Profile,
   bannerImageUrl: Banner,
 };
+
+const BannerImageSectionSkeleton: React.FC = () => (
+  <div className="h-[348px] overflow-hidden rounded-b-lg">
+    <Skeleton className="w-full h-full" />
+  </div>
+);
+
+const ProfileImageSectionSkeleton: React.FC = () => (
+  <div className="absolute bottom-4 left-4 md:left-8">
+    <Skeleton className="w-40 h-40 rounded-full" />
+    <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/4">
+      <Skeleton className="w-16 h-6 rounded-full" />
+    </div>
+  </div>
+);
+
+const ProfileDetailsSectionSkeleton: React.FC = () => (
+  <div className="mt-4 px-4 md:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-x-4">
+    <div>
+      <Skeleton className="h-9 w-48 mb-2" />
+      <Skeleton className="h-4 w-32 mb-4" />
+      <Skeleton className="h-4 w-64 max-w-lg" />
+    </div>
+    <div className="flex gap-x-2 mt-4 md:mt-0">
+      <Skeleton className="h-10 w-36" />
+      <Skeleton className="h-10 w-10" />
+    </div>
+  </div>
+);

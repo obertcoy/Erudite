@@ -2,6 +2,7 @@ import TrieMap "mo:base/TrieMap";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
 import Text "mo:base/Text";
+import Blob "mo:base/Blob";
 import Types "types";
 
 actor class UserMain() {
@@ -10,7 +11,7 @@ actor class UserMain() {
   let userMap = TrieMap.TrieMap<Principal, User>(Principal.equal, Principal.hash);
 
   //register function
-  public shared ({ caller }) func registerUser(inputUser : User, userPrincipal : ?Principal) : async Result.Result<User, Text> {
+  public shared ({ caller }) func registerUser(username : Text, email : Text, gender : Text, userPrincipal : ?Principal) : async Result.Result<User, Text> {
 
     let principal = switch (userPrincipal) {
       case (?userPrincipal) {
@@ -26,30 +27,48 @@ actor class UserMain() {
     };
 
     for (user in userMap.vals()) {
-      if (user.email == inputUser.email) {
+      if (user.email == email) {
         return #err("Email already exist");
       };
     };
 
     for (user in userMap.vals()) {
-      if (user.username == inputUser.username) {
+      if (user.username == username) {
         return #err("Username already exist");
       };
     };
+    let emptyBlob : Blob = Blob.fromArray([]);
 
-    userMap.put(principal, inputUser);
-    return #ok(inputUser);
+    let newUser : User = {
+      internetIdentity = principal;
+      username = username;
+      email = email;
+      gender = gender;
+      bio = "";
+      profileImage = emptyBlob;
+      bannerImage = emptyBlob;
+    };
+
+    userMap.put(principal, newUser);
+    return #ok(newUser);
   };
 
-  //get user
-  public shared query ({ caller }) func getUser(userPrincipal : ?Principal) : async Result.Result<User, Text> {
+  public shared query ({ caller }) func getUser(userPrincipal : ?Text, strictOpt : ?Bool) : async Result.Result<User, Text> {
+    let strict = switch strictOpt {
+      case (?s) s; // Use the passed value if provided
+      case null false; // Default to false if not provided
+    };
 
     let principal = switch (userPrincipal) {
-      case (?userPrincipal) {
-        userPrincipal;
+      case (?validUserPrincipal) {
+        Principal.fromText(validUserPrincipal);
       };
       case (null) {
-        caller;
+        if (strict) {
+          return #err("No Principal provided and strict mode is enabled.");
+        } else {
+          caller; 
+        };
       };
     };
 

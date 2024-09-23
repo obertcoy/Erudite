@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { Actor, ActorMethod, HttpAgent } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 import { Principal } from '@ic-reactor/react/dist/types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import useAuthContext from '@/hooks/use-auth-context';
 import { toast } from 'sonner';
@@ -51,25 +51,22 @@ export interface _SERVICE {
 
 document.body.onload = () => {};
 export function LoginForm() {
-
   const { login, fetchUser, getIdentity } = useAuthContext();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let iiUrl = local_ii_url;
-
-    const authClient = await AuthClient.create();
-
     await login({
       onSuccess: async () => {
-
         const principal = getIdentity()?.getPrincipal();
 
         if (principal) {
           await fetchUser();
-        } 
 
+          navigate(RouteEnum.HOME);
+        }
       },
       onError: (error) => {
         toast(error);
@@ -105,6 +102,7 @@ export function LoginForm() {
             <BottomGradient />
           </button>
         </form>
+        
         <div className="flex gap-x-1">
           <span className="text-neutral-700 dark:text-neutral-300 text-sm">
             Don't have an account?

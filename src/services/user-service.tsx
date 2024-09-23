@@ -19,3 +19,12 @@ export function registerUserUpdate() {
   });
   return { registerUser, getUserLoading };
 }
+
+export function userProfileUpdate() {
+  const { useUpdateCall: userUpdate } = useServiceContext().userService;
+
+  const { call: updateUserProfile, loading: getUserLoading } = userUpdate({
+    functionName: 'updateUserProfile',
+  });
+  return { updateUserProfile, getUserLoading };
+}

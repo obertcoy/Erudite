@@ -10,7 +10,7 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import { Navigate } from 'react-router-dom';
 
 interface AuthContextProps {
-  user: User | null | undefined;
+  user: UserEntity | null | undefined;
   setUser: (user: User | null | undefined) => void;
   login: (options?: AuthClientLoginOptions) => Promise<void>;
   logout: () => Promise<void>;
@@ -38,20 +38,19 @@ export function AuthProvider({ children }: AuthProps) {
   const { login, logout, getIdentity } = useAgentManager();
 
   const handleLogout = async () => {
-
-    await logout({returnTo: RouteEnum.REGISTER});
+    await logout({ returnTo: RouteEnum.REGISTER });
     setUser(null);
-    
-    Navigate({to: RouteEnum.REGISTER})
   };
 
   const fetchUser = async () => {
-    const result = await getUser([[]]);
+    const result = await getUser([[], []]);
     if (!result || 'err' in result) {
       await logout();
       setUser(null);
       return;
     }
+    console.log("Result: " + result.ok.internetIdentity);
+    
     setUser(convertRawUserEntityToUserEntity(result.ok));
   };
 

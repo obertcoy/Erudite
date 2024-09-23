@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { AuthClient } from '@dfinity/auth-client';
 import { registerUserUpdate } from '@/services/user-service';
@@ -27,6 +27,16 @@ import { useForm } from 'react-hook-form';
 import { genders, UserDto, UserSchema } from '@/lib/model/schema/user/user.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { Principal } from '@ic-reactor/react/dist/types';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 const BottomGradient = () => {
   return (
@@ -60,38 +70,42 @@ export function SignupForm() {
   const { login, fetchUser, getIdentity } = useAuthContext();
   const { registerUser } = registerUserUpdate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UserDto>({
+  const navigate = useNavigate()
+
+  const form = useForm<UserDto>({
     resolver: zodResolver(UserSchema),
   });
 
   const onSubmit = async (data: UserDto) => {
-    await login({ 
-      
+    await login({
       onSuccess: async () => {
-        const principal = getIdentity()?.getPrincipal();
+        const principal: Principal | undefined = getIdentity()?.getPrincipal();
         let result = null;
 
-        const userEntity: RawUserEntity = {
-          ...data,
-          bio: '',
-          profileImage: new Uint8Array(),
-          bannerImage: new Uint8Array(),
-        };
-
         if (principal) {
-          result = await registerUser([userEntity, [principal]]);
+          result = await registerUser([
+            data.username,
+            data.email,
+            data.gender,
+            [principal],
+          ]);
         } else {
-          result = await registerUser([userEntity, []]);
+          result = await registerUser([
+            data.username,
+            data.email,
+            data.gender,
+            [],
+          ]);
         }
+
+        console.log("Register: " + result);
+        
 
         if (result && 'err' in result) {
           toast(result.err);
         } else {
           await fetchUser();
+          navigate(RouteEnum.HOME)
         }
       },
       onError: (error) => {
@@ -99,7 +113,7 @@ export function SignupForm() {
       },
     });
   };
-
+  
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="max-w-md w-full m-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -110,29 +124,41 @@ export function SignupForm() {
           Sign up to Erudite for exciting forums. It's easy and quick!
         </p>
 
-        <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              placeholder="johndoe123"
-              type="text"
-              minLength={5}
-              className="[&:user-invalid]:outline-red-700 [&:user-valid]:outline-green-700 autofill:bg-inherit"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 mt-8"
+          >
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="johndoe123" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is your public display name.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </LabelInputContainer>
-
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="email">Email Address</Label>
-            <Input
-              id="email"
-              placeholder="johndoe@example.com"
-              type="email"
-              className="[&:user-invalid]:outline-red-700 [&:user-valid]:outline-green-700 autofill:bg-inherit"
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="johndoe@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </LabelInputContainer>
-
-          <LabelInputContainer className="mb-4">
+            {/* <LabelInputContainer className="mb-4">
             <Label>Gender</Label>
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
@@ -162,6 +188,7 @@ export function SignupForm() {
                               currentValue === value ? '' : currentValue,
                             );
                             setOpen(false);
+                            
                           }}
                         >
                           <Check
@@ -180,20 +207,80 @@ export function SignupForm() {
                 </Command>
               </PopoverContent>
             </Popover>
-          </LabelInputContainer>
+          </LabelInputContainer> */}
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Gender</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            'w-full justify-between',
+                            !field.value && 'text-muted-foreground',
+                          )}
+                        >
+                          {field.value
+                            ? genders.find(
+                                (gender) => gender.value === field.value,
+                              )?.label
+                            : 'Select gender'}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput placeholder="Search gender..." />
+                        <CommandList>
+                          <CommandEmpty>No gender found.</CommandEmpty>
+                          <CommandGroup>
+                            {genders.map((gender) => (
+                              <CommandItem
+                                value={gender.label}
+                                key={gender.value}
+                                onSelect={() => {
+                                  form.setValue('gender', gender.value);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    gender.value === field.value
+                                      ? 'opacity-100'
+                                      : 'opacity-0',
+                                  )}
+                                />
+                                {gender.label}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <button
+              className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+              type="submit"
+            >
+              Sign up &rarr;
+              <BottomGradient />
+            </button>
 
-          <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-          >
-            Sign up &rarr;
-            <BottomGradient />
-          </button>
+            <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+          </form>
+        </Form>
 
-          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-        </form>
-
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col mt-4">
           <div className="flex gap-x-1">
             <span className="text-neutral-700 dark:text-neutral-300 text-sm">
               Already have an account?
