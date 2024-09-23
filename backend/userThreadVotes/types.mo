@@ -4,9 +4,9 @@ import Principal "mo:base/Principal";
 module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
-    public type UserHubMembership = {
-      hubID : Nat64;
+    public type UserThreadVote = {
+      threadID : Nat64;
       userIdentity: Principal;
-      userRole: Text;
+      voteType: Text;
    };
 };
