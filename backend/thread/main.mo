@@ -77,18 +77,19 @@ actor class ThreadMain(){
     };
 
     //get thread by internet identity -> get thread by user
-    public func getThreadByPrincipal(principal : ?Principal):async Result.Result<Thread, Text>{
+    public func getThreadByPrincipal(principal : ?Principal):async Result.Result<[Thread], Text>{
         switch principal {
             case null {
                 return #err("Principal ID is invalid");
             };
             case (?validPrincipal) {
+                var buffer = Buffer.Buffer<Thread>(0);
                 for (thread in threadData.vals()) {
                     if (thread.internetIdentity == validPrincipal) {
-                        return #ok(thread);
+                        buffer.add(thread);
                     };
                 };
-                return #err("Thread not found");
+                return #ok(Buffer.toArray(buffer));
             };
         };
     };
