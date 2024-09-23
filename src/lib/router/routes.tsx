@@ -4,9 +4,9 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import EditProfilePage from '@/pages/(protected)/user/edit-profile-page';
 import ProfilePage from '@/pages/(protected)/user/profile-page';
 import HomePage from '@/pages/(public)/home-page';
-import LoginPage from '@/pages/(public)/login_page';
+import LoginPage from '@/pages/(public)/login-page';
 import NotFound from '@/pages/(public)/not-found';
-import RegisterPage from '@/pages/(public)/register_page';
+import RegisterPage from '@/pages/(public)/register-page';
 import { RouteObject } from 'react-router-dom';
 
 export const ROUTES: RouteObject[] = [
@@ -31,8 +31,8 @@ export const ROUTES: RouteObject[] = [
           },
           {
             path: RouteEnum.EDIT_PROFILE,
-            element: <EditProfilePage/>
-          }
+            element: <EditProfilePage />,
+          },
         ],
       },
       {

@@ -1,5 +1,5 @@
 
-import { ServiceContext } from "@/contexts/ServiceContext";
+import { ServiceContext } from "@/contexts/service-context";
 import { useContext } from "react";
 
 export default function useServiceContext() {

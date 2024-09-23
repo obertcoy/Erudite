@@ -1,5 +1,5 @@
 
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext } from "@/contexts/auth-context";
 import { useContext } from "react";
 
 function useAuthContext() {

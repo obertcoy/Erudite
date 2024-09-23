@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
-import ProfileHeaderInformation, { dummyProfile } from './profile-header-information';
+import ProfileHeaderInformation, { dummyUser } from './profile-header-information';
 
 export default function ProfileHeader() {
   return (
     <div className="w-full lg:w-3/4 mx-auto">
-        <ProfileHeaderInformation data={dummyProfile} isCurrentUser={true} />
+        <ProfileHeaderInformation data={dummyUser} isCurrentUser={true} />
 
       <div className="mt-6">
         <nav className="flex flex-wrap md:gap-x-4 px-4 border-b ">

@@ -16,7 +16,6 @@ interface ServiceProps {
     children: React.ReactNode;
 }
 
-
 export function ServiceContextProvider({children}:ServiceProps){
     const agentManager = useAgentManager();
     const [isAuthenticating, setIsAuthenticating] = useState(true);

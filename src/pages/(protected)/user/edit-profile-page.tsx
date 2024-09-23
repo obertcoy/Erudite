@@ -11,13 +11,13 @@ import { Input } from '@/components/ui/input';
 import {
   EditUserProfileDto,
   EditUserProfileSchema,
-} from '@/lib/model/schema/user/edit-user-profile';
+} from '@/lib/model/schema/user/edit/edit-user-profile.dto';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import ProfileHeaderInformation, {
-  dummyProfile,
+  dummyUser,
 } from '@/components/custom/profile/profile-header-information';
 import { Textarea } from '@/components/ui/textarea';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
@@ -25,8 +25,15 @@ import { useEffect } from 'react';
 
 export default function EditProfilePage() {
   const { userId } = useParams();
-  const { initialize, setUsername, setBio, username, bio, profileImageUrl, bannerImageUrl } =
-    useEditProfileStore();
+  const {
+    initialize,
+    setUsername,
+    setBio,
+    username,
+    bio,
+    profileImageUrl,
+    bannerImageUrl,
+  } = useEditProfileStore();
 
   const form = useForm<EditUserProfileDto>({
     resolver: zodResolver(EditUserProfileSchema),
@@ -41,9 +48,8 @@ export default function EditProfilePage() {
   };
 
   useEffect(() => {
-    initialize(dummyProfile)
-  }, [initialize])
-  
+    initialize(dummyUser);
+  }, [initialize]);
 
   return (
     <div className="flex flex-col w-full h-full m-auto p-8">
@@ -51,14 +57,7 @@ export default function EditProfilePage() {
       <div className="flex flex-col xl:flex-row gap-8 ">
         <div className="w-full p-8 border rounded-md">
           <ProfileHeaderInformation
-            data={
-                {
-                    username: username,
-                    bio: bio,
-                    profileImageUrl: profileImageUrl,
-                    bannerImageUrl: bannerImageUrl
-                }
-            }
+            data={dummyUser}
             isCurrentUser={false}
             isEditing={true}
           />
@@ -115,7 +114,9 @@ export default function EditProfilePage() {
               )}
             />
 
-            <Button className='w-full' type="submit">Submit</Button>
+            <Button className="w-full" type="submit">
+              Submit
+            </Button>
           </form>
         </Form>
       </div>

@@ -1,16 +1,12 @@
-'use client';
 import React from 'react';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
-import {
-  IconBrandGithub,
-  IconBrandGoogle,
-  IconBrandOnlyfans,
-} from '@tabler/icons-react';
-import { Actor, ActorMethod, HttpAgent } from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
+import { Actor, ActorMethod, HttpAgent } from '@dfinity/agent';
+import { AuthClient } from '@dfinity/auth-client';
 import { Principal } from '@ic-reactor/react/dist/types';
+import { Link } from 'react-router-dom';
+import { RouteEnum } from '@/lib/enum/route-enum';
+import useAuthContext from '@/hooks/use-auth-context';
+import { toast } from 'sonner';
 
 //buat gradient
 const BottomGradient = () => {
@@ -42,10 +38,10 @@ const webapp_id = process.env.CANISTER_ID_BACKEND;
 const local_ii_url = `http://${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943`;
 
 //interface
-const webapp_idl = ({ IDL } :any) => {
-  return IDL.Service({ whoami: IDL.Func([], [IDL.Principal], ["query"]) });
+const webapp_idl = ({ IDL }: any) => {
+  return IDL.Service({ whoami: IDL.Func([], [IDL.Principal], ['query']) });
 };
-export const init = ({ IDL } :any) => {
+export const init = ({ IDL }: any) => {
   return [];
 };
 
@@ -53,31 +49,32 @@ export interface _SERVICE {
   whoami: ActorMethod<[], Principal>;
 }
 
-document.body.onload = () => {
-
-}
+document.body.onload = () => {};
 export function LoginForm() {
+
+  const { login, fetchUser, getIdentity } = useAuthContext();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("test")
-  
+
     let iiUrl = local_ii_url;
 
     const authClient = await AuthClient.create();
 
-    await new Promise<void>((resolve, reject) => {
-      authClient.login({
-        identityProvider: iiUrl,
-        onSuccess: resolve,
-        onError: reject,
-      });
+    await login({
+      onSuccess: async () => {
+
+        const principal = getIdentity()?.getPrincipal();
+
+        if (principal) {
+          await fetchUser();
+        } 
+
+      },
+      onError: (error) => {
+        toast(error);
+      },
     });
-
-    console.log("test 2")
-    console.log("identity: "+ authClient.getIdentity().getPrincipal())
-
-    console.log('Form submitted');
   };
 
   return (
@@ -91,23 +88,31 @@ export function LoginForm() {
         </p>
 
         <form className="my-8" onSubmit={handleSubmit}>
-          <LabelInputContainer className="mb-4">
+          {/* <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email Address</Label>
             <Input id="email" placeholder="johndoe@gmail.com" type="email" />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
             <Input id="password" placeholder="••••••••" type="password" />
-          </LabelInputContainer>
+          </LabelInputContainer> */}
 
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type='submit'
+            type="submit"
           >
             Sign in &rarr;
             <BottomGradient />
           </button>
         </form>
+        <div className="flex gap-x-1">
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Don't have an account?
+          </span>
+          <span className="font-medium underline text-sm">
+            <Link to={RouteEnum.REGISTER}>Register</Link>
+          </span>
+        </div>
       </div>
     </div>
   );

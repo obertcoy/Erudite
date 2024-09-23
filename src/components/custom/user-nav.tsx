@@ -31,8 +31,11 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import Profile from '@/assets/rukia.jpg';
 import Banner from '@/assets/bg.jpg';
 import Prestige from '../ui/prestige';
+import useAuthContext from '@/hooks/use-auth-context';
 
 export function UserNav() {
+  const { logout } = useAuthContext();
+
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -71,10 +74,7 @@ export function UserNav() {
 
               <div className="absolute bottom-4 left-4">
                 <Avatar className="h-12 w-12 rounded-full border-2 border-foreground">
-                  <AvatarImage
-                    src={Profile}
-                    alt="@username"
-                  />
+                  <AvatarImage src={Profile} alt="@username" />
                   <AvatarFallback>KE</AvatarFallback>
                 </Avatar>
               </div>
@@ -84,7 +84,7 @@ export function UserNav() {
                 <p className="text-lg font-semibold">Kelvinices</p>
                 <p className="text-sm text-muted-foreground">@kelvinices_</p>
               </div>
-              <Prestige prestige={5245}/>
+              <Prestige prestige={5245} />
             </div>
           </div>
           <DropdownMenuSeparator />
@@ -112,7 +112,12 @@ export function UserNav() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+          <DropdownMenuItem
+            className="hover:cursor-pointer"
+            onClick={async () => {
+              await logout();
+            }}
+          >
             <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
             Sign out
           </DropdownMenuItem>

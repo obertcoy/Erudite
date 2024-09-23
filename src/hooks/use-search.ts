@@ -4,11 +4,14 @@ import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-interface UseSearchStoreProps {
+interface UseSearchStoreState {
   searchQuery: string;
   searchResults: SearchResultsEntity;
   recentSearchQuery: string[];
   showDropdown: boolean;
+}
+
+interface UseSearchStoreActions {
   setSearchQuery: (query: string) => void;
   handleSearch: (
     id: string,
@@ -19,15 +22,13 @@ interface UseSearchStoreProps {
   toggleDropdown: (show: boolean) => void;
 }
 
-export const useSearchStore = create(
-  persist<Partial<UseSearchStoreProps>>(
+type UseSearchStore = UseSearchStoreState & UseSearchStoreActions;
+
+export const useSearchStore = create<UseSearchStore>()(
+  persist(
     (set, get) => ({
       searchQuery: '',
-      searchResults: {
-        users: [{ userId: '123', username: 'Roberto' }],
-        hubs: [{ hubId: '234', hubName: 'AlamakHub' }],
-        posts: [{ postId: '345', title: 'Suer coyy ??' }],
-      },
+      searchResults: {users: [], hubs: [], posts: []},
       showDropdown: false,
       recentSearchQuery: [],
 
@@ -66,11 +67,11 @@ export const useSearchStore = create(
         const query = get().searchQuery?.trim();
         const data: SearchResultsEntity = {
           users: [
-            { userId: '123', username: 'Roberto' },
-            { userId: '124', username: 'Alice' },
-            { userId: '125', username: 'Bob' },
-            { userId: '126', username: 'Charlie' },
-            { userId: '127', username: 'David' },
+            { username: 'Roberto', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
+            { username: 'Alice', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
+            { username: 'David', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
+            { username: 'Irvin', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: ''},
+            { username: 'Teresa', bio: '', email: 'test@email.com', gender: 'male', profileImageUrl: '', bannerImageUrl: '' },
           ],
           hubs: [
             { hubId: '234', hubName: 'AlamakHub' },
@@ -89,15 +90,6 @@ export const useSearchStore = create(
         };
 
         set({ searchResults: data });
-        // if (query.length > 0) {
-        //   try {
-        //     const response = await fetch(`/api/search?query=${query}`);
-        //     const data: SearchResultsEntity = await response.json();
-        //     set({ searchResults: data });
-        //   } catch (error) {
-        //     console.error('Error fetching search results:', error);
-        //   }
-        // }
       },
       toggleDropdown: (show: boolean) => {
         set({ showDropdown: show });
@@ -105,11 +97,10 @@ export const useSearchStore = create(
     }),
     {
       name: 'recent-search',
-
-      // Typescript error
-      partialize: (state: Partial<UseSearchStoreProps>) => ({
-        recentSearchQuery: state.recentSearchQuery,
-      }) as Partial<UseSearchStoreProps>,
-    },
-  ),
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ 
+        recentSearchQuery: state.recentSearchQuery 
+      }),
+    }
+  )
 );

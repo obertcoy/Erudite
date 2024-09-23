@@ -3,7 +3,7 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { EditUserProfileDto } from '@/lib/model/schema/user/edit-user-profile';
+import { EditUserProfileDto } from '@/lib/model/schema/user/edit/edit-user-profile.dto';
 
 interface EditProfileStoreProps {
   initialize: (data: EditUserProfileDto) => void;
@@ -47,7 +47,6 @@ export const useEditProfileStore = create(
         const imageUrl = URL.createObjectURL(img);
         set({ bannerImageUrl: imageUrl });
       },
-      
     }),
     {
       name: 'edit-profile',

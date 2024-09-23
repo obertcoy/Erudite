@@ -6,22 +6,23 @@ import {
   MessageCircle,
   MoreHorizontal,
   NotebookPen,
-  PencilLine,
   UserPlus,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Prestige from '@/components/ui/prestige';
 import { Button } from '@/components/ui/button';
-import { formatShortNumber, generateDynamicRoutePath } from '@/lib/utils';
+import {
+  formatShortNumber,
+  generateDynamicRoutePath,
+} from '@/lib/utils';
 import { Link } from 'react-router-dom';
-import { UserProfileEntity } from '@/lib/model/entity/user/user-profile-entity';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
-import { EditUserProfileDto } from '@/lib/model/schema/user/edit-user-profile';
 import React, { useRef } from 'react';
+import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
 
 interface ProfileHeaderInformationProps {
-  data: UserProfileEntity;
+  data: UserEntity;
   isCurrentUser: boolean;
   isEditing?: boolean;
 }
@@ -60,12 +61,12 @@ const ProfileHeaderInformation = React.memo(
           <BannerImageSection
             isEditing={isEditing}
             onBannerImageChange={handleBannerImageChange}
-            bannerImageUrl={data.bannerImageUrl}
+            bannerImageUrl={data.profileImageUrl}
           />
           <ProfileImageSection
             isEditing={isEditing}
             onProfileImageChange={handleProfileImageChange}
-            profileImageUrl={data.profileImageUrl}
+            profileImageUrl={data.bannerImageUrl}
           />
         </div>
         <ProfileDetailsSection data={data} isCurrentUser={isCurrentUser} />
@@ -159,7 +160,7 @@ const ProfileImageSection = ({
   );
 };
 interface ProfileDetailsSectionProps {
-  data: UserProfileEntity;
+  data: User;
   isCurrentUser: boolean;
 }
 
@@ -205,8 +206,10 @@ const ProfileDetailsSection = ({
 
 export default ProfileHeaderInformation;
 
-export const dummyProfile: EditUserProfileDto = {
+export const dummyUser: UserEntity = {
   username: 'Kelvinices Rawr',
+  email: 'kelvin@ices.com',
+  gender: 'male',
   bio: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur qui, iste aspernatur accusantium ratione, molestiae esse facere rem quas omnis eius in nisi cumque velit, mollitia voluptatem molestias possimus ut?',
   profileImageUrl: Profile,
   bannerImageUrl: Banner,

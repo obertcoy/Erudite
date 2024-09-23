@@ -8,14 +8,14 @@ import { useNavigate } from 'react-router';
 export default function SearchBar() {
 
   const { searchQuery, showDropdown, handleSearch, setSearchQuery, fetchSearchResults, toggleDropDown } = useSearchStore(state => ({
-    searchQuery: state.searchQuery,
+    searchQuery: state.searchQuery ?? "",
     showDropdown: state.showDropdown,
     handleSearch: state.handleSearch,
     setSearchQuery: state.setSearchQuery,
     fetchSearchResults: state.fetchSearchResults,
     toggleDropDown: state.toggleDropdown
   }) );
-  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery ?? '');
 
   const debounceDuration = 500;
 

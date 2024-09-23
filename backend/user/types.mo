@@ -7,12 +7,11 @@ module {
 
     //user datatype
     public type User = {
-      internetIdentity : Principal;
       email : Text;
-      numJoinedHubs : Nat;
       username : Text;
+      gender: Text;
       bio: Text;
-      profileImage: ?Blob;
-      bannerImage: ?Blob;
+      profileImage: Blob;
+      bannerImage: Blob;
    };
 };
