@@ -56,6 +56,17 @@ actor class HubThreads(){
         return #ok(Buffer.toArray(buffer));
     };
 
+    //get hub threads by thread id
+    public func getHubThreadByThreadID(threadID : Nat64): async Result.Result<HubThreads, Text>{
+        for (hubThread in hubThreadData.vals()){
+            if(hubThread.threadID == threadID){
+                return #ok(hubThread);
+            };
+        };
+
+        return #err("Hub Thread not found");
+    };
+
     //get hub thread profile by principal
     public shared ({caller}) func getAllThreadProfileByPrincipal(threadCanisterId: Text, hubCanisterId: Text) : async Result.Result<[HubThreadProfile], Text> {
         var buffer = Buffer.Buffer<HubThreadProfile>(0);
@@ -66,25 +77,32 @@ actor class HubThreads(){
         switch (result) {
             case (#ok(threads)) {  
                 for (thread in threads.vals()) {
-                    let res: Result.Result<Hub, Text> = await hubActor.getHubByID(?thread.threadID);
-                    switch (res) {
-                        case (#ok(hub)) {
-                            let temp : HubThreadProfile = {
-                                threadID  = thread.threadID;
-                                threadBody = thread.threadBody;
-                                threadImage = thread.threadImage;
-                                internetIdentity = thread.internetIdentity;
-                                numUpVotes = thread.numUpVotes;
-                                numDownVotes = thread.numDownVotes;
-                                numComments = thread.numComments;
-                                hubID = hub.hubID;
-                                hubName = hub.hubName;
-                            };
-                            buffer.add(temp);
+                    let hubThread : Result.Result<HubThreads, Text> = await getHubThreadByThreadID(thread.threadID);
+                    switch (hubThread){
+                        case(#ok(hubThread)){
+                            let res: Result.Result<Hub, Text> = await hubActor.getHubByID(?hubThread.hubID);
+                            switch (res) {
+                                case (#ok(hub)) {
+                                    let temp : HubThreadProfile = {
+                                        threadID  = thread.threadID;
+                                        threadBody = thread.threadBody;
+                                        threadImage = thread.threadImage;
+                                        internetIdentity = thread.internetIdentity;
+                                        numUpVotes = thread.numUpVotes;
+                                        numDownVotes = thread.numDownVotes;
+                                        numComments = thread.numComments;
+                                        hubID = hub.hubID;
+                                        hubName = hub.hubName;
+                                    };
+                                    buffer.add(temp);
+                                };
+                                case (#err(_)) {
+                                };
+                            }
                         };
-                        case (#err(_)) {
+                        case(#err(_)){
                         };
-                    }
+                    };
                 };
                 return #ok(Buffer.toArray(buffer));
             };

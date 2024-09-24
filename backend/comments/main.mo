@@ -2,6 +2,7 @@ import Types "types";
 import TrieMap "mo:base/TrieMap";
 import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
+import Buffer "mo:base/Buffer";
 
 import ThreadCommentsModule "../threadComments/interface";
 import ThreadCommentsType "../threadComments/types";
@@ -42,8 +43,42 @@ actor class CommentMain(){
         };
     };
     //get comment by ID
+    public func getCommentByID(commentID:?Nat64):async Result.Result<Comment, Text>{
+        switch commentID {
+            case null {
+                return #err("Comment ID is invalid");
+            };
+            case (?validCommentID) {
+                switch (commentData.get(validCommentID)) {
+                    case null {
+                        return #err("Comment not found");
+                    };
+                    case (?fetched_comment) {
+                        return #ok(fetched_comment);
+                    };
+                };
+                return #err("Comment not found");
+            };
+        };
+    };
 
     //get comment by principal
+    public func getCommentByPrincipal(principal : ?Principal):async Result.Result<[Comment], Text>{
+        switch principal {
+            case null {
+                return #err("Principal ID is invalid");
+            };
+            case (?validPrincipal) {
+                var buffer = Buffer.Buffer<Comment>(0);
+                for (comment in commentData.vals()) {
+                    if (comment.internetIdentity == validPrincipal) {
+                        buffer.add(comment);
+                    };
+                };
+                return #ok(Buffer.toArray(buffer));
+            };
+        };
+    };
 
 }
 
