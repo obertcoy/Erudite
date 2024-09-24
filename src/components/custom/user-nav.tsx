@@ -43,8 +43,6 @@ export function UserNav({ data }: UserNavProps) {
   const { logout } = useAuthContext();
   const navigate = useNavigate();
 
-  console.log(data.bannerImageUrl);
-
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>

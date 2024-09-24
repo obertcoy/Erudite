@@ -11,9 +11,30 @@
         "node_compatibility": true
       }
     },
+    "hub": {
+      "type": "motoko",
+      "main": "backend/hub/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
     "userHubMembership": {
       "type": "motoko",
       "main": "backend/userHubMembership/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
+    "post": {
+      "type": "motoko",
+      "main": "backend/post/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
+    "hubPosts": {
+      "type": "motoko",
+      "main": "backend/hubPosts/main.mo",
       "declarations": {
         "node_compatibility": true
       }

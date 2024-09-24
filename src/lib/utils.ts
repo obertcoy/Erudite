@@ -103,7 +103,7 @@ export async function compressImageURLToUint8Array(
 
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(blob, {
-        quality: 1,
+        quality: 0.9,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',

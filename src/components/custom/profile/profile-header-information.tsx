@@ -95,21 +95,18 @@ const BannerImageSection = ({
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="h-[348px] overflow-hidden rounded-b-lg bg-muted w-full object-cover">
+    <div className="h-[348px] overflow-hidden rounded-b-lg">
       <img
         src={bannerImageUrl}
         alt="Banner"
         className="object-cover w-full h-full"
-        onError={(e) => {
-          e.currentTarget.style.display = 'none';
-        }}
       />
 
       {isEditing && (
         <>
           <Button
             size="icon"
-            variant="secondary"
+            variant="outline"
             onClick={() => bannerImageInputRef.current?.click()}
             className="absolute top-4 right-4"
           >
@@ -149,7 +146,7 @@ const ProfileImageSection = ({
         <>
           <Button
             size="icon"
-            variant="secondary"
+            variant="outline"
             onClick={() => profileImageInputRef.current?.click()}
             className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
@@ -192,9 +189,7 @@ const ProfileDetailsSection = ({
     <div className="flex gap-x-2 mt-4 md:mt-0">
       {isCurrentUser ? (
         <Button variant="secondary" asChild>
-          <Link
-            to={RouteEnum.EDIT_PROFILE}
-          >
+          <Link to={RouteEnum.EDIT_PROFILE}>
             <NotebookPen className="mr-2 h-4 w-4" /> Edit Information
           </Link>
         </Button>
