@@ -38,10 +38,10 @@ export function getMenuList(pathname: string): Group[] {
         {
           path: RouteEnum.HOME,
           label: 'Home',
-          active: pathname.includes(RouteEnum.HOME),
+          active: pathname === RouteEnum.HOME,
           icon: House,
           submenus: [],
-        }
+        },
       ],
     },
     {
@@ -82,7 +82,7 @@ export function getMenuList(pathname: string): Group[] {
         },
       ],
     },
-    
+
     {
       groupLabel: 'Settings',
       menus: [

@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button';
 
 const PostCardVoteControl = () => {
   return (
-    <div className="flex items-center gap-x-2 bg-muted dark:bg-[#171823] rounded-md">
+    <div className="flex items-center gap-x-2">
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
         className="hover:bg-gray-200 hover:dark:bg-gray-800"
       >
@@ -13,7 +13,7 @@ const PostCardVoteControl = () => {
       </Button>
       <div className="text-xs font-bold">32K</div>
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
         className="hover:bg-gray-200 hover:dark:bg-gray-800"
       >

@@ -1,13 +1,8 @@
 import { CardContent } from '@/components/ui/card';
-import MyRichGrandma from '@/assets/my-rich-grandma.webp';
 
-const PostCardContent = () => {
+export default function CommentCardContent() {
   return (
-    <CardContent className="flex flex-col justify-center gap-y-3">
-      <img
-        src={MyRichGrandma}
-        className="rounded-md w-full h-80 object-cover"
-      />
+    <CardContent className="flex flex-col justify-center gap-y-3 p-0  ps-8 pb-2">
       <p className="text-sm">
         You won&apos;t believe it, but I just turned my grandma into a virtual
         millionaire, thanks to Cookie Clicker! 🍪💰🤑 With some strategic
@@ -18,6 +13,4 @@ const PostCardContent = () => {
       </p>
     </CardContent>
   );
-};
-
-export default PostCardContent;
+}

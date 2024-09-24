@@ -30,7 +30,7 @@ export function Navbar({ title }: NavbarProps) {
             <NavbarIcon
               icon={<SquarePen className="h-[1.2rem] w-[1.2rem]" />}
               path={RouteEnum.CREATE_POST}
-              tooltip={`Create post in /${title}`}
+              tooltip={`Create post`}
             />
           )}
 
