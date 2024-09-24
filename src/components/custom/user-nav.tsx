@@ -72,7 +72,7 @@ export function UserNav({ data }: UserNavProps) {
           <div className="flex flex-col space-y-4 p-2">
             <div className="relative h-24 w-full overflow-hidden rounded-t-lg">
               {data.bannerImageUrl ? (
-              <img
+                <img
                   src={data.bannerImageUrl}
                   alt="User banner"
                   className="object-cover w-full h-full"
@@ -100,7 +100,9 @@ export function UserNav({ data }: UserNavProps) {
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
               <Link
-                to={RouteEnum.EDIT_PROFILE}
+                to={generateDynamicRoutePath(RouteEnum.USER, {
+                  userId: data.internetIdentity,
+                })}
                 className="flex items-center"
               >
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
@@ -108,10 +110,7 @@ export function UserNav({ data }: UserNavProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link
-                to={RouteEnum.ACCOUNT}
-                className="flex items-center"
-              >
+              <Link to={RouteEnum.ACCOUNT} className="flex items-center">
                 <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
                 Settings
               </Link>
