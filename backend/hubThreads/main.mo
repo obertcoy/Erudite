@@ -18,7 +18,7 @@ actor class HubThreads(){
     type Hub = HubType.Hub;
     
 
-    //principal + "-" + hubID ad key, userhubmembership as value
+    //hubID + "-" + thread ID as key
     let hubThreadData = HashMap.HashMap<Text, HubThreads>(0, Text.equal, Text.hash);
 
     //create hub threads
