@@ -1,10 +1,19 @@
 import useServiceContext from "@/hooks/use-service-context";
 
-export function createHub() {
-    const { useUpdateCall: userUpdate } = useServiceContext().userService;
+export function createHubUpdate() {
+    const { useUpdateCall: hubUpdate } = useServiceContext().hubService;
   
-    const { call: registerUser, loading: getUserLoading } = userUpdate({
-      functionName: 'registerUser',
+    const { call: createHub } = hubUpdate({
+      functionName: 'createHub',
     });
-    return { registerUser, getUserLoading };
+    return { createHub };
+  }
+
+export function getHubByIdQuery() {
+    const { useQueryCall: hubQuery } = useServiceContext().hubService;
+  
+    const { call: getHubByID, loading: getHubLoading } = hubQuery({
+      functionName: 'getHubByID',
+    });
+    return { getHubByID, getHubLoading };
   }

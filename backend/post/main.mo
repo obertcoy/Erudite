@@ -44,7 +44,7 @@ actor class PostMain() {
 
     let hubPostsActor = actor (hubPostsCanisterId) : HubPostsModule.HubPostsActor;
 
-    let result : Result.Result<(), Text> = await hubPostsActor.deleteHubPosts(hubID, postID, hubCanisterId, userHubMembershipCanisterId);
+    let result : Result.Result<(), Text> = await hubPostsActor.deleteHubPosts(caller, hubID, postID, hubCanisterId, userHubMembershipCanisterId);
     switch (result) {
       case (#ok(_)) {
         counter += 1;

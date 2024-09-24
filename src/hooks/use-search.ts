@@ -1,8 +1,9 @@
-import { SearchResultsEntity } from '@/lib/model/entity/search-results-entity';
+import { SearchResultsEntity } from '@/lib/model/entity/search-results.entity';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import dummyHubs from '@/lib/model/entity/hub/hub.entity';
 
 interface UseSearchStoreState {
   searchQuery: string;
@@ -113,13 +114,7 @@ export const useSearchStore = create<UseSearchStore>()(
               bannerImageUrl: '',
             },
           ],
-          hubs: [
-            { hubId: '234', hubName: 'AlamakHub' },
-            { hubId: '235', hubName: 'TechTalks' },
-            { hubId: '236', hubName: 'CreativeCorner' },
-            { hubId: '237', hubName: 'HealthHub' },
-            { hubId: '238', hubName: 'EducationZone' },
-          ],
+          hubs: dummyHubs,
           posts: [
             { postId: '345', title: 'Suer coyy ??' },
             { postId: '346', title: 'Latest Tech Trends' },

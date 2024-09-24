@@ -1,4 +1,4 @@
-import { useFetchUser } from '@/hooks/use-fetch-user';
+import { useGetUser } from '@/hooks/user/use-get-user';
 import { useParams } from 'react-router-dom';
 import {
   Form,

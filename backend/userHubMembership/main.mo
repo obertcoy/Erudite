@@ -22,8 +22,17 @@ actor class UserHubMembershipMain() {
   let membershipMap = HashMap.HashMap<Text, UserHubMembership>(0, Text.equal, Text.hash);
 
   //create membership
-  public shared ({ caller }) func createMembership(hubID : Nat64, membershipType : Text) : async Result.Result<UserHubMembership, Text> {
-    let internetIdentity = Principal.toText(caller);
+  public shared ({ caller }) func createMembership(owner : ?Principal, hubID : Nat64, membershipType : Text) : async Result.Result<UserHubMembership, Text> {
+
+    let internetIdentity = switch (owner) {
+      case (?owner) {
+        Principal.toText(owner);
+      };
+      case null {
+        Principal.toText(caller);
+      };
+    };
+
     let hubIDRepresentation : Text = Nat64.toText(hubID);
     let key = internetIdentity # "-" # hubIDRepresentation;
     if (membershipMap.get(key) != null) {

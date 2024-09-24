@@ -14,17 +14,17 @@ export function getUserQuery() {
 export function registerUserUpdate() {
   const { useUpdateCall: userUpdate } = useServiceContext().userService;
 
-  const { call: registerUser, loading: getUserLoading } = userUpdate({
+  const { call: registerUser } = userUpdate({
     functionName: 'registerUser',
   });
-  return { registerUser, getUserLoading };
+  return { registerUser };
 }
 
 export function userUpdate() {
   const { useUpdateCall: userUpdate } = useServiceContext().userService;
 
-  const { call: updateUser, loading: getUserLoading } = userUpdate({
+  const { call: updateUser } = userUpdate({
     functionName: 'updateUser',
   });
-  return { updateUser, getUserLoading };
+  return { updateUser };
 }

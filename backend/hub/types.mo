@@ -1,6 +1,5 @@
 import Result "mo:base/Result";
 import Text "mo:base/Text";
-import Nat "mo:base/Nat";
 import Bool "mo:base/Bool";
 
 module {
@@ -11,7 +10,6 @@ module {
     hubID : Nat64;
     hubName : Text;
     hubDescription : Text;
-    hubBannerImage : Blob;
     hubProfileImage : Blob;
     hubRoles : [Role];
   };

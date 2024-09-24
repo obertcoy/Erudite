@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { formatShortNumber, generateDynamicRoutePath } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
-import { useEditProfileStore } from '@/hooks/use-edit-profile';
+import { useEditProfileStore } from '@/hooks/user/use-edit-profile';
 import React, { useRef } from 'react';
 import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
 import { Skeleton } from '@/components/ui/skeleton';
