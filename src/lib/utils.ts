@@ -55,7 +55,7 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
   let url = '';
 
   if (uint8Array instanceof Uint8Array) {
-    const blob = new Blob([uint8Array], {type: 'image/jpeg'});
+    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
 
     url = URL.createObjectURL(blob);
   }
@@ -65,7 +65,6 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
 export function convertRawUserEntityToUserEntity(
   raw: RawUserEntity,
 ): UserEntity {
-
   return {
     internetIdentity: raw.internetIdentity.toString(),
     username: raw.username,
@@ -76,12 +75,27 @@ export function convertRawUserEntityToUserEntity(
     bannerImageUrl: convertUint8ArrayToImageURL(raw.bannerImage),
   };
 }
+
+export async function validateImageURL(imageUrl: string) {
+  try {
+    const blob = await convertImageURLToBlob(imageUrl);
+
+    if (!blob || !blob.type.startsWith('image/')) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function compressImageURLToUint8Array(
   imageUrl: string,
 ): Promise<Uint8Array | null> {
   try {
     const blob = await convertImageURLToBlob(imageUrl);
-    
+
     if (!blob || blob.type.indexOf('image/') === -1) {
       console.error('Provided URL is not an image: ', imageUrl);
       return null;

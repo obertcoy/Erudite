@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { generateDynamicRoutePath } from '@/lib/utils';
+import { generateDynamicRoutePath, validateImageURL } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import Profile from '@/assets/rukia.jpg';
 import Banner from '@/assets/bg.jpg';
@@ -42,6 +42,9 @@ interface UserNavProps {
 export function UserNav({ data }: UserNavProps) {
   const { logout } = useAuthContext();
   const navigate = useNavigate();
+
+  console.log(data.bannerImageUrl);
+
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -70,16 +73,15 @@ export function UserNav({ data }: UserNavProps) {
           transition={{ duration: 0.2 }}
         >
           <div className="flex flex-col space-y-4 p-2">
-            <div className="relative h-24 w-full overflow-hidden rounded-t-lg">
-              {data.bannerImageUrl ? (
+            <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-muted object-cover">
               <img
-                  src={data.bannerImageUrl}
-                  alt="User banner"
-                  className="object-cover w-full h-full"
-                />
-              ) : (
-                <div className="bg-muted w-full h-full object-cover"></div>
-              )}
+                src={data.bannerImageUrl}
+                alt="User banner"
+                className="object-cover w-full h-full"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
 
               <div className="absolute bottom-4 left-4 border rounded-full border-white">
                 <ProfileAvatar
@@ -99,19 +101,13 @@ export function UserNav({ data }: UserNavProps) {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link
-                to={RouteEnum.EDIT_PROFILE}
-                className="flex items-center"
-              >
+              <Link to={RouteEnum.EDIT_PROFILE} className="flex items-center">
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
                 Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link
-                to={RouteEnum.ACCOUNT}
-                className="flex items-center"
-              >
+              <Link to={RouteEnum.ACCOUNT} className="flex items-center">
                 <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
                 Settings
               </Link>

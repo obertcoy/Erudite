@@ -81,17 +81,14 @@ function SearchResultsSection({ searchResults }: SearchResultsSection) {
                     variant="ghost"
                     className="flex flex-row items-center text-start py-6 gap-x-2 hover:variant-secondary"
                   >
-                    <Button
-                      variant="outline"
-                      className="relative h-8 w-8 rounded-full"
-                    >
+                    <div className="relative h-8 w-8 rounded-full border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="#" alt="Avatar" />
                         <AvatarFallback className="bg-transparent">
                           KE
                         </AvatarFallback>
                       </Avatar>{' '}
-                    </Button>
+                    </div>
                     <p className="w-full h-fit text-sm font-medium text-foreground">
                       {hub.hubName}
                     </p>
@@ -114,17 +111,14 @@ function SearchResultsSection({ searchResults }: SearchResultsSection) {
                     variant="ghost"
                     className="flex flex-row items-center text-start py-6 gap-x-2 hover:variant-secondary"
                   >
-                    <Button
-                      variant="outline"
-                      className="relative h-8 w-8 rounded-full"
-                    >
+                    <div className="relative h-8 w-8 rounded-full border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="#" alt="Avatar" />
                         <AvatarFallback className="bg-transparent">
                           KE
                         </AvatarFallback>
                       </Avatar>{' '}
-                    </Button>
+                    </div>
                     <p className="w-full h-fit text-sm font-medium text-foreground">
                       {user.username}
                     </p>
@@ -147,17 +141,14 @@ function SearchResultsSection({ searchResults }: SearchResultsSection) {
                     variant="ghost"
                     className="flex flex-row items-center text-start py-6 gap-x-2 hover:variant-secondary"
                   >
-                    <Button
-                      variant="outline"
-                      className="relative h-8 w-8 rounded-full"
-                    >
+                    <div className="relative h-8 w-8 rounded-full border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="#" alt="Avatar" />
                         <AvatarFallback className="bg-transparent">
                           KE
                         </AvatarFallback>
                       </Avatar>{' '}
-                    </Button>
+                    </div>
                     <p className="w-full h-fit text-sm font-medium text-foreground">
                       {post.title}
                     </p>

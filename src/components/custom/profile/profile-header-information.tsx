@@ -93,19 +93,17 @@ const BannerImageSection = ({
   bannerImageUrl,
 }: BannerImageSectionProps) => {
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
-  
 
   return (
-    <div className="h-[348px] overflow-hidden rounded-b-lg">
-      {bannerImageUrl ? (
-        <img
-          src={bannerImageUrl}
-          alt="Cover"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="bg-muted w-full h-full object-cover"></div>
-      )}
+    <div className="h-[348px] overflow-hidden rounded-b-lg bg-muted w-full object-cover">
+      <img
+        src={bannerImageUrl}
+        alt="Banner"
+        className="object-cover w-full h-full"
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+        }}
+      />
 
       {isEditing && (
         <>
