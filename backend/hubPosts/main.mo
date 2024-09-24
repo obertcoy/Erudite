@@ -3,7 +3,6 @@ import Text "mo:base/Text";
 import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
-import Array "mo:base/Array";
 import Types "types";
 
 import PostModule "../post/interface";

@@ -4,6 +4,7 @@ import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 import Buffer "mo:base/Buffer";
+import Nat32 "mo:base/Nat32";
 
 import HubPostsModule "../hubPosts/interface";
 import HubPostsType "../hubPosts/types";
@@ -12,7 +13,11 @@ actor class PostMain() {
   type Post = Types.Post;
   type HubPosts = HubPostsType.HubPosts;
 
-  let postMap = TrieMap.TrieMap<Nat64, Post>(Nat64.equal, Nat64.toNat32);
+  private func _hash32(n : Nat64) : Nat32 {
+    return Nat32.fromNat(Nat64.toNat(n));
+  };
+
+  let postMap = TrieMap.TrieMap<Nat64, Post>(Nat64.equal, _hash32);
   //dibuat counternya mulai dari 10 karena nanti akan ada data seeding
   var counter : Nat64 = 10;
 

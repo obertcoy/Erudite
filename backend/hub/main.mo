@@ -1,10 +1,11 @@
 import Types "types";
 import TrieMap "mo:base/TrieMap";
-import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
+import Nat64 "mo:base/Nat64";
+import Nat32 "mo:base/Nat32";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
@@ -14,9 +15,15 @@ actor class HubMain() {
   type UserHubMembership = UserHubMembershipType.UserHubMembership;
   type Role = Types.Role;
   type Permission = Types.Permission;
-  let hubMap = TrieMap.TrieMap<Nat64, Hub>(Nat64.equal, Nat64.toNat32);
+
+  private func _hash32(n: Nat64): Nat32{
+    return Nat32.fromNat(Nat64.toNat(n))
+  };
+
+  let hubMap = TrieMap.TrieMap<Nat64, Hub>(Nat64.equal, _hash32);
   //dibuat counternya mulai dari 10 karena nanti akan ada data seeding
   var counter : Nat64 = 10;
+
 
   //create hub
   public shared ({ caller }) func createHub(hubName : Text, userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
