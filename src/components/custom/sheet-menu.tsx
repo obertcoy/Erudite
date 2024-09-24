@@ -33,9 +33,9 @@ export function SheetMenu() {
               to="/dashboard"
               className="flex items-center gap-2 !no-underline"
             >
-            <Icons.erudite className="mr-1 size-10 h-8 w-8 fill-primary dark:fill-primary-foreground" />
-            <SheetTitle className="text-lg font-bold text-primary dark:text-white">
-                Sroomarizer
+              <Icons.erudite className="mr-1 size-10 h-8 w-8 fill-primary dark:fill-primary-foreground" />
+              <SheetTitle className="text-lg font-bold text-[#002b53] dark:text-white">
+                Erudite
               </SheetTitle>
               <SheetDescription>
                 <VisuallyHidden.Root>AI Resume Analyzer</VisuallyHidden.Root>
