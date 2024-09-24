@@ -20,11 +20,11 @@ export function registerUserUpdate() {
   return { registerUser, getUserLoading };
 }
 
-export function userProfileUpdate() {
+export function userUpdate() {
   const { useUpdateCall: userUpdate } = useServiceContext().userService;
 
-  const { call: updateUserProfile, loading: getUserLoading } = userUpdate({
-    functionName: 'updateUserProfile',
+  const { call: updateUser, loading: getUserLoading } = userUpdate({
+    functionName: 'updateUser',
   });
-  return { updateUserProfile, getUserLoading };
+  return { updateUser, getUserLoading };
 }

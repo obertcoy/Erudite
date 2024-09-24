@@ -15,14 +15,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Link, useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
-import { AuthClient } from '@dfinity/auth-client';
 import { registerUserUpdate } from '@/services/user-service';
 import useAuthContext from '@/hooks/use-auth-context';
-import { RawUserEntity, UserEntity } from '@/lib/model/entity/user/user.entity';
 import { useForm } from 'react-hook-form';
 import {
   genders,
@@ -102,17 +99,21 @@ export function SignupForm() {
           ]);
         }
 
-        console.log('Register: ' + result);
+        // console.log('Register: ' + result);
+
+        const toastId = toast.loading('Signing you in...');
 
         if (result && 'err' in result) {
-          toast(result.err);
+          toast.error(`Failed to sign in : ${result.err}`, { id: toastId });
         } else {
           await fetchUser();
+          toast.success('Signed in successfully!', { id: toastId });
+
           navigate(RouteEnum.HOME);
         }
       },
       onError: (error) => {
-        toast(error);
+        toast.error('Failed to sign in : ' + error);
       },
     });
   };
@@ -161,56 +162,7 @@ export function SignupForm() {
                 </FormItem>
               )}
             />
-            {/* <LabelInputContainer className="mb-4">
-            <Label>Gender</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full h-10 bg-white dark:bg-black border border-neutral-300 dark:border-neutral-700 rounded-md text-neutral-800 dark:text-neutral-200 flex justify-between items-center"
-                >
-                  {value
-                    ? genders.find((gender) => gender.value === value)?.label
-                    : 'Select gender...'}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandInput placeholder="Search gender..." />
-                  <CommandList>
-                    <CommandEmpty>No gender found.</CommandEmpty>
-                    <CommandGroup>
-                      {genders.map((gender) => (
-                        <CommandItem
-                          key={gender.value}
-                          value={gender.value}
-                          onSelect={(currentValue) => {
-                            setValue(
-                              currentValue === value ? '' : currentValue,
-                            );
-                            setOpen(false);
-                            
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              'mr-2 h-4 w-4',
-                              value === gender.value
-                                ? 'opacity-100'
-                                : 'opacity-0',
-                            )}
-                          />
-                          {gender.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </LabelInputContainer> */}
+
             <FormField
               control={form.control}
               name="gender"

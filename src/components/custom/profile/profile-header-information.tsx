@@ -93,14 +93,20 @@ const BannerImageSection = ({
   bannerImageUrl,
 }: BannerImageSectionProps) => {
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
+  
 
   return (
     <div className="h-[348px] overflow-hidden rounded-b-lg">
-      <img
-        src={bannerImageUrl || Banner}
-        alt="Cover"
-        className="w-full h-full object-cover"
-      />
+      {bannerImageUrl ? (
+        <img
+          src={bannerImageUrl}
+          alt="Cover"
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="bg-muted w-full h-full object-cover"></div>
+      )}
+
       {isEditing && (
         <>
           <Button
@@ -181,7 +187,9 @@ const ProfileDetailsSection = ({
       <p className="text-muted-foreground">
         {formatShortNumber(1500)} followers
       </p>
-      <div className="flex items-center mt-2 max-w-lg text-sm break-words">{data?.bio}</div>
+      <div className="flex items-center mt-2 max-w-lg text-sm break-words">
+        {data?.bio}
+      </div>
     </div>
     <div className="flex gap-x-2 mt-4 md:mt-0">
       {isCurrentUser ? (

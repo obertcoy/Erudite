@@ -18,12 +18,12 @@ export function useFetchUser(userId: string | undefined, strict: boolean = true)
       try {
         const result = await getUser([[userId], [strict]]);
         if (!result || 'err' in result) {
-          toast(result?.err);
+          toast.error('Error on fetching user: ' + result?.err);
         } else {
           setUserData(convertRawUserEntityToUserEntity(result.ok));
         }
       } catch (error) {
-        toast('Failed to fetch user data');
+        toast.error('Error on fetching user: ' + error);
       }
     };
 

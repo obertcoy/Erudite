@@ -8,5 +8,6 @@ export enum RouteEnum {
   CREATE_HUB = '/create-hub',
   HUB = '/hub/:hub-id',
   USER = '/user/:userId',
-  EDIT_PROFILE = '/user/:userId/edit',
+  EDIT_PROFILE = '/user/edit',
+  ACCOUNT = '/account',
 }

@@ -23,7 +23,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useEditProfileStore } from '@/hooks/use-edit-profile';
 import { useEffect } from 'react';
 import { useFetchUser } from '@/hooks/use-fetch-user';
-import { userProfileUpdate } from '@/services/user-service';
+import { userUpdate } from '@/services/user-service';
 import {
   compressImageURLToUint8Array,
   convertImageURLToUint8Array,
@@ -34,10 +34,8 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import useAuthContext from '@/hooks/use-auth-context';
 
 export default function EditProfilePage() {
-  const { userId } = useParams();
-  const { fetchUser } = useAuthContext();
-  const { userData } = useFetchUser(userId);
-  const { updateUserProfile } = userProfileUpdate();
+  const { user, fetchUser } = useAuthContext();
+  const { updateUser } = userUpdate();
 
   const navigate = useNavigate();
 
@@ -53,63 +51,67 @@ export default function EditProfilePage() {
 
   const form = useForm<EditUserProfileDto>({
     resolver: zodResolver(EditUserProfileSchema),
-    defaultValues: {
-      username: username || 'Kelvinices',
-      bio: bio || 'Hello! My name is Kelvin ...ackhsually 🤓',
-    },
   });
 
   const onSubmit = async (values: EditUserProfileDto) => {
-    if (userData) {
-      let profileImage =
-        (await compressImageURLToUint8Array(profileImageUrl ?? '')) ??
-        new Uint8Array();
-      let bannerImage =
-        (await compressImageURLToUint8Array(bannerImageUrl ?? '')) ??
-        new Uint8Array();
+    if (user) {
+      const toastId = toast.loading('Updating profile...');
 
-      const result = await updateUserProfile([
-        values.username ?? userData.username,
-        userData.email,
-        userData.gender,
-        values.bio ?? userData.bio,
-        profileImage,
-        bannerImage,
+      const profileImage: Uint8Array | null =
+        profileImageUrl && profileImageUrl !== ''
+          ? await compressImageURLToUint8Array(profileImageUrl)
+          : await convertImageURLToUint8Array(user.profileImageUrl);
+
+      const bannerImage: Uint8Array | null =
+        bannerImageUrl && bannerImageUrl !== ''
+          ? await compressImageURLToUint8Array(bannerImageUrl)
+          : await convertImageURLToUint8Array(user.bannerImageUrl);
+
+      const result = await updateUser([
+        values.username ?? user.username,
+        user.email,
+        user.gender,
+        values.bio ?? user.bio,
+        profileImage ?? new Uint8Array(),
+        bannerImage ?? new Uint8Array(),
       ]);
 
       if (result && 'err' in result) {
-        console.log(result.err);
+        toast.error('Error on updating profile : ' + result.err, {
+          id: toastId,
+        });
       } else {
         await fetchUser();
 
-        toast.success('Profile updated successfully');
+        toast.success('Profile updated successfully', { id: toastId });
 
         navigate(
-          generateDynamicRoutePath(RouteEnum.USER, { userId: userId ?? '' }),
+          generateDynamicRoutePath(RouteEnum.USER, {
+            userId: user.internetIdentity ?? '',
+          }),
         );
       }
     }
   };
 
   useEffect(() => {
-    if (userData) initialize(userData);
-  }, [userData]);
+    if (user) initialize(user);
+  }, [user]);
 
   return (
-    <div className="flex flex-col w-full h-full m-auto p-8">
-      <h3 className="text-lg font-medium my-4">What others see</h3>
+    <main className="flex flex-col w-full h-full m-auto p-8">
+      <h3 className="text-xl font-bold my-4">What others see</h3>
       <div className="flex flex-col xl:flex-row gap-8 ">
         <div className="w-full p-8 border rounded-md">
           <ProfileHeaderInformation
             data={{
-              internetIdentity: userData?.internetIdentity ?? '',
-              email: userData?.email ?? '',
-              gender: userData?.gender ?? '',
-              username: username ?? userData?.username ?? '',
-              bio: bio ?? userData?.bio ?? '',
-              profileImageUrl:
-                profileImageUrl ?? userData?.profileImageUrl ?? '',
-              bannerImageUrl: bannerImageUrl ?? userData?.bannerImageUrl ?? '',
+              internetIdentity: user?.internetIdentity ?? '',
+              email: user?.email ?? '',
+              gender: user?.gender ?? '',
+              username: username ?? user?.username ?? '',
+              bio: bio ?? user?.bio ?? '',
+              profileImageUrl: profileImageUrl ?? user?.profileImageUrl ?? '',
+              bannerImageUrl: bannerImageUrl ?? user?.bannerImageUrl ?? '',
             }}
             isCurrentUser={false}
             isEditing={true}
@@ -175,6 +177,6 @@ export default function EditProfilePage() {
           </form>
         </Form>
       </div>
-    </div>
+    </main>
   );
 }

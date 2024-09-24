@@ -4,6 +4,7 @@ import MainLayout from '@/layout/main-layout';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import createUserLoader from '@/loader/user-loader';
 import getUserLoader from '@/loader/user-loader';
+import AccountPage from '@/pages/(protected)/user/account-page';
 import CreatePostPage from '@/pages/(protected)/create-post-page';
 import PostPage from '@/pages/(protected)/post-page';
 import EditProfilePage from '@/pages/(protected)/user/edit-profile-page';
@@ -30,7 +31,7 @@ export const ROUTES: RouteObject[] = [
           {
             index: true,
             element: <HomePage />,
-          },
+        },
           {
             path: RouteEnum.USER,
             element: <ProfilePage />,
@@ -38,6 +39,10 @@ export const ROUTES: RouteObject[] = [
           {
             path: RouteEnum.EDIT_PROFILE,
             element: <EditProfilePage />,
+          },
+          {
+            path: RouteEnum.ACCOUNT,
+            element: <AccountPage />,
           },
           {
             path: RouteEnum.CREATE_POST,

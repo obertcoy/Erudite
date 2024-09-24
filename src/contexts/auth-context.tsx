@@ -8,6 +8,7 @@ import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
 import { convertRawUserEntityToUserEntity } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { Navigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AuthContextProps {
   user: UserEntity | null | undefined;
@@ -38,8 +39,17 @@ export function AuthProvider({ children }: AuthProps) {
   const { login, logout, getIdentity } = useAgentManager();
 
   const handleLogout = async () => {
-    await logout({ returnTo: RouteEnum.REGISTER });
-    setUser(null);
+    const toastId = toast.loading('Signing you out...');
+
+    try {
+      await logout({ returnTo: RouteEnum.REGISTER });
+
+      setUser(null);
+
+      toast.success('Signed out successfully!', { id: toastId });
+    } catch (error) {
+      toast.error('Failed to sign out', { id: toastId });
+    }
   };
 
   const fetchUser = async () => {
@@ -49,8 +59,8 @@ export function AuthProvider({ children }: AuthProps) {
       setUser(null);
       return;
     }
-    console.log("Result: " + result.ok.internetIdentity);
-    
+    console.log('Result: ' + result.ok.internetIdentity);
+
     setUser(convertRawUserEntityToUserEntity(result.ok));
   };
 

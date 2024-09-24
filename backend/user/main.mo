@@ -114,7 +114,7 @@ actor class UserMain() {
     };
   };
 
-  public shared ({ caller }) func updateUserProfile(username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : async Result.Result<(), Text> {
+  public shared ({ caller }) func updateUser(username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : async Result.Result<(), Text> {
 
     switch (userMap.get(caller)) {
       case (?res) {

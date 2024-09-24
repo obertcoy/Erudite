@@ -13,8 +13,6 @@ export default function ProfileHeader() {
   const { userId } = useParams<{ userId?: string }>();
   const { userData, getUserLoading } = useFetchUser(userId);
 
-  console.log('Profile header: ', userData);
-
   return (
     <div className="w-full lg:w-3/4 mx-auto">
       {getUserLoading ? (

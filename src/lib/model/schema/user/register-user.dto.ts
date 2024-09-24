@@ -7,7 +7,7 @@ export const genders = [
   { value: 'prefer-not-to-say', label: 'Prefer not to say' },
 ];
 
-const gendersEnum = genders.map((gender) => gender.value) as [
+export const gendersEnum = genders.map((gender) => gender.value) as [
   string,
   ...string[],
 ];
