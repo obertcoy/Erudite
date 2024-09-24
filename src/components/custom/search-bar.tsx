@@ -20,8 +20,7 @@ export default function SearchBar() {
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-4"
-          
+          className="w-full pl-9 pr-4w"
         />
       </div>
     </form>

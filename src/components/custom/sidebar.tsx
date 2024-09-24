@@ -39,7 +39,7 @@ export function Sidebar() {
             <Icons.erudite className="mr-1 size-10 h-8 w-8 fill-primary dark:fill-primary-foreground" />
             <h1
               className={cn(
-                'whitespace-nowrap text-lg font-bold text-primary transition-[transform,opacity,display] duration-300 ease-in-out dark:text-white',
+                'whitespace-nowrap text-lg font-bold text-[#002b53] transition-[transform,opacity,display] duration-300 ease-in-out dark:text-white',
                 sidebar?.isOpen === false
                   ? 'hidden -translate-x-96 opacity-0'
                   : 'translate-x-0 opacity-100',

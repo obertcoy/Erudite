@@ -1,12 +1,59 @@
-import { ContentLayout } from "@/components/custom/content-layout";
+import { ContentLayout } from '@/components/custom/content-layout';
+import FloatingFeedSidebar from '@/components/custom/floating-feed-sidebar/floating-feed-sidebar';
+import PostCard from '@/components/custom/post-card/post-card';
+import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
+import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
 
-export default function HomePage(){
+const renderFeedFilterTitle = (filter: FeedFilterState) => {
+  switch (filter) {
+    case FeedFilterState.Hot:
+      return (
+        <>
+          <Flame className="size-4" />
+          <h1 className="font-bold">Hot Posts</h1>
+        </>
+      );
+    case FeedFilterState.Trending:
+      return (
+        <>
+          <ChartNoAxesColumnIncreasing className="size-4" />
+          <h1 className="font-bold">Trending Posts</h1>
+        </>
+      );
+    case FeedFilterState.Fresh:
+      return (
+        <>
+          <Sun className="size-4" />
+          <h1 className="font-bold">Fresh Posts</h1>
+        </>
+      );
+    default:
+      return '';
+  }
+};
 
-    return (
-        <ContentLayout title="Home">
+export default function HomePage() {
+  const { filter } = useFeedFilter();
 
-            Test
-        
-        </ContentLayout>
-    )
+  return (
+    <ContentLayout title="Home">
+      <div className="w-full flex flex-col items-center py-4 gap-y-4">
+        <div className="w-full max-w-[69rem]">
+          <div className="p-3 flex items-center gap-x-2 bg-background border rounded-md shadow-sm dark:shadow-none">
+            {renderFeedFilterTitle(filter)}
+          </div>
+        </div>
+        <div className="container flex flex-col items-center gap-y-4">
+          <div className="flex justify-center gap-x-4">
+            <div className="flex flex-col items-center gap-y-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                <PostCard key={item} />
+              ))}
+            </div>
+            <FloatingFeedSidebar />
+          </div>
+        </div>
+      </div>
+    </ContentLayout>
+  );
 }
