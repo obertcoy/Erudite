@@ -4,6 +4,7 @@ import { Footer } from '@/components/custom/footer';
 import { Sidebar } from '@/components/custom/sidebar';
 import { useSidebarToggle } from '@/hooks/use-sidebar-toggle';
 import { Outlet } from 'react-router-dom';
+import { ContentLayout } from '@/components/custom/content-layout';
 
 export default function MainLayout() {
   const sidebar = useStore(useSidebarToggle, (state) => state);
@@ -19,7 +20,9 @@ export default function MainLayout() {
           sidebar?.isOpen === false ? 'lg:ml-[90px]' : 'lg:ml-72',
         )}
       >
-        <Outlet />
+        <ContentLayout title=''>
+          <Outlet />
+        </ContentLayout>
       </main>
       <footer
         className={cn(

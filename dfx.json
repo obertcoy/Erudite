@@ -1,14 +1,25 @@
 {
   "canisters": {
-    "backend": {
+    "internet-identity": {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+    },
+    "user": {
       "type": "motoko",
-      "main": "backend/Backend.mo",
+      "main": "backend/user/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
+    "userHubMembership": {
+      "type": "motoko",
+      "main": "backend/userHubMembership/main.mo",
       "declarations": {
         "node_compatibility": true
       }
     },
     "frontend": {
-      "dependencies": ["backend"],
+      "dependencies": ["user", "userHubMembership"],
       "type": "assets",
       "source": ["dist/"]
     }

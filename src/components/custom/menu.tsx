@@ -11,7 +11,9 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import useAuthContext from '@/hooks/use-auth-context';
+import { RouteEnum } from '@/lib/enum/route-enum';
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -20,6 +22,9 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = useLocation().pathname;
   const menuList = getMenuList(pathname);
+
+  const { user, logout } = useAuthContext();
+  const navigate = useNavigate();
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -59,7 +64,7 @@ export function Menu({ isOpen }: MenuProps) {
                               className="mb-1 h-10 w-full justify-start"
                               asChild
                             >
-                              <Link to={path ?? ""}>
+                              <Link to={path ?? ''}>
                                 <span
                                   className={cn(isOpen === false ? '' : 'mr-4')}
                                 >
@@ -100,7 +105,8 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
-          <li className="flex w-full grow items-end">
+          {user && (
+            <li className="flex w-full grow items-end">
               <TooltipProvider disableHoverableContent>
                 <Tooltip delayDuration={100}>
                   <TooltipTrigger asChild>
@@ -110,22 +116,28 @@ export function Menu({ isOpen }: MenuProps) {
                       className="mt-5 h-10 w-full"
                     >
                       {/* <SignOutButton>
-                        <div className="flex items-center justify-center">
-                          <span className={cn(isOpen === false ? '' : 'mr-4')}>
-                            <LogOut size={18} />
-                          </span>
-                          <p
-                            className={cn(
-                              'whitespace-nowrap',
-                              isOpen === false
-                                ? 'hidden opacity-0'
-                                : 'opacity-100',
-                            )}
-                          >
-                            Sign out
-                          </p>
-                        </div>
                       </SignOutButton> */}
+                      <div
+                        className="flex items-center justify-center"
+                        onClick={async () => {
+                          await logout();
+                          navigate(RouteEnum.LOGIN);
+                        }}
+                      >
+                        <span className={cn(isOpen === false ? '' : 'mr-4')}>
+                          <LogOut size={18} />
+                        </span>
+                        <p
+                          className={cn(
+                            'whitespace-nowrap',
+                            isOpen === false
+                              ? 'hidden opacity-0'
+                              : 'opacity-100',
+                          )}
+                        >
+                          Sign out
+                        </p>
+                      </div>
                     </Button>
                   </TooltipTrigger>
                   {isOpen === false && (
@@ -133,7 +145,8 @@ export function Menu({ isOpen }: MenuProps) {
                   )}
                 </Tooltip>
               </TooltipProvider>
-          </li>
+            </li>
+          )}
         </ul>
       </nav>
     </ScrollArea>

@@ -1,5 +1,13 @@
 import NotFound from '@/pages/(public)/not-found';
-import React, { ReactNode } from 'react';
+import React, { ReactNode , ErrorInfo } from 'react';
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
 
 interface ErrorBoundaryProps {
   children: ReactNode; 

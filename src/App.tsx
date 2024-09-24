@@ -1,34 +1,22 @@
 import './App.css';
-import { useQueryCall, useUpdateCall } from '@ic-reactor/react';
-import { BrowserRouter, Route, RouterProvider, Routes } from 'react-router-dom';
-import { router } from './lib/constants/router/router';
-import RegisterPage from './pages/(public)/register_page';
+import { BrowserRouter, Route, RouterProvider, Routes, useNavigate } from 'react-router-dom';
+import { router } from './lib/router/router';
 import { ThemeProvider } from './components/theme-provider';
-import ErrorBoundary from './lib/error-boundary';
+import { Toaster } from './components/ui/sonner';
+import { AuthProvider } from './contexts/auth-context';
+import { ServiceContextProvider } from './contexts/service-context';
 
 function App() {
-  // const { data: count, call: refetchCount } = useQueryCall({
-  //   functionName: 'get',
-  // });
-
-  // const { call: increment, loading } = useUpdateCall({
-  //   functionName: 'inc',
-  //   onSuccess: () => {
-  //     refetchCount();
-  //   },
-  // });
 
   return (
-    <>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-          <RouterProvider router={router} />
-          {/* <BrowserRouter>
-        <Routes>
-        <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-        </BrowserRouter> */}
-      </ThemeProvider>
-    </>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ServiceContextProvider>
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+      </ServiceContextProvider>
+      <Toaster />
+    </ThemeProvider>
   );
 }
 
