@@ -193,9 +193,7 @@ const ProfileDetailsSection = ({
       {isCurrentUser ? (
         <Button variant="secondary" asChild>
           <Link
-            to={generateDynamicRoutePath(RouteEnum.EDIT_PROFILE, {
-              userId: data.internetIdentity,
-            })}
+            to={RouteEnum.EDIT_PROFILE}
           >
             <NotebookPen className="mr-2 h-4 w-4" /> Edit Information
           </Link>

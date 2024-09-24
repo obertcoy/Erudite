@@ -79,7 +79,7 @@ export function UserNav({ data }: UserNavProps) {
                 alt="User banner"
                 className="object-cover w-full h-full"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.style.display = 'none';
                 }}
               />
 
@@ -101,7 +101,12 @@ export function UserNav({ data }: UserNavProps) {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link to={RouteEnum.EDIT_PROFILE} className="flex items-center">
+              <Link
+                to={generateDynamicRoutePath(RouteEnum.USER, {
+                  userId: data.internetIdentity,
+                })}
+                className="flex items-center"
+              >
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
                 Profile
               </Link>
