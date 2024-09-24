@@ -17,7 +17,7 @@ export const generateDynamicRoutePath = (
     path = path.replace(`:${key}`, params[key]);
   }
 
-  console.log(path);
+  // console.log(path);
 
   return path;
 };
@@ -55,7 +55,7 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
   let url = '';
 
   if (uint8Array instanceof Uint8Array) {
-    const blob = new Blob([uint8Array]);
+    const blob = new Blob([uint8Array], {type: 'image/jpeg'});
 
     url = URL.createObjectURL(blob);
   }
@@ -65,7 +65,6 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
 export function convertRawUserEntityToUserEntity(
   raw: RawUserEntity,
 ): UserEntity {
-  console.log('Raw:' + raw.bio);
 
   return {
     internetIdentity: raw.internetIdentity.toString(),
@@ -77,13 +76,20 @@ export function convertRawUserEntityToUserEntity(
     bannerImageUrl: convertUint8ArrayToImageURL(raw.bannerImage),
   };
 }
-export async function compressImageURLToUint8Array(imageUrl: string) {
-  const blob = await convertImageURLToBlob(imageUrl);
-
+export async function compressImageURLToUint8Array(
+  imageUrl: string,
+): Promise<Uint8Array | null> {
   try {
+    const blob = await convertImageURLToBlob(imageUrl);
+    
+    if (!blob || blob.type.indexOf('image/') === -1) {
+      console.error('Provided URL is not an image: ', imageUrl);
+      return null;
+    }
+
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(blob, {
-        quality: 100,
+        quality: 1,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',
@@ -99,7 +105,7 @@ export async function compressImageURLToUint8Array(imageUrl: string) {
     const arrayBuffer = await compressedBlob.arrayBuffer();
     return new Uint8Array(arrayBuffer);
   } catch (error) {
-    console.log(error);
+    console.error('Error in compressing image: ', error);
     return null;
   }
 }

@@ -35,13 +35,13 @@ import useAuthContext from '@/hooks/use-auth-context';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
 import ProfileAvatar from '../ui/profile-avatar';
 
-interface UserNavProps{
-  data: UserEntity
+interface UserNavProps {
+  data: UserEntity;
 }
 
-export function UserNav({data}: UserNavProps) {
+export function UserNav({ data }: UserNavProps) {
   const { logout } = useAuthContext();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -52,7 +52,10 @@ export function UserNav({data}: UserNavProps) {
                 variant="outline"
                 className="relative h-8 w-8 rounded-full"
               >
-                <ProfileAvatar username={data.username} profileImageUrl={data.profileImageUrl}/>
+                <ProfileAvatar
+                  username={data.username}
+                  profileImageUrl={data.profileImageUrl}
+                />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
@@ -68,15 +71,21 @@ export function UserNav({data}: UserNavProps) {
         >
           <div className="flex flex-col space-y-4 p-2">
             <div className="relative h-24 w-full overflow-hidden rounded-t-lg">
+              {data.bannerImageUrl ? (
               <img
-                src={data.bannerImageUrl}
-                alt="User banner"
-                className="object-cover w-full h-full"
-              />
-              {/* <div className="bg-muted w-full h-full object-cover"></div> */}
+                  src={data.bannerImageUrl}
+                  alt="User banner"
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="bg-muted w-full h-full object-cover"></div>
+              )}
 
               <div className="absolute bottom-4 left-4 border rounded-full border-white">
-                <ProfileAvatar username={data.username} profileImageUrl={data.profileImageUrl} />
+                <ProfileAvatar
+                  username={data.username}
+                  profileImageUrl={data.profileImageUrl}
+                />
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -91,7 +100,7 @@ export function UserNav({data}: UserNavProps) {
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
               <Link
-                to={generateDynamicRoutePath(RouteEnum.USER, { userId: data.internetIdentity })}
+                to={RouteEnum.EDIT_PROFILE}
                 className="flex items-center"
               >
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
@@ -99,7 +108,10 @@ export function UserNav({data}: UserNavProps) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link to="/setting" className="flex items-center">
+              <Link
+                to={RouteEnum.ACCOUNT}
+                className="flex items-center"
+              >
                 <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
                 Settings
               </Link>
@@ -116,7 +128,7 @@ export function UserNav({data}: UserNavProps) {
             className="hover:cursor-pointer"
             onClick={async () => {
               await logout();
-              navigate(RouteEnum.LOGIN)
+              navigate(RouteEnum.LOGIN);
             }}
           >
             <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />

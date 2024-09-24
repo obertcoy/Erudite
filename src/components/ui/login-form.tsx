@@ -69,7 +69,7 @@ export function LoginForm() {
         }
       },
       onError: (error) => {
-        toast(error);
+        toast.error('Failed signing you in: ' + error);
       },
     });
   };

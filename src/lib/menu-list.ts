@@ -41,7 +41,7 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes(RouteEnum.HOME),
           icon: House,
           submenus: [],
-        }
+        },
       ],
     },
     {
@@ -82,14 +82,14 @@ export function getMenuList(pathname: string): Group[] {
         },
       ],
     },
-    
+
     {
       groupLabel: 'Settings',
       menus: [
         {
-          path: '/user-profile',
+          path: RouteEnum.ACCOUNT,
           label: 'Account',
-          active: pathname.includes('/user-profile'),
+          active: pathname.includes(RouteEnum.ACCOUNT),
           icon: Settings,
           submenus: [],
         },
