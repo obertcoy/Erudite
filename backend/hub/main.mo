@@ -13,6 +13,7 @@ actor class HubMain() {
   type Hub = Types.Hub;
   type UserHubMembership = UserHubMembershipType.UserHubMembership;
   type Role = Types.Role;
+  type Rule = Types.Rule;
   type Permission = Types.Permission;
 
   private func _hash32(n : Nat64) : Nat32 {
@@ -24,7 +25,7 @@ actor class HubMain() {
   var counter : Nat64 = 10;
 
   //create hub
-  public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubProfileImage : Blob, userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
+  public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubBannerImage : Blob, hubRules : [Rule], userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
     for (hub in hubMap.vals()) {
       if (hub.hubName == hubName) {
         return #err("Hub name already exist");
@@ -49,8 +50,9 @@ actor class HubMain() {
       hubID = counter;
       hubName = hubName;
       hubDescription = hubDescription;
-      hubProfileImage = hubProfileImage;
+      hubBannerImage = hubBannerImage;
       hubRoles = [ownerRole];
+      hubRules = hubRules;
     };
     hubMap.put(counter, hub);
 
@@ -69,7 +71,7 @@ actor class HubMain() {
   };
 
   //edit hub
-  public shared ({ caller }) func updateHubProfile(hubID : Nat64, hubDescription : Text, hubProfileImage : Blob, hubCanisterID : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
+  public shared ({ caller }) func updateHubInformation(hubID : Nat64, hubDescription : Text, hubBannerImage : Blob, hubCanisterID : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
     switch (hubMap.get(hubID)) {
       case (?hub) {
         let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
@@ -78,7 +80,7 @@ actor class HubMain() {
         switch (callerRoleResult) {
           case (#ok(role)) {
             if (role.permissions.canEditHub) {
-              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hubDescription, hubProfileImage, hub.hubRoles);
+              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hubDescription, hubBannerImage, hub.hubRules, hub.hubRoles);
 
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
@@ -109,7 +111,7 @@ actor class HubMain() {
           case (#ok(role)) {
 
             if (role.permissions.canCreateEditRoles) {
-              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hub.hubDescription, hub.hubProfileImage, hubRoles);
+              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hub.hubDescription, hub.hubBannerImage, hub.hubRules, hubRoles);
 
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
@@ -129,12 +131,13 @@ actor class HubMain() {
     };
   };
 
-  private func _createHubObject(hubID : Nat64, hubName : Text, hubDescription : Text, hubProfileImage : Blob, hubRoles : [Role]) : Hub {
+  private func _createHubObject(hubID : Nat64, hubName : Text, hubDescription : Text, hubBannerImage : Blob, hubRules : [Rule], hubRoles : [Role]) : Hub {
     return {
       hubID = hubID;
       hubName = hubName;
       hubDescription = hubDescription;
-      hubProfileImage = hubProfileImage;
+      hubBannerImage = hubBannerImage;
+      hubRules = hubRules;
       hubRoles = hubRoles;
     };
   };

@@ -9,7 +9,7 @@ module {
     public type Comment = {
       commentID: Nat64;
       commentBody: Text;
-      commentImage: ?Blob;
+      commentImage: Blob;
       internetIdentity : Principal;
    };
 

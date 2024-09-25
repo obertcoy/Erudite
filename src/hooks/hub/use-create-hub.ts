@@ -1,11 +1,11 @@
-import { HubEntity } from '@/lib/model/entity/hub/hub.entity';
+import { HubEntity, convertRawHubEntityToHubEntity } from '@/lib/model/entity/hub/hub.entity';
 import { HubDto } from '@/lib/model/schema/hub/hub.dto';
 import { convertFileToUint8Array } from '@/lib/utils';
 import { createHubUpdate } from '@/services/hub-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export function useCreateHub(hub: HubDto): Promise<HubEntity | null> {
+export function useCreateHub(hub: HubDto) {
   const [hubData, setHubData] = useState<HubEntity | null>();
   const { createHub, userHubMembershipCanisterId } = createHubUpdate();
 
@@ -18,8 +18,14 @@ export function useCreateHub(hub: HubDto): Promise<HubEntity | null> {
           hub.hubName,
           hub.hubDescription,
           profileImage,
-          userHubMembershipCanisterId
+          userHubMembershipCanisterId,
         ]);
+
+        if (!result || 'err' in result) {
+          toast.error('Error on fetching user: ' + result?.err);
+        } else {
+          setHubData(convertRawHubEntityToHubEntity(result.ok));
+        }
       } catch (err) {
         toast.error('Error: Failed to create hub');
       }
