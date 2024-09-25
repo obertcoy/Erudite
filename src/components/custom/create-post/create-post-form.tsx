@@ -69,7 +69,6 @@ export default function CreatePostForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="title"
