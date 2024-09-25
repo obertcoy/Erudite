@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { RouteEnum } from './enum/route-enum';
 import { RawUserEntity, UserEntity } from './model/entity/user/user.entity';
 import Compressor from 'compressorjs';
+import { MAX_IMAGE_SIZE } from './constant/constant';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,6 +45,13 @@ export async function convertImageURLToUint8Array(
   return uint8Array;
 }
 
+export async function convertFileToUint8Array(file: File | undefined) {
+  if (!file) return new Uint8Array();
+
+  const arrayBuffer = await file.arrayBuffer();
+  return new Uint8Array(arrayBuffer);
+}
+
 export async function convertImageURLToBlob(imageUrl: string): Promise<Blob> {
   const response = await fetch(imageUrl);
   const blob = await response.blob();
@@ -62,11 +70,22 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
   return url;
 }
 
+export async function validateFile(file: File) {
+  if (!file || !file.type.startsWith('image/') || file.size > MAX_IMAGE_SIZE) {
+    return false;
+  }
+  return true;
+}
+
 export async function validateImageURL(imageUrl: string) {
   try {
     const blob = await convertImageURLToBlob(imageUrl);
 
-    if (!blob || !blob.type.startsWith('image/')) {
+    if (
+      !blob ||
+      !blob.type.startsWith('image/') ||
+      blob.size > MAX_IMAGE_SIZE
+    ) {
       return false;
     }
 

@@ -24,7 +24,7 @@ actor class HubMain() {
   var counter : Nat64 = 10;
 
   //create hub
-  public shared ({ caller }) func createHub(hubName : Text, userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
+  public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubProfileImage : Blob, userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
     for (hub in hubMap.vals()) {
       if (hub.hubName == hubName) {
         return #err("Hub name already exist");
@@ -44,13 +44,12 @@ actor class HubMain() {
       permissions = ownerPermissions;
 
     };
-    let emptyBlob : Blob = Blob.fromArray([]);
 
     let hub : Hub = {
       hubID = counter;
       hubName = hubName;
-      hubDescription = "";
-      hubProfileImage = emptyBlob;
+      hubDescription = hubDescription;
+      hubProfileImage = hubProfileImage;
       hubRoles = [ownerRole];
     };
     hubMap.put(counter, hub);
