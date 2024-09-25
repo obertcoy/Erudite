@@ -8,6 +8,7 @@ import NavbarIcon from './navbar-icon';
 import SearchResult from './search-result';
 import useAuthContext from '@/hooks/use-auth-context';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 interface NavbarProps {
   title: string;
 }
@@ -37,7 +38,9 @@ export function Navbar({ title }: NavbarProps) {
             <UserNav data={user} />
           ) : (
             <div className="font-medium">
-              <Link to={RouteEnum.LOGIN}>Join now</Link>
+              <Link to={RouteEnum.LOGIN}>
+                <Button>Signin</Button>
+              </Link>
             </div>
           )}
         </div>

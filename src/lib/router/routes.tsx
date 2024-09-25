@@ -15,6 +15,7 @@ import NotFound from '@/pages/(public)/not-found';
 import RegisterPage from '@/pages/(public)/register-page';
 import { getUserQuery } from '@/services/user-service';
 import { LoaderFunctionArgs, RouteObject } from 'react-router-dom';
+import HubPage from '@/pages/(protected)/hub-page';
 
 export const ROUTES: RouteObject[] = [
   {
@@ -31,7 +32,7 @@ export const ROUTES: RouteObject[] = [
           {
             index: true,
             element: <HomePage />,
-        },
+          },
           {
             path: RouteEnum.USER,
             element: <ProfilePage />,
@@ -51,6 +52,10 @@ export const ROUTES: RouteObject[] = [
           {
             path: '/posts/i-just-made-my-grandma-rich',
             element: <PostPage />,
+          },
+          {
+            path: '/hubs/adeptus-mechanicus',
+            element: <HubPage />,
           },
         ],
       },
