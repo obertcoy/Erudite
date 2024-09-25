@@ -23,10 +23,12 @@ import { useCreateHub } from '@/hooks/hub/use-create-hub';
 import { useNavigate } from 'react-router';
 import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
+import { useHubContext } from '@/contexts/hub-context';
 
 export default function CreateHubForm() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { execute } = useCreateHub();
+  const { fetchJoinedHubs } = useHubContext();
 
   const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ export default function CreateHubForm() {
   const onSubmit = async (hubDto: HubDto) => {
     const result = await execute(hubDto);
     if (result) {
+      fetchJoinedHubs();
       navigate(
         generateDynamicRoutePath(RouteEnum.HUB, { hubId: result.hubID }),
       );

@@ -31,7 +31,7 @@ export function Navbar({ title }: NavbarProps) {
               path={RouteEnum.CREATE_POST}
               tooltip={`Create post`}
             />
-          )}
+        )}
 
           <ModeToggle />
           {user ? (

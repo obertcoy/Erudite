@@ -5,28 +5,32 @@ import {
 import { getJoinedHubsQuery } from '@/services/membership-service';
 import { useEffect, useState } from 'react';
 
-export default function useGetJoinedHubs(userId: string | undefined) {
+export default function useGetJoinedHubs(userId?: string) {
   const [joinedHubs, setJoinedHubs] = useState<HubEntity[]>([]);
   const { getJoinedHubs, getJoinedHubsLoading, hubCanisterId } =
     getJoinedHubsQuery();
 
+  const fetchJoinedHubs = async () => {
+    let passedUserId: [string] | [] = [];
+    if (userId) {
+      passedUserId = [userId];
+    }
+    try {
+      const result = await getJoinedHubs([passedUserId, hubCanisterId]);
+
+      console.log('Result joined hubs: ' + result);
+
+      if (!result || 'err' in result) {
+        console.log(result?.err);
+      } else {
+        setJoinedHubs(convertAllRawHubEntityToHubEntity(result.ok));
+      }
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const fetchJoinedHubs = async () => {
-
-      try {
-          const result = await getJoinedHubs([[], hubCanisterId]);
-                    
-          if (!result || 'err' in result) {
-            console.log(result?.err);
-            
-        } else {
-          setJoinedHubs(convertAllRawHubEntityToHubEntity(result.ok));
-        }
-      } catch (error) {}
-    };
-
     fetchJoinedHubs();
   }, [userId]);
 
-  return { joinedHubs, getJoinedHubsLoading };
+  return { joinedHubs, getJoinedHubsLoading, fetchJoinedHubs };
 }

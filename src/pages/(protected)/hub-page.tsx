@@ -9,6 +9,7 @@ import { useGetHubById } from '@/hooks/hub/use-get-hub';
 import { useParams } from 'react-router';
 import React from 'react';
 import useCreateMembership from '@/hooks/membership/use-create-membership';
+import { useHubContext } from '@/contexts/hub-context';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -42,6 +43,7 @@ export default function HubPage() {
   const { hubId } = useParams();
   const { hubData } = useGetHubById(hubId);
   const { execute } = useCreateMembership();
+  const { joinedHubs } = useHubContext();
 
   const { filter } = useFeedFilter();
 
@@ -69,7 +71,11 @@ export default function HubPage() {
             <h1 className="text-2xl font-medium">{hubData.hubName}</h1>
             <Badge variant="outline">21K Members</Badge>
           </div>
-          <Button className="w-fit" onClick={handleJoin}>Join</Button>
+          {!joinedHubs.find((h) => h.hubID === hubId) && (
+            <Button className="w-fit" onClick={handleJoin}>
+              Join
+            </Button>
+          )}
         </div>
       </div>
       <div className="w-full max-w-[69rem]">

@@ -50,6 +50,12 @@ export const ROUTES: RouteObject[] = [
           {
             path: RouteEnum.CREATE_POST,
             element: <CreatePostPage />,
+            children: [
+              {
+                path: RouteEnum.CREATE_POST + '/:hubId',
+                element: <CreatePostPage />,
+              },
+            ],
           },
           {
             path: '/posts/i-just-made-my-grandma-rich',
@@ -69,8 +75,8 @@ export const ROUTES: RouteObject[] = [
           },
           {
             path: RouteEnum.EXPLORE_HUBS,
-            element: <ExploreHubsPage/>
-          }
+            element: <ExploreHubsPage />,
+          },
         ],
       },
       {
