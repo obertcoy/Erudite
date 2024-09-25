@@ -4,14 +4,13 @@ import { useParams } from 'react-router-dom';
 import { getUserQuery } from '@/services/user-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { convertRawUserEntityToUserEntity } from '@/lib/utils';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useFetchUser } from '@/hooks/use-fetch-user';
+import { useGetUser } from '@/hooks/user/use-get-user';
 
 export default function ProfileHeader() {
   const { userId } = useParams<{ userId?: string }>();
-  const { userData, getUserLoading } = useFetchUser(userId);
+  const { userData, getUserLoading } = useGetUser(userId);
 
   return (
     <div className="w-full lg:w-3/4 mx-auto">

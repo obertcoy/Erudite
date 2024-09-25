@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { getUserQuery } from '@/services/user-service';
-import { convertRawUserEntityToUserEntity } from '@/lib/utils';
+import { convertRawUserEntityToUserEntity } from '@/lib/model/entity/user/user.entity';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
 
-export function useFetchUser(userId: string | undefined, strict: boolean = true) {
+export function useGetUser(userId: string | undefined, strict: boolean = true) {
   const [userData, setUserData] = useState<UserEntity | null>(null);
   const { getUser, getUserLoading } = getUserQuery();
 
@@ -28,7 +28,7 @@ export function useFetchUser(userId: string | undefined, strict: boolean = true)
     };
 
     fetchUser();
-  }, [userId ]);
+  }, [userId]);
 
   return { userData, getUserLoading };
 }

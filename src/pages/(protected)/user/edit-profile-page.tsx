@@ -20,9 +20,9 @@ import ProfileHeaderInformation, {
   dummyUser,
 } from '@/components/custom/profile/profile-header-information';
 import { Textarea } from '@/components/ui/textarea';
-import { useEditProfileStore } from '@/hooks/use-edit-profile';
+import { useEditProfileStore } from '@/hooks/user/use-edit-profile';
 import { useEffect } from 'react';
-import { useFetchUser } from '@/hooks/use-fetch-user';
+import { useGetUser } from '@/hooks/user/use-get-user';
 import { userUpdate } from '@/services/user-service';
 import {
   compressImageURLToUint8Array,

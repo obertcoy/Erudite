@@ -5,7 +5,7 @@ import { createContext, useEffect, useState } from 'react';
 import { Identity } from '@dfinity/agent';
 import useServiceContext from '@/hooks/use-service-context';
 import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
-import { convertRawUserEntityToUserEntity } from '@/lib/utils';
+import { convertRawUserEntityToUserEntity } from '@/lib/model/entity/user/user.entity'; 
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { Navigate } from 'react-router-dom';
 import { toast } from 'sonner';

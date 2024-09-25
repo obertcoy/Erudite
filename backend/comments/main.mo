@@ -4,24 +4,24 @@ import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
 
-import ThreadCommentsModule "../threadComments/interface";
-import ThreadCommentsType "../threadComments/types";
+import PostCommentsModule "../postComments/interface";
+import PostCommentsType "../postComments/types";
 
 actor class CommentMain(){
     type Comment = Types.Comment;
-    type ThreadComments = ThreadCommentsType.ThreadComments;
+    type PostComments = PostCommentsType.PostComments;
 
     let commentData= TrieMap.TrieMap<Nat64, Comment>(Nat64.equal, Nat64.toNat32);
     var counter: Nat64 = 10;
 
     //create comment
-    public shared({caller}) func createComment(commentBody: Text, commentImage: ?Blob, threadID: Nat64, threadCommentsCanisterId : Text): async Result.Result<Comment, Text>{
+    public shared({caller}) func createComment(commentBody: Text, commentImage: ?Blob, postID: Nat64, postCommentsCanisterId : Text): async Result.Result<Comment, Text>{
         let comment: Comment = createCommentObject(counter, commentBody, commentImage, caller);
         commentData.put(counter, comment);
 
         //sklian create relationship
-        let threadCommentsActor = actor (threadCommentsCanisterId) : ThreadCommentsModule.ThreadCommentsActor;
-        let result: Result.Result<ThreadComments, Text> = await threadCommentsActor.createThreadComments(threadID, counter);
+        let postCommentsActor = actor (postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
+        let result: Result.Result<PostComments, Text> = await postCommentsActor.createPostComments(postID, counter);
 
         switch (result) {
             case (#ok(_)){

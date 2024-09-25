@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { RouteEnum } from './enum/route-enum';
 import { RawUserEntity, UserEntity } from './model/entity/user/user.entity';
 import Compressor from 'compressorjs';
+import { MAX_IMAGE_SIZE } from './constant/constant';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -44,6 +45,13 @@ export async function convertImageURLToUint8Array(
   return uint8Array;
 }
 
+export async function convertFileToUint8Array(file: File | undefined) {
+  if (!file) return new Uint8Array();
+
+  const arrayBuffer = await file.arrayBuffer();
+  return new Uint8Array(arrayBuffer);
+}
+
 export async function convertImageURLToBlob(imageUrl: string): Promise<Blob> {
   const response = await fetch(imageUrl);
   const blob = await response.blob();
@@ -55,33 +63,44 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
   let url = '';
 
   if (uint8Array instanceof Uint8Array) {
-    const blob = new Blob([uint8Array], {type: 'image/jpeg'});
+    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
 
     url = URL.createObjectURL(blob);
   }
   return url;
 }
 
-export function convertRawUserEntityToUserEntity(
-  raw: RawUserEntity,
-): UserEntity {
-
-  return {
-    internetIdentity: raw.internetIdentity.toString(),
-    username: raw.username,
-    email: raw.email,
-    gender: raw.gender,
-    bio: raw.bio,
-    profileImageUrl: convertUint8ArrayToImageURL(raw.profileImage),
-    bannerImageUrl: convertUint8ArrayToImageURL(raw.bannerImage),
-  };
+export async function validateFile(file: File) {
+  if (!file || !file.type.startsWith('image/') || file.size > MAX_IMAGE_SIZE) {
+    return false;
+  }
+  return true;
 }
+
+export async function validateImageURL(imageUrl: string) {
+  try {
+    const blob = await convertImageURLToBlob(imageUrl);
+
+    if (
+      !blob ||
+      !blob.type.startsWith('image/') ||
+      blob.size > MAX_IMAGE_SIZE
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 export async function compressImageURLToUint8Array(
   imageUrl: string,
 ): Promise<Uint8Array | null> {
   try {
     const blob = await convertImageURLToBlob(imageUrl);
-    
+
     if (!blob || blob.type.indexOf('image/') === -1) {
       console.error('Provided URL is not an image: ', imageUrl);
       return null;
@@ -89,7 +108,7 @@ export async function compressImageURLToUint8Array(
 
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(blob, {
-        quality: 1,
+        quality: 0.9,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',

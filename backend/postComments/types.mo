@@ -5,16 +5,16 @@ import Nat64 "mo:base/Nat64";
 module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
-    public type ThreadComments = {
-      threadID : Nat64;
+    public type PostComments = {
+      postID : Nat64;
       commentID : Nat64;
    };
 
-    public type ThreadCommentsProfile = {
-      threadID : Nat64;
-      threadBody: Text;
-      threadImage: ?Blob;
-      threadInternetIdentity : Principal;
+    public type PostCommentsProfile = {
+      postID : Nat64;
+      postBody: Text;
+      postImage: ?Blob;
+      postInternetIdentity : Principal;
       numUpVotes: Nat64;
       numDownVotes: Nat64;
       numComments: Nat64;

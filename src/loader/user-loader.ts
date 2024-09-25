@@ -1,6 +1,6 @@
 import { ServiceContext } from '@/contexts/service-context';
 import useServiceContext from '@/hooks/use-service-context';
-import { convertRawUserEntityToUserEntity } from '@/lib/utils';
+import { convertRawUserEntityToUserEntity } from '@/lib/model/entity/user/user.entity';
 import { getUserQuery } from '@/services/user-service';
 import { useContext } from 'react';
 import { LoaderFunctionArgs } from 'react-router-dom';
@@ -19,7 +19,6 @@ export default async function getUserLoader(
   const result = await getUser([[userId], [strictOpt]]);
 
   if (!result || 'err' in result) {
-    
     return null;
   }
 

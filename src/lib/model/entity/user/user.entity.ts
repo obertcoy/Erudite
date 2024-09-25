@@ -60,3 +60,17 @@ export default class User {
     });
   }
 }
+
+export function convertRawUserEntityToUserEntity(
+  raw: RawUserEntity,
+): UserEntity {
+  return {
+    internetIdentity: raw.internetIdentity.toString(),
+    username: raw.username,
+    email: raw.email,
+    gender: raw.gender,
+    bio: raw.bio,
+    profileImageUrl: convertUint8ArrayToImageURL(raw.profileImage),
+    bannerImageUrl: convertUint8ArrayToImageURL(raw.bannerImage),
+  };
+}

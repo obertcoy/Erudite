@@ -4,15 +4,15 @@ import Nat64 "mo:base/Nat64";
 module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
-    public type HubThreads = {
-      threadID : Nat64;
+    public type HubPosts = {
+      postID : Nat64;
       hubID : Nat64;
     };
 
-    public type HubThreadProfile = {
-      threadID : Nat64;
-      threadBody: Text;
-      threadImage: ?Blob;
+    public type HubPostProfile = {
+      postID : Nat64;
+      postBody: Text;
+      postImage: ?Blob;
       internetIdentity : Principal;
       numUpVotes: Nat64;
       numDownVotes: Nat64;

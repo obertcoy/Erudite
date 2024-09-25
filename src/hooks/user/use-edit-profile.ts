@@ -1,4 +1,4 @@
-import { SearchResultsEntity } from '@/lib/model/entity/search-results-entity';
+import { SearchResultsEntity } from '@/lib/model/entity/search-results.entity';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
@@ -50,8 +50,6 @@ export const useEditProfileStore = create(
         const imageUrl = URL.createObjectURL(img);
         set({ bannerImageUrl: imageUrl });
       },
-
-    
     }),
     {
       name: 'edit-profile',

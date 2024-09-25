@@ -5,11 +5,11 @@ import Nat "mo:base/Nat";
 module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
-    //thread datatype
-    public type Thread = {
-      threadID: Nat64;
-      threadBody: Text;
-      threadImage: ?Blob;
+    //post datatype
+    public type Post = {
+      postID: Nat64;
+      postBody: Text;
+      postImage: ?Blob;
       internetIdentity : Principal;
       numUpVotes: Nat64;
       numDownVotes: Nat64;

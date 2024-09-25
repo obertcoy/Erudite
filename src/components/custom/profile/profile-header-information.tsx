@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { formatShortNumber, generateDynamicRoutePath } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
-import { useEditProfileStore } from '@/hooks/use-edit-profile';
+import { useEditProfileStore } from '@/hooks/user/use-edit-profile';
 import React, { useRef } from 'react';
 import User, { UserEntity } from '@/lib/model/entity/user/user.entity';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -93,25 +93,20 @@ const BannerImageSection = ({
   bannerImageUrl,
 }: BannerImageSectionProps) => {
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
-  
 
   return (
     <div className="h-[348px] overflow-hidden rounded-b-lg">
-      {bannerImageUrl ? (
-        <img
-          src={bannerImageUrl}
-          alt="Cover"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="bg-muted w-full h-full object-cover"></div>
-      )}
+      <img
+        src={bannerImageUrl}
+        alt="Banner"
+        className="object-cover w-full h-full"
+      />
 
       {isEditing && (
         <>
           <Button
             size="icon"
-            variant="secondary"
+            variant="outline"
             onClick={() => bannerImageInputRef.current?.click()}
             className="absolute top-4 right-4"
           >
@@ -151,7 +146,7 @@ const ProfileImageSection = ({
         <>
           <Button
             size="icon"
-            variant="secondary"
+            variant="outline"
             onClick={() => profileImageInputRef.current?.click()}
             className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
@@ -194,11 +189,7 @@ const ProfileDetailsSection = ({
     <div className="flex gap-x-2 mt-4 md:mt-0">
       {isCurrentUser ? (
         <Button variant="secondary" asChild>
-          <Link
-            to={generateDynamicRoutePath(RouteEnum.EDIT_PROFILE, {
-              userId: data.internetIdentity,
-            })}
-          >
+          <Link to={RouteEnum.EDIT_PROFILE}>
             <NotebookPen className="mr-2 h-4 w-4" /> Edit Information
           </Link>
         </Button>
