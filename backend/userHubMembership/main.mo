@@ -22,7 +22,12 @@ actor class UserHubMembershipMain() {
   let membershipMap = HashMap.HashMap<Text, UserHubMembership>(0, Text.equal, Text.hash);
 
   //create membership
-  public shared ({ caller }) func createMembership(owner : ?Principal, hubID : Nat64, membershipType : Text) : async Result.Result<UserHubMembership, Text> {
+  public shared ({ caller }) func createMembership(
+    owner : ?Principal,
+    hubID : Nat64,
+    ownerRole : ?Text,
+    hubCanisterId : ?Text,
+  ) : async Result.Result<UserHubMembership, Text> {
 
     let internetIdentity = switch (owner) {
       case (?owner) {
@@ -35,16 +40,64 @@ actor class UserHubMembershipMain() {
 
     let hubIDRepresentation : Text = Nat64.toText(hubID);
     let key = internetIdentity # "-" # hubIDRepresentation;
+
+    // Check if membership already exists
     if (membershipMap.get(key) != null) {
       return #err("Membership already exists");
     };
 
+    let roleName = switch (owner) {
+      case (?_) {
+        ownerRole;
+      };
+      case (null) {
+
+        switch (hubCanisterId) {
+          case (?hubCanisterId) {
+
+            let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+            let foundHub = await hubActor.getHubByID(?hubID);
+
+            switch (foundHub) {
+              case (#ok(foundHub)) {
+                let defaultRole = Array.find(foundHub.hubRoles, func x { x.default == true });
+                switch (defaultRole) {
+                  case (?defaultRole) {
+                    defaultRole.roleName;
+                  };
+                  case null {
+                    return #err("Error: No default role found in the hub");
+                  };
+                };
+              };
+              case (#err(err)) {
+                return #err(err);
+              };
+            };
+          };
+          case null {
+            return #err("Error: Hub canister id needs to be provided for default role");
+          };
+        };
+
+      };
+    };
+
+    // Create the membership
     let membership : UserHubMembership = {
       hubID = hubID;
       userIdentity = caller;
-      userRole = membershipType;
+      userRole = switch (roleName) {
+        case (?role) {
+          role; // If roleName is defined, use it
+        };
+        case null {
+          return #err("Error: No role assigned to the membership");
+        };
+      };
     };
 
+    // Store the membership in the membership map
     membershipMap.put(key, membership);
 
     return #ok(membership);

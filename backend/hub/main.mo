@@ -32,6 +32,8 @@ actor class HubMain() {
       };
     };
 
+    // Default roles
+
     let ownerPermissions : Permission = {
       canDeletePost = true;
       canEditHub = true;
@@ -43,7 +45,20 @@ actor class HubMain() {
 
       roleName = "Owner";
       permissions = ownerPermissions;
+      default = false;
+    };
 
+    let memberPermissions : Permission = {
+      canDeletePost = false;
+      canEditHub = false;
+      canCreateEditRoles = false;
+      canKickMember = false;
+    };
+
+    let memberRole : Role = {
+      roleName = "Member";
+      permissions = memberPermissions;
+      default = true;
     };
 
     let hub : Hub = {
@@ -51,14 +66,14 @@ actor class HubMain() {
       hubName = hubName;
       hubDescription = hubDescription;
       hubBannerImage = hubBannerImage;
-      hubRoles = [ownerRole];
+      hubRoles = [ownerRole, memberRole];
       hubRules = hubRules;
     };
     hubMap.put(counter, hub);
 
     //create membership -> admin
     let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
-    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(counter, "Owner", ?caller);
+    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ownerRole.roleName);
     switch (result) {
       case (#ok(_)) {
         counter += 1;
@@ -176,7 +191,7 @@ actor class HubMain() {
   };
 
   //get all hub
-  public func getAllHub() : async Result.Result<[Hub], Text> {
+  public shared query func getAllHubs() : async Result.Result<[Hub], Text> {
     var buffer = Buffer.Buffer<Hub>(0);
     for (hub in hubMap.vals()) {
       buffer.add(hub);

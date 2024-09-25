@@ -18,6 +18,7 @@ module {
   public type Role = {
     roleName : Text;
     permissions : Permission;
+    default: Bool;
   };
 
   public type Permission = {

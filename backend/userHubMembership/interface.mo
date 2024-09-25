@@ -9,7 +9,7 @@ module {
     type Role = HubType.Role;
 
     public type UserHubMembershipActor = actor {
-        createMembership: (hubID: Nat64, membershipType: Text, owner: ?Principal) -> async Result.Result<UserHubMembership, Text>;
+        createMembership: (owner: ?Principal, hubID: Nat64, membershipType: Text) -> async Result.Result<UserHubMembership, Text>;
         getMembershipRole : (principal : ?Principal, hubID : Nat64, hubCanisterId: Text) -> async  Result.Result<Role, Text>;
     };
 };

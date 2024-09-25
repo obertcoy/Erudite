@@ -9,29 +9,43 @@ import {
 } from '@/components/ui/accordion';
 import { useImmer } from 'use-immer';
 import { X } from 'lucide-react';
+import { RuleDto, RuleSchema } from '@/lib/model/schema/hub/rule.dto';
+import { toast } from 'sonner';
 
-interface HubRule {
-  title: string;
-  description: string;
+interface CreateHubSetRulesListProps {
+  onRulesChange: (rules: RuleDto[]) => void;
 }
 
-export default function CreateHubSetRulesList() {
-  const [rules, setRules] = useImmer<HubRule[]>([]);
+export default function CreateHubSetRulesList({
+  onRulesChange,
+}: CreateHubSetRulesListProps) {
+  const [rules, setRules] = useImmer<RuleDto[]>([]);
 
-  const [rule, setRule] = useImmer<HubRule>({
-    title: '',
-    description: '',
+  const [rule, setRule] = useImmer<RuleDto>({
+    ruleTitle: '',
+    ruleDescription: '',
   });
 
   function handleAddRule() {
+    const check = RuleSchema.safeParse(rule);
+
+    if (!check.success) {
+      check.error.errors.forEach((error) => {
+        toast.error(error.message);
+      });
+      return;
+    }
+
     setRules((draft) => {
       draft.push(rule);
+      onRulesChange(draft);
     });
   }
 
   function handleRemoveRule(index: number) {
     setRules((draft) => {
       draft.splice(index, 1);
+      onRulesChange(draft);
     });
   }
 
@@ -48,7 +62,7 @@ export default function CreateHubSetRulesList() {
             className="w-96"
             onChange={(e) => {
               setRule((draft) => {
-                draft.title = e.target.value;
+                draft.ruleTitle = e.target.value;
               });
             }}
           />
@@ -57,7 +71,7 @@ export default function CreateHubSetRulesList() {
             className="w-96 h-48"
             onChange={(e) => {
               setRule((draft) => {
-                draft.description = e.target.value;
+                draft.ruleDescription = e.target.value;
               });
             }}
           />
@@ -76,13 +90,13 @@ export default function CreateHubSetRulesList() {
             <div className="flex items-start gap-x-2">
               <AccordionItem
                 className="flex-1 w-full"
-                key={rule.title}
-                value={`${index + 1}-${rule.title}`}
+                key={rule.ruleTitle}
+                value={`${index + 1}-${rule.ruleTitle}`}
               >
                 <AccordionTrigger>{`${index + 1}. ${
-                  rule.title
+                  rule.ruleTitle
                 }`}</AccordionTrigger>
-                <AccordionContent>{rule.description}</AccordionContent>
+                <AccordionContent>{rule.ruleDescription}</AccordionContent>
               </AccordionItem>
               <Button
                 type="button"

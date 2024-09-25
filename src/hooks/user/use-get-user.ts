@@ -11,7 +11,7 @@ export function useGetUser(userId: string | undefined, strict: boolean = true) {
   useEffect(() => {
     const fetchUser = async () => {
       if (!userId) {
-        toast('User id is required');
+        toast('Error: User id is required');
         return;
       }
 

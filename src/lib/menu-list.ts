@@ -9,6 +9,7 @@ import {
   Plus,
   Bookmark,
   House,
+  Boxes,
 } from 'lucide-react';
 import { Route, RouteObject } from 'react-router-dom';
 import { RouteEnum } from './enum/route-enum';
@@ -40,6 +41,13 @@ export function getMenuList(pathname: string): Group[] {
           label: 'Home',
           active: pathname === RouteEnum.HOME,
           icon: House,
+          submenus: [],
+        },
+        {
+          path: RouteEnum.EXPLORE_HUBS,
+          label: 'Explore Hubs',
+          active: pathname === RouteEnum.EXPLORE_HUBS,
+          icon: Boxes,
           submenus: [],
         },
       ],

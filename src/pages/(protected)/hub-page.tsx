@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
 import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useGetHubById } from '@/hooks/hub/use-get-hub';
+import { useParams } from 'react-router';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -35,7 +37,14 @@ const renderFeedFilterTitle = (filter: FeedFilterState) => {
 };
 
 export default function HubPage() {
+  const { hubId } = useParams();
+  const { hubData } = useGetHubById(hubId);
+
   const { filter } = useFeedFilter();
+
+  if(!hubData) {
+    return
+  }
 
   return (
     <main className="w-full flex flex-col gap-y-4  items-center pb-4">
@@ -43,7 +52,7 @@ export default function HubPage() {
         <div className="flex items-center justify-start w-full bg-gray-200 dark:bg-gray-800 h-48" />
         <div className="flex flex-col p-8 gap-y-2">
           <div className="flex items-center gap-x-2">
-            <h1 className="text-2xl font-medium">Adeptus Mechanicus</h1>
+            <h1 className="text-2xl font-medium">{hubData.hubName}</h1>
             <Badge variant="outline">21K Members</Badge>
           </div>
           <Button className="w-fit">Join</Button>
