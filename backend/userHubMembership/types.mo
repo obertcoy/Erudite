@@ -5,7 +5,7 @@ module {
     public type Result<Ok, Err> = Result.Result<Ok, Err>;
 
     public type UserHubMembership = {
-      hubID : Nat64;
+      hubId : Nat64;
       userIdentity: Principal;
       userRole: Text;
    };

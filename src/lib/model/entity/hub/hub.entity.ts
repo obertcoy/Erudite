@@ -35,6 +35,14 @@ export function convertRawHubEntityToHubEntity(raw: RawHubEntity): HubEntity {
   };
 }
 
+export function convertAllRawHubEntityToHubEntity(raws: RawHubEntity[]): HubEntity[] {
+  const converted: HubEntity[] = raws.map((raw) => {
+    return convertRawHubEntityToHubEntity(raw);
+  });
+
+  return converted;
+}
+
 // Example dummy roles
 
 // Example dummy rules with descriptions

@@ -14,6 +14,7 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuthContext from '@/hooks/use-auth-context';
 import { RouteEnum } from '@/lib/enum/route-enum';
+import useGetJoinedHubs from '@/hooks/membership/use-get-joined-hubs';
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -21,9 +22,11 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = useLocation().pathname;
-  const menuList = getMenuList(pathname);
-
   const { user, logout } = useAuthContext();
+  const { joinedHubs } = useGetJoinedHubs(user?.internetIdentity);
+  
+  const menuList = getMenuList(pathname, user ?? null, joinedHubs);
+
   const navigate = useNavigate();
 
   return (

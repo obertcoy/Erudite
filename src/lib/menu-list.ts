@@ -10,9 +10,14 @@ import {
   Bookmark,
   House,
   Boxes,
+  CornerDownRight,
+  Box,
 } from 'lucide-react';
 import { Route, RouteObject } from 'react-router-dom';
 import { RouteEnum } from './enum/route-enum';
+import User from './model/entity/user/user.entity';
+import { HubEntity } from './model/entity/hub/hub.entity';
+import { generateDynamicRoutePath } from './utils';
 
 type Submenu = RouteObject & {
   label: string;
@@ -30,9 +35,16 @@ type Group = {
   groupLabel: string;
   menus: Menu[];
 };
+export function getMenuList(pathname: string, user: User | null, joinedHubs: HubEntity[] = []): Group[] {
+  const joinedHubsMenus: Menu[] = joinedHubs.slice(0, 5).map((hub) => ({
+    path: generateDynamicRoutePath(RouteEnum.HUB, {hubId: hub.hubID}), 
+    label: hub.hubName,
+    active: pathname.includes(generateDynamicRoutePath(RouteEnum.HUB, {hubId: hub.hubID})),
+    icon: Box,
+    submenus: [],
+  }));
 
-export function getMenuList(pathname: string): Group[] {
-  return [
+  const baseMenus: Group[] = [
     {
       groupLabel: '',
       menus: [
@@ -64,7 +76,11 @@ export function getMenuList(pathname: string): Group[] {
         },
       ],
     },
-    {
+  ];
+
+  // Add the "Joined Hubs" and "Settings" group only if the user is logged in
+  if (user) {
+    baseMenus.push({
       groupLabel: 'Joined Hubs',
       menus: [
         {
@@ -74,24 +90,11 @@ export function getMenuList(pathname: string): Group[] {
           icon: Plus,
           submenus: [],
         },
-        {
-          path: '/analyze',
-          label: 'Analyzer',
-          active: pathname.includes('/analyze'),
-          icon: Microscope,
-          submenus: [],
-        },
-        {
-          path: '/history',
-          label: 'Analysis Results',
-          active: pathname.includes('/history'),
-          icon: LibraryBig,
-          submenus: [],
-        },
+        ...joinedHubsMenus, // Add dynamically generated joined hubs
       ],
-    },
+    });
 
-    {
+    baseMenus.push({
       groupLabel: 'Settings',
       menus: [
         {
@@ -102,6 +105,9 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
       ],
-    },
-  ];
+    });
+  }
+
+
+  return baseMenus;
 }

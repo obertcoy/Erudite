@@ -5,6 +5,7 @@ import Buffer "mo:base/Buffer";
 import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
+import Principal "mo:base/Principal";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
@@ -26,9 +27,10 @@ actor class HubMain() {
 
   //create hub
   public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubBannerImage : Blob, hubRules : [Rule], userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
+
     for (hub in hubMap.vals()) {
       if (hub.hubName == hubName) {
-        return #err("Hub name already exist");
+        return #err("Failed: Hub name already exist");
       };
     };
 
@@ -69,13 +71,14 @@ actor class HubMain() {
       hubRoles = [ownerRole, memberRole];
       hubRules = hubRules;
     };
-    hubMap.put(counter, hub);
 
     //create membership -> admin
     let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
     let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ownerRole.roleName);
+
     switch (result) {
       case (#ok(_)) {
+        hubMap.put(counter, hub);
         counter += 1;
         return #ok(hub);
       };
@@ -100,7 +103,7 @@ actor class HubMain() {
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
             } else {
-              return #err("Error: Insufficient permissions to update the hub profile.");
+              return #err("Failed: Insufficient permissions to update the hub profile.");
             };
           };
 
@@ -110,7 +113,7 @@ actor class HubMain() {
         };
       };
       case null {
-        return #err("Error: hub not found");
+        return #err("Error: Hub not found");
       };
     };
   };
@@ -131,7 +134,7 @@ actor class HubMain() {
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
             } else {
-              return #err("Error: Insufficient permissions to update the hub roles.");
+              return #err("Failed: Insufficient permissions to update the hub roles.");
             };
           };
 
@@ -141,7 +144,7 @@ actor class HubMain() {
         };
       };
       case null {
-        return #err("Error: hub not found");
+        return #err("Error: Hub not found");
       };
     };
   };
@@ -166,7 +169,7 @@ actor class HubMain() {
       };
     };
 
-    return #err("User not found");
+    return #err("Error: Hub not found");
 
   };
 

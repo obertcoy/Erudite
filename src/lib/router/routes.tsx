@@ -60,6 +60,10 @@ export const ROUTES: RouteObject[] = [
             element: <HubPage />,
           },
           {
+            path: RouteEnum.HUB,
+            element: <HubPage />,
+          },
+          {
             path: RouteEnum.CREATE_HUB,
             element: <CreateHubPage />,
           },

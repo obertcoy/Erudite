@@ -9,7 +9,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { ChevronRightIcon } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { truncateText } from '@/lib/utils';
+import { generateDynamicRoutePath, truncateText } from '@/lib/utils';
+import { RouteEnum } from '@/lib/enum/route-enum';
+import { Link } from 'react-router-dom';
 
 export default function ExploreHubsPage() {
   const { hubs, getAllHubsLoading } = useGetAllHubs();
@@ -39,13 +41,15 @@ export default function ExploreHubsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <Button
-                    variant="outline"
-                    className="w-full text-sm h-8"
-                    onClick={() => console.log(`Viewing hub: ${hub.hubName}`)}
+                  <Link
+                    to={generateDynamicRoutePath(RouteEnum.HUB, {
+                      hubId: hub.hubID,
+                    })}
                   >
-                    View Hub <ChevronRightIcon className="ml-2 h-4 w-4" />
-                  </Button>
+                    <Button variant="outline" className="w-full text-sm h-8">
+                      View Hub <ChevronRightIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
