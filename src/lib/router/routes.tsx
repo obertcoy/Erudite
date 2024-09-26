@@ -17,6 +17,7 @@ import { LoaderFunctionArgs, RouteObject } from 'react-router-dom';
 import HubPage from '@/pages/(protected)/hub-page';
 import CreateHubPage from '@/pages/(protected)/create-hub-page';
 import ExploreHubsPage from '@/pages/(protected)/explore-hubs-page';
+import ManageHubPage from '@/pages/(protected)/manage-hub-page';
 
 export const ROUTES: RouteObject[] = [
   {
@@ -75,6 +76,10 @@ export const ROUTES: RouteObject[] = [
           {
             path: RouteEnum.EXPLORE_HUBS,
             element: <ExploreHubsPage />,
+          },
+          {
+            path: '/hubs/adeptus-mechanicus/settings',
+            element: <ManageHubPage />,
           },
         ],
       },

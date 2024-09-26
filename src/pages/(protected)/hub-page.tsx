@@ -10,6 +10,8 @@ import { useParams } from 'react-router';
 import React from 'react';
 import useCreateMembership from '@/hooks/membership/use-create-membership';
 import { useHubContext } from '@/contexts/hub-context';
+import { Wrench } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -58,7 +60,7 @@ export default function HubPage() {
   return (
     <main className="w-full flex flex-col gap-y-4  items-center pb-4">
       <div className="w-full flex flex-col border-b shadow-sm dark:shadow-none">
-        <div className="flex items-center justify-start w-full bg-gray-200 dark:bg-gray-800 h-48">
+        <div className="flex items-center justify-start w-full bg-gray-200 dark:bg-gray-800 h-64">
           <img
             src={hubData.hubBannerImageUrl}
             alt=""
@@ -71,11 +73,19 @@ export default function HubPage() {
             <h1 className="text-2xl font-medium">{hubData.hubName}</h1>
             <Badge variant="outline">21K Members</Badge>
           </div>
-          {!joinedHubs.find((h) => h.hubID === hubId) && (
-            <Button className="w-fit" onClick={handleJoin}>
-              Join
-            </Button>
-          )}
+          <div className="flex items-center gap-x-2">
+            {!joinedHubs.find((h) => h.hubID === hubId) && (
+              <Button className="w-fit" onClick={handleJoin}>
+                Join
+              </Button>
+            )}
+            <Link to="/hubs/adeptus-mechanicus/settings">
+              <Button variant="secondary">
+                <Wrench className="size-4 mr-2" />
+                Manage
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
       <div className="w-full max-w-[69rem]">
