@@ -3,12 +3,12 @@ import Text "mo:base/Text";
 import Nat64 "mo:base/Nat64";
 import Result "mo:base/Result";
 import Buffer "mo:base/Buffer";
+import Principal "mo:base/Principal";
 import Types "types";
 
 import PostModule "../post/interface";
 import PostType "../post/types";
 
-import HubModule "../hub/interface";
 import HubType "../hub/types";
 import UserHubMembershipModule "../userHubMembership/interface";
 
@@ -16,6 +16,7 @@ actor class HubPosts() {
   type HubPosts = Types.HubPosts;
   type HubPostProfile = Types.HubPostProfile;
   type Post = PostType.Post;
+  type DetailedPost = PostType.DetailedPost;
   type Hub = HubType.Hub;
   type Role = HubType.Role;
 
@@ -63,17 +64,23 @@ actor class HubPosts() {
   };
 
   //get all post by hub ID
-  public shared func getAllPostByHubID(hubID : Nat64, postCanisterId : Text) : async Result.Result<[Post], Text> {
-    var buffer = Buffer.Buffer<Post>(0);
+  public shared func getHubDetailedPosts(hubId : Nat64, postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<[DetailedPost], Text> {
+    var buffer = Buffer.Buffer<DetailedPost>(0);
+
     let postActor = actor (postCanisterId) : PostModule.PostActor;
+
     for (hubPost in hubPostMap.vals()) {
-      if (hubPost.hubID == hubID) {
-        let result : Result.Result<Post, Text> = await postActor.getPostByID(?hubPost.postID);
-        switch (result) {
-          case (#ok(post)) {
-            buffer.add(post);
+      if (hubPost.hubID == hubId) {
+
+        let detailedPost : Result.Result<DetailedPost, Text> = await postActor.getDetailedPostByID(hubPost.postID, hubPost.hubID, hubCanisterId, userCanisterId);
+        switch (detailedPost) {
+          case (#ok(detailedPost)) {
+
+            buffer.add(detailedPost);
           };
-          case (#err(_)) {};
+          case (#err(err)) {
+            return #err(err);
+          };
         };
       };
     };
@@ -82,10 +89,24 @@ actor class HubPosts() {
   };
 
   //get hub posts by post id
-  public shared query func getHubPostByPostID(postID : Nat64) : async Result.Result<HubPosts, Text> {
+  public shared func getHubDetailedPostByPostID(postId : Nat64, postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<DetailedPost, Text> {
+
+    let postActor = actor (postCanisterId) : PostModule.PostActor;
+
     for (hubPost in hubPostMap.vals()) {
-      if (hubPost.postID == postID) {
-        return #ok(hubPost);
+      if (hubPost.postID == postId) {
+
+        let detailedPost : Result.Result<DetailedPost, Text> = await postActor.getDetailedPostByID(hubPost.postID, hubPost.hubID, hubCanisterId, userCanisterId);
+
+        switch (detailedPost) {
+          case (#ok(detailedPost)) {
+
+            return #ok(detailedPost);
+          };
+          case (#err(err)) {
+            return #err(err);
+          };
+        };
       };
     };
 
@@ -93,42 +114,40 @@ actor class HubPosts() {
   };
 
   //get hub post profile by principal
-  public shared ({ caller }) func getAllPostProfileByPrincipal(postCanisterId : Text, hubCanisterId : Text) : async Result.Result<[HubPostProfile], Text> {
-    var buffer = Buffer.Buffer<HubPostProfile>(0);
+  public shared ({ caller }) func getUserDetailedPosts(userId : ?Text, postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<[DetailedPost], Text> {
+    var buffer = Buffer.Buffer<DetailedPost>(0);
+
+    let principal = switch (userId) {
+      case (?userId) {
+        Principal.fromText(userId);
+      };
+      case null {
+        caller;
+      };
+    };
+
     let postActor = actor (postCanisterId) : PostModule.PostActor;
-    let result : Result.Result<[Post], Text> = await postActor.getPostByPrincipal(?caller);
-    let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+    let result : Result.Result<[Post], Text> = await postActor.getPostByPrincipal(?principal);
 
     switch (result) {
       case (#ok(posts)) {
         for (post in posts.vals()) {
-          let hubPost : Result.Result<HubPosts, Text> = await getHubPostByPostID(post.postId);
-          switch (hubPost) {
-            case (#ok(hubPost)) {
-              let res : Result.Result<Hub, Text> = await hubActor.getHubByID(hubPost.hubID);
-              switch (res) {
-                case (#ok(hub)) {
-                  let temp : HubPostProfile = {
-                    postID = post.postId;
-                    postBody = post.postBody;
-                    postImage = post.postImage;
-                    internetIdentity = post.internetIdentity;
-                    numUpVotes = post.numUpVotes;
-                    numDownVotes = post.numDownVotes;
-                    numComments = post.numComments;
-                    hubID = hub.hubID;
-                    hubName = hub.hubName;
-                  };
-                  buffer.add(temp);
-                };
-                case (#err(_)) {};
-              };
+
+          let detailedPost : Result.Result<DetailedPost, Text> = await getHubDetailedPostByPostID(post.postId, postCanisterId, hubCanisterId, userCanisterId);
+          switch (detailedPost) {
+            case (#ok(detailedPost)) {
+
+              buffer.add(detailedPost);
             };
-            case (#err(_)) {};
+            case (#err(err)) {
+              return #err(err);
+            };
           };
+
         };
         return #ok(Buffer.toArray(buffer));
       };
+
       case (#err(errorMessage)) {
         return #err(errorMessage);
       };

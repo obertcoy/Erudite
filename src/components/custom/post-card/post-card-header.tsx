@@ -1,27 +1,33 @@
 import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { HubEntity } from '@/lib/model/entity/hub/hub.entity';
+import { UserEntity } from '@/lib/model/entity/user/user.entity';
+import ProfileAvatar from '@/components/ui/profile-avatar';
+import { DetailedPostEntity } from '@/lib/model/entity/post/detailed-post.entity';
 
-const PostCardHeader = () => {
+interface PostCardHeaderProps {
+  data: DetailedPostEntity;
+}
+
+export default function PostCardHeader({ data }: PostCardHeaderProps) {
   return (
     <CardHeader className="pb-3 flex flex-col justify-center gap-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
-          <Avatar className="size-6">
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <ProfileAvatar
+            username={data.user.username}
+            profileImageUrl={data.user.profileImageUrl}
+          />
           <div className="flex items-center">
-            <div className="text-sm">Example User</div>
+            <div className="text-sm">{data.user.username}</div>
             &nbsp;·&nbsp;
             <div className="text-xs text-muted-foreground">2 hours ago</div>
           </div>
         </div>
-        <Badge>Amazing Coincidences</Badge>
+        <Badge>{data.hub.hubName}</Badge>
       </div>
-      <CardTitle>I just made my grandma rich using cookie clicker!</CardTitle>
+      <CardTitle>{data.post.postTitle}</CardTitle>
     </CardHeader>
   );
-};
-
-export default PostCardHeader;
+}

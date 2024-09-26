@@ -3,15 +3,22 @@ import PostCardHeader from '@/components/custom/post-card/post-card-header';
 import PostCardContent from '@/components/custom/post-card/post-card-content';
 import PostCardFooter from '@/components/custom/post-card/post-card-footer';
 import FloatingPostDetailsSidebar from '@/components/custom/floating-post-details-sidebar/floating-post-details-sidebar';
-import { Link, ScrollRestoration } from 'react-router-dom';
+import { Link, ScrollRestoration, useParams } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import CommentsSection from '@/components/custom/comments-section/comments-section';
+import useGetHubDetailedPostByPostID from '@/hooks/hub-posts/use-get-hub-detailed-post-by-post-id';
 
 export default function PostPage() {
+  const { postId } = useParams();
+
+  const { detailedPost } = useGetHubDetailedPostByPostID(postId ?? '');
+
+  if (!detailedPost) return;
+
   return (
     <main className="w-full flex items-center justify-center py-6">
       <div className="container w-full flex justify-center items-start gap-x-4">
@@ -23,9 +30,15 @@ export default function PostPage() {
           </Link>
           <div className="flex flex-col items-center  gap-y-2">
             <Card className="w-full max-w-3xl rounded-xl shadow-none border-none">
-              <PostCardHeader />
-              <PostCardContent />
-              <PostCardFooter />
+              <PostCardHeader data={detailedPost} />
+              <PostCardContent
+                postData={detailedPost.post}
+                key={detailedPost.post.postId}
+              />
+              <PostCardFooter
+                postData={detailedPost.post}
+                key={detailedPost.post.postId}
+              />
             </Card>
             <div className="w-full max-w-3xl px-6  flex flex-col gap-y-8">
               <Input className="px-4" placeholder="Add a comment" />

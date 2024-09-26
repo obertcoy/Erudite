@@ -2,17 +2,23 @@ import { CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bookmark, Flag, MessageCircle, Share2 } from 'lucide-react';
 import PostCardVoteControl from '@/components/custom/post-card/post-card-vote-control';
+import { PostEntity } from '@/lib/model/entity/post/post.entity';
 
-const PostCardFooter = () => {
+interface PostCardFooterProps {
+  postData: PostEntity;
+}
+
+export default function PostCardFooter({ postData }: PostCardFooterProps) {
   return (
     <CardFooter className="flex items-center justify-between">
       <div className="flex items-center gap-x-2">
-        <PostCardVoteControl />
+        <PostCardVoteControl numUpVotes={Number(postData.numUpVotes)} />
         <Button
           variant="outline"
           className="text-xs hover:bg-gray-200 hover:dark:bg-gray-800"
         >
-          <MessageCircle className="mr-2 size-3" /> 31 Comments
+          <MessageCircle className="mr-2 size-3" />{' '}
+          {postData.numComments.toString()} Comments
         </Button>
       </div>
       <div className="flex items-center gap-x-2">
@@ -40,6 +46,4 @@ const PostCardFooter = () => {
       </div>
     </CardFooter>
   );
-};
-
-export default PostCardFooter;
+}

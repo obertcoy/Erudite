@@ -1,5 +1,7 @@
 import FloatingHubDetailsSidebar from '@/components/custom/floating-hub-details-sidebar/floating-hub-details-sidebar';
-import PostCard from '@/components/custom/post-card/post-card';
+import PostCard, {
+  PostCardSkeleton,
+} from '@/components/custom/post-card/post-card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
@@ -12,6 +14,7 @@ import useCreateMembership from '@/hooks/membership/use-create-membership';
 import { useHubContext } from '@/contexts/hub-context';
 import { Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useGetHubDetailedPosts from '@/hooks/hub-posts/use-get-hub-detailed-posts';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -45,6 +48,9 @@ export default function HubPage() {
   const { hubId } = useParams();
   const { hubData } = useGetHubById(hubId);
   const { execute } = useCreateMembership();
+  const { detailedPosts, getHubPostsLoading } = useGetHubDetailedPosts(
+    hubId ?? '',
+  );
   const { joinedHubs } = useHubContext();
 
   const { filter } = useFeedFilter();
@@ -95,13 +101,20 @@ export default function HubPage() {
       </div>
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
-          <div className="flex flex-col items-center gap-y-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
-              <React.Fragment key={index}>
-                <Separator />
-                <PostCard key={item} />
-              </React.Fragment>
-            ))}
+          <div className="flex w-full flex-col items-center gap-y-4">
+            {getHubPostsLoading
+              ? [1, 2, 3, 4, 5].map((_, index) => (
+                  <React.Fragment key={index}>
+                    <Separator />
+                    <PostCardSkeleton key={index} />
+                  </React.Fragment>
+                ))
+              : detailedPosts.map((post, index) => (
+                  <React.Fragment key={index}>
+                    <Separator />
+                    <PostCard key={index} data={post} />
+                  </React.Fragment>
+                ))}
           </div>
           <FloatingHubDetailsSidebar hubData={hubData} />
         </div>

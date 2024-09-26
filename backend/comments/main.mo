@@ -26,13 +26,12 @@ actor class CommentMain() {
   //create comment
   public shared ({ caller }) func createComment(
     commentBody : Text, 
-    commentImage : Blob, 
     postID : Nat64, 
     postCommentsCanisterId : Text, 
     postCanisterId: Text
   ) : async Result.Result<Comment, Text> {
 
-    let comment : Comment = _createCommentObject(counter, commentBody, commentImage, caller);
+    let comment : Comment = _createCommentObject(counter, commentBody, caller);
     commentMap.put(counter, comment);
 
     // Create relationship with PostCommentsActor
@@ -75,11 +74,10 @@ actor class CommentMain() {
   };
 
 
-  private func _createCommentObject(commentID : Nat64, commentBody : Text, commentImage : Blob, creatorIdentity : Principal) : Comment {
+  private func _createCommentObject(commentID : Nat64, commentBody : Text, creatorIdentity : Principal) : Comment {
     return {
       commentID = commentID;
       commentBody = commentBody;
-      commentImage = commentImage;
       internetIdentity = creatorIdentity;
     };
   };

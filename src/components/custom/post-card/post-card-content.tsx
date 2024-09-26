@@ -1,23 +1,23 @@
 import { CardContent } from '@/components/ui/card';
 import MyRichGrandma from '@/assets/my-rich-grandma.webp';
+import { PostEntity } from '@/lib/model/entity/post/post.entity';
+import { validateImageURL } from '@/lib/utils';
 
-const PostCardContent = () => {
+interface PostCardContentProps {
+  postData: PostEntity;
+}
+
+export default function PostCardContent({ postData }: PostCardContentProps) {
+  console.log(postData.postImageUrl);
+
   return (
     <CardContent className="flex flex-col justify-center gap-y-3">
       <img
-        src={MyRichGrandma}
+        src={postData.postImageUrl}
         className="rounded-md w-full h-80 object-cover"
+        onError={(e) => (e.currentTarget.style.display = 'none')}
       />
-      <p className="text-sm">
-        You won&apos;t believe it, but I just turned my grandma into a virtual
-        millionaire, thanks to Cookie Clicker! 🍪💰🤑 With some strategic
-        upgrades, loads of golden cookies, and a little bit of patience,
-        she&apos;s now generating millions of cookies per second. Who knew that
-        baking could be this profitable? If you haven't tried it yet, you're
-        missing out on the sweetest way to pass the time!
-      </p>
+      <p className="text-sm">{postData.postBody}</p>
     </CardContent>
   );
-};
-
-export default PostCardContent;
+}

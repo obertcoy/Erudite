@@ -150,7 +150,7 @@ function SearchResultsSection({ searchResults }: SearchResultsSection) {
                       </Avatar>{' '}
                     </div>
                     <p className="w-full h-fit text-sm font-medium text-foreground">
-                      {post.title}
+                      {post.postTitle}
                     </p>
                   </Button>
                 ))}

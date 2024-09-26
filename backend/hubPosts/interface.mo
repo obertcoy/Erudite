@@ -7,7 +7,7 @@ module {
   type HubPosts = Types.HubPosts;
 
   public type HubPostsActor = actor {
-    createHubPosts : (hubID : Nat64, postID : Nat64) -> async Result.Result<HubPosts, Text>;
-    deleteHubPosts : (caller: Principal, hubID : Nat64, postID : Nat64, hubCanisterId: Text, userHubMembershipCanisterId: Text) -> async Result.Result<(), Text>;
+    createHubPosts : (hubId : Nat64, postId : Nat64) -> async Result.Result<HubPosts, Text>;
+    deleteHubPosts : (caller : Principal, hubId : Nat64, postId : Nat64, hubCanisterId : Text, userHubMembershipCanisterId : Text) -> async Result.Result<(), Text>;
   };
 };

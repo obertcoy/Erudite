@@ -58,7 +58,7 @@ export const ROUTES: RouteObject[] = [
             ],
           },
           {
-            path: '/posts/i-just-made-my-grandma-rich',
+            path: RouteEnum.POST,
             element: <PostPage />,
           },
           {

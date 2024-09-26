@@ -7,10 +7,13 @@ import Buffer "mo:base/Buffer";
 import Nat32 "mo:base/Nat32";
 
 import HubPostsModule "../hubPosts/interface";
+import UserModule "../user/interface";
 import HubPostsType "../hubPosts/types";
+import HubModule "../hub/interface";
 
 actor class PostMain() {
   type Post = Types.Post;
+  type DetailedPost = Types.DetailedPost;
   type HubPosts = HubPostsType.HubPosts;
 
   private func _hash32(n : Nat64) : Nat32 {
@@ -80,13 +83,46 @@ actor class PostMain() {
   };
 
   //get post by ID
-  public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
+  public shared func getDetailedPostByID(postId : Nat64, hubId : Nat64, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<DetailedPost, Text> {
+
+    let userActor = actor (userCanisterId) : UserModule.UserActor;
+    let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+
     switch (postMap.get(postId)) {
       case null {
         return #err("Post not found");
       };
-      case (?fetched_post) {
-        return #ok(fetched_post);
+      case (?fetchedPost) {
+
+        let user = await userActor.getUser(?Principal.toText(fetchedPost.internetIdentity));
+
+        switch (user) {
+          case (#ok(user)) {
+
+            let hub = await hubActor.getHubByID(hubId);
+
+            switch (hub) {
+              case (#ok(hub)) {
+
+                let detailedPost : DetailedPost = {
+                  post = fetchedPost;
+                  user = user;
+                  hub = hub;
+                };
+
+                return #ok(detailedPost);
+              };
+              case (#err(err)) {
+                return #err(err);
+              };
+
+            };
+          };
+          case (#err(err)) {
+            return #err(err);
+          };
+        };
+
       };
     };
     return #err("Post not found");

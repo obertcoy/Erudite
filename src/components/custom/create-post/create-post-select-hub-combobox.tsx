@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { useHubContext } from '@/contexts/hub-context';
 
 interface CreatePostSelectHubComboBoxProps {
-  onHubChange: (hubId: string) => void;
+  onHubChange: (hubId: bigint) => void;
 }
 
 export default function CreatePostSelectHubComboBox({
@@ -58,7 +58,7 @@ export default function CreatePostSelectHubComboBox({
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
-                    onHubChange(currentValue);
+                    onHubChange(BigInt(hub.hubID));
                   }}
                 >
                   <Check

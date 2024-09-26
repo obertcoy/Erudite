@@ -11,26 +11,25 @@ import { createPostUpdate } from '@/services/post-service';
 import { toast } from 'sonner';
 
 export function useCreatePost() {
-  const { createPost, hubCanisterId } = createPostUpdate();
+  const { createPost, hubPostsCanisterId } = createPostUpdate();
 
   const execute = async (postDto: PostDto) => {
     try {
-      let postBannerImage: Uint8Array | [] = [];
+      let postImage: Uint8Array | [] = [];
       if (postDto.postBannerImage) {
-        postBannerImage = await compressImageURLToUint8Array(
+        postImage = await compressImageURLToUint8Array(
           URL.createObjectURL(postDto.postBannerImage),
         ) ?? [];
       }
 
       const toastId = toast.loading('Creating post...');
-      if (!postBannerImage) return;
 
       const result = await createPost([
         postDto.postTitle,
         postDto.postBody,
-        postBannerImage,
+        [postImage],
         postDto.hubId,
-        hubCanisterId,
+        hubPostsCanisterId,
       ]);
 
       if (!result || 'err' in result) {

@@ -23,13 +23,13 @@ export const generateDynamicRoutePath = (
   return path;
 };
 
-export function formatShortNumber(prestige: number): string {
-  if (prestige >= 1_000_000) {
-    return (prestige / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
-  } else if (prestige >= 1_000) {
-    return (prestige / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+export function formatShortNumber(number: number): string {
+  if (number >= 1_000_000) {
+    return (number / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+  } else if (number >= 1_000) {
+    return (number / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
   }
-  return prestige.toString();
+  return number.toString();
 }
 
 export async function convertImageURLToUint8Array(

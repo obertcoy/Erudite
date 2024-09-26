@@ -1,7 +1,15 @@
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PostEntity } from '@/lib/model/entity/post/post.entity';
+import { formatShortNumber } from '@/lib/utils';
 
-const PostCardVoteControl = () => {
+interface PostCardVoteControlProps {
+  numUpVotes: number;
+}
+
+export default function PostCardVoteControl({
+  numUpVotes,
+}: PostCardVoteControlProps) {
   return (
     <div className="flex items-center gap-x-2 bg-muted dark:bg-[#171823] rounded-md">
       <Button
@@ -11,7 +19,7 @@ const PostCardVoteControl = () => {
       >
         <ArrowUp className="size-4" />
       </Button>
-      <div className="text-xs font-bold">32K</div>
+      <div className="text-xs font-bold">{formatShortNumber(numUpVotes)}</div>
       <Button
         variant="outline"
         size="icon"
@@ -21,6 +29,5 @@ const PostCardVoteControl = () => {
       </Button>
     </div>
   );
-};
+}
 
-export default PostCardVoteControl;

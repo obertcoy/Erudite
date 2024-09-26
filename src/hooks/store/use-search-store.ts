@@ -4,6 +4,7 @@ import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import dummyHubs from '@/lib/model/entity/hub/hub.entity';
+import { dummyPosts } from '@/lib/model/entity/post/post.entity';
 
 interface UseSearchStoreState {
   searchQuery: string;
@@ -115,13 +116,7 @@ export const useSearchStore = create<UseSearchStore>()(
             },
           ],
           hubs: dummyHubs,
-          posts: [
-            { postId: '345', title: 'Suer coyy ??' },
-            { postId: '346', title: 'Latest Tech Trends' },
-            { postId: '347', title: 'Creative Design Tips' },
-            { postId: '348', title: 'Health and Wellness' },
-            { postId: '349', title: 'Educational Resources' },
-          ],
+          posts: dummyPosts,
         };
 
         set({ searchResults: data });

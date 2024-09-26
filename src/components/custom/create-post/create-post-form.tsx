@@ -18,8 +18,11 @@ import { CloudUpload } from 'lucide-react';
 import { useRef } from 'react';
 import CreatePostSelectHubComboBox from './create-post-select-hub-combobox';
 import { PostDto, PostSchema } from '@/lib/model/schema/post/post.dto';
+import { useCreatePost } from '@/hooks/post/use-create-post';
 
 export default function CreatePostForm() {
+  const { execute } = useCreatePost();
+
   const fileRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<PostDto>({
@@ -28,15 +31,14 @@ export default function CreatePostForm() {
       postTitle: '',
       postBody: '',
     },
-    
   });
 
-  const onSubmit = (values: PostDto) => {
-    console.log(values);
+  const onHubChange = (hubId: bigint) => {
+    form.setValue('hubId', hubId);
   };
 
-  const onHubChange = (hubId: string) => {
-    form.setValue('hubId', hubId);
+  const onSubmit = async (values: PostDto) => {
+    await execute(values);
   };
 
   return (
@@ -84,21 +86,49 @@ export default function CreatePostForm() {
                   <TabsContent value="text">
                     <Textarea
                       placeholder="Today I just made 10 million dollars using cookie clicker..."
-                      className="w-full h-44"
+                      className="w-full h-44 resize-none"
                       {...field}
                     />
                   </TabsContent>
                   <TabsContent value="media">
-                    <div
-                      onClick={() => {
-                        fileRef.current?.click();
-                      }}
-                      className="w-full h-44 border-2 border-dashed flex flex-col items-center justify-center rounded-md text-muted-foreground text-sm cursor-pointer"
-                    >
-                      <CloudUpload className="size-6" />
-                      Click to upload files
-                    </div>
-                    <Input ref={fileRef} type="file" className="hidden" />
+                    <FormField
+                      control={form.control}
+                      name="postBannerImage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <>
+                              <div
+                                onClick={() => fileRef.current?.click()}
+                                className="w-full h-44 border-2 border-dashed flex flex-col items-center justify-center rounded-md text-muted-foreground text-sm cursor-pointer"
+                              >
+                                {!field.value ? (
+                                  <>
+                                    <CloudUpload className="size-6" />
+                                    Click to upload files
+                                  </>
+                                ) : (
+                                  <img
+                                    src={URL.createObjectURL(field.value)}
+                                    alt="Uploaded Preview"
+                                    className="h-44 w-full object-cover rounded-md"
+                                  />
+                                )}
+                              </div>
+                              <Input
+                                ref={fileRef}
+                                type="file"
+                                className="hidden"
+                                onChange={(e) => {
+                                  field.onChange(e.target.files?.[0]);
+                                }}
+                              />
+                            </>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </TabsContent>
                 </Tabs>
               </FormControl>
