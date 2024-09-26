@@ -190,7 +190,7 @@ actor class UserHubMembershipMain() {
   };
 
   //update role -> Admin, Moderator, Member
-  public shared func updateRole(username : ?Text, newRole : Text, hubId : Nat64, userCanisterId : Text) : async Result.Result<Text, Text> {
+  public shared func updateMembershipRole(username : ?Text, newRole : Text, hubId : Nat64, userCanisterId : Text) : async Result.Result<Text, Text> {
     let userActor = actor (userCanisterId) : UserModule.UserActor;
     let result : Result.Result<User, Text> = await userActor.getUserByUsername(username);
 

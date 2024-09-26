@@ -5,7 +5,6 @@ import Buffer "mo:base/Buffer";
 import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
-import Principal "mo:base/Principal";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
