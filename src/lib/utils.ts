@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { RouteEnum } from './enum/route-enum';
 import { RawUserEntity, UserEntity } from './model/entity/user/user.entity';
 import Compressor from 'compressorjs';
-import { MAX_IMAGE_SIZE } from './constant/constant';
+import { COMPRESS_IMAGE_QUALITY, MAX_IMAGE_SIZE } from './constant/constant';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -78,7 +78,7 @@ export async function validateFile(file: File) {
   try {
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(file, {
-        quality: 0.9,
+        quality: COMPRESS_IMAGE_QUALITY,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',
@@ -114,7 +114,7 @@ export async function validateImageURL(imageUrl: string) {
   try {
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(blob, {
-        quality: 0.9,
+        quality: COMPRESS_IMAGE_QUALITY,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',
@@ -152,7 +152,7 @@ export async function compressImageURLToUint8Array(
 
     const compressedBlob: Blob = await new Promise((resolve, reject) => {
       new Compressor(blob, {
-        quality: 0.9,
+        quality: COMPRESS_IMAGE_QUALITY,
         maxWidth: 1920,
         maxHeight: 1080,
         mimeType: 'image/jpeg',

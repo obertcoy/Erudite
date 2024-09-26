@@ -19,9 +19,14 @@ import { useRef } from 'react';
 import CreatePostSelectHubComboBox from './create-post-select-hub-combobox';
 import { PostDto, PostSchema } from '@/lib/model/schema/post/post.dto';
 import { useCreatePost } from '@/hooks/post/use-create-post';
+import { useNavigate } from 'react-router-dom';
+import { generateDynamicRoutePath } from '@/lib/utils';
+import { RouteEnum } from '@/lib/enum/route-enum';
 
 export default function CreatePostForm() {
   const { execute } = useCreatePost();
+
+  const navigate = useNavigate();
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +43,13 @@ export default function CreatePostForm() {
   };
 
   const onSubmit = async (values: PostDto) => {
-    await execute(values);
+    const post = await execute(values);
+
+    if (post) {
+      navigate(
+        generateDynamicRoutePath(RouteEnum.HUB, { hubId: values.hubId.toString() }),
+      );
+    }
   };
 
   return (

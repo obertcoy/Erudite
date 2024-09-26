@@ -101,11 +101,12 @@ export default function HubPage() {
       </div>
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
-          <div className="flex w-full flex-col items-center gap-y-4">
+          <div className="flex flex-col items-center gap-y-4">
             {getHubPostsLoading
               ? [1, 2, 3, 4, 5].map((_, index) => (
                   <React.Fragment key={index}>
                     <Separator />
+
                     <PostCardSkeleton key={index} />
                   </React.Fragment>
                 ))
