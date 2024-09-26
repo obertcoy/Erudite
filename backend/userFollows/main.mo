@@ -30,6 +30,8 @@ actor class UserFollowsMain() {
 
         userFollowsMap.put(key, userPostVote);
 
+        //sklian update number followers
+
         return #ok(userPostVote);
     };
 
@@ -43,6 +45,8 @@ actor class UserFollowsMain() {
         let key = principal # "-" # followedUserPrincipal;
 
         userFollowsMap.delete(key);
+
+        //sklian delet number followers
 
         return #ok();
     };

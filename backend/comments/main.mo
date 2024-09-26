@@ -8,9 +8,13 @@ import Nat32 "mo:base/Nat32";
 import PostCommentsModule "../postComments/interface";
 import PostCommentsType "../postComments/types";
 
+import PostModule "../post/interface";
+import PostType "../post/types";
+
 actor class CommentMain() {
   type Comment = Types.Comment;
   type PostComments = PostCommentsType.PostComments;
+  type Post = PostType.Post;
 
   private func _hash32(n : Nat64) : Nat32 {
     return Nat32.fromNat(Nat64.toNat(n));
@@ -20,24 +24,55 @@ actor class CommentMain() {
   var counter : Nat64 = 10;
 
   //create comment
-  public shared ({ caller }) func createComment(commentBody : Text, commentImage : Blob, postID : Nat64, postCommentsCanisterId : Text) : async Result.Result<Comment, Text> {
+  public shared ({ caller }) func createComment(
+    commentBody : Text, 
+    commentImage : Blob, 
+    postID : Nat64, 
+    postCommentsCanisterId : Text, 
+    postCanisterId: Text
+  ) : async Result.Result<Comment, Text> {
+
     let comment : Comment = _createCommentObject(counter, commentBody, commentImage, caller);
     commentMap.put(counter, comment);
 
-    //sklian create relationship
-    let postCommentsActor = actor (postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
+    // Create relationship with PostCommentsActor
+    let postCommentsActor = actor(postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
     let result : Result.Result<PostComments, Text> = await postCommentsActor.createPostComments(postID, counter);
 
     switch (result) {
       case (#ok(_)) {
         counter += 1;
-        return #ok(comment);
+
+        let postActor = actor(postCanisterId) : PostModule.PostActor;
+        let res : Result.Result<Post, Text> = await postActor.getPostByID(?postID);
+
+        switch (res) {
+          case (#ok(fetchedPost)) {
+            let updatedPost : Post = fetchedPost;
+            let newCommentCount : Nat64 = updatedPost.numComments + 1;
+
+            let updateResult : Result.Result<Post, Text> = await postActor.updateCommentNum(postID,newCommentCount);
+
+            switch (updateResult) {
+              case (#ok(_)){
+                return #ok(comment);
+              };
+              case (#err(updateErrorMessage)){
+                return #err("Failed to update comment count: " # updateErrorMessage);
+              };
+            };
+          };
+          case (#err(fetchErrorMessage)) {
+            return #err("Failed to retrieve post: " # fetchErrorMessage);
+          };
+        };
       };
       case (#err(errorMessage)) {
         return #err("Failed to create comment: " # errorMessage);
       };
     };
   };
+
 
   private func _createCommentObject(commentID : Nat64, commentBody : Text, commentImage : Blob, creatorIdentity : Principal) : Comment {
     return {

@@ -5,13 +5,17 @@ import Text "mo:base/Text";
 import Nat64 "mo:base/Nat64";
 import Principal "mo:base/Principal";
 
+import PostModule "../post/interface";
+import PostType "../post/types";
+
 actor class UserPostVoteMain() {
     type UserPostVote = Types.UserPostVote;
+    type Post = PostType.Post;
 
     let userPostVoteMap = HashMap.HashMap<Text, UserPostVote>(0, Text.equal, Text.hash);
     
     //create user post vote
-    public shared ({caller}) func createUserPostVote(postID : Nat64, voteType: Text):async Result.Result<UserPostVote, Text>{
+    public shared ({caller}) func createUserPostVote(postID : Nat64, voteType: Text, postCanisterId:Text):async Result.Result<UserPostVote, Text>{
         let userPostVote: UserPostVote = {
             postID = postID;
             userIdentity = caller;
@@ -24,7 +28,43 @@ actor class UserPostVoteMain() {
 
         userPostVoteMap.put(key, userPostVote);
 
-        return #ok(userPostVote);
+        let postActor = actor(postCanisterId) : PostModule.PostActor;
+        let res : Result.Result<Post, Text> = await postActor.getPostByID(?postID);
+        
+        //sklian update number vote
+        switch (res) {
+          case (#ok(fetchedPost)) {
+            let updatedPost : Post = fetchedPost;
+            if (voteType == "up") {
+                let newUpVote : Nat64 = updatedPost.numUpVotes + 1;
+                let updateResult : Result.Result<Post, Text> = await postActor.updateUpvoteNum(postID,newUpVote);
+                switch (updateResult) {
+                    case (#ok(_)){
+                        return #ok(userPostVote);
+                    };
+                    case (#err(updateErrorMessage)){
+                        return #err("Failed to update comment count: " # updateErrorMessage);
+                    };
+                };
+            } else if (voteType == "down") {
+                let newDownVote : Nat64 = updatedPost.numDownVotes + 1;
+                let updateResult : Result.Result<Post, Text> = await postActor.updateUpvoteNum(postID,newDownVote);
+                switch (updateResult) {
+                    case (#ok(_)){
+                        return #ok(userPostVote);
+                    };
+                    case (#err(updateErrorMessage)){
+                        return #err("Failed to update comment count: " # updateErrorMessage);
+                    };
+                };
+            } else {
+                return #err("Invalid vote type");
+            };
+          };
+          case (#err(fetchErrorMessage)) {
+            return #err("Failed to retrieve post: " # fetchErrorMessage);
+          };
+        };
     };
 
     //update type
@@ -43,6 +83,9 @@ actor class UserPostVoteMain() {
                 };
 
                 userPostVoteMap.put(key, updatedUserPostVote);
+
+                //sklian update number vote
+
                 return #ok(updatedUserPostVote);
             };
             case null {
@@ -58,6 +101,8 @@ actor class UserPostVoteMain() {
         let key = Nat64.toText(postID) # "-" # principal;
 
         userPostVoteMap.delete(key);
+
+        //sklian update number vote
 
         return #ok();
     };
