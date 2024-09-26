@@ -59,6 +59,8 @@ actor class UserMain() {
       bio = "";
       profileImage = emptyBlob;
       bannerImage = emptyBlob;
+      numFollowers = 0;
+      numFollowing = 0;
     };
 
     userMap.put(principal, newUser);
@@ -114,7 +116,7 @@ actor class UserMain() {
       case (?res) {
         let user : User = res;
 
-        let updatedUserProfile : User = _createUserObject(caller, username, email, gender, bio, profileImage, bannerImage);
+        let updatedUserProfile : User = _createUserObject(caller, username, email, gender, bio, profileImage, bannerImage, user.numFollowers, user.numFollowing);
 
         Debug.print("--- Updated User Profile ---");
         Debug.print("Updated username: " # updatedUserProfile.username);
@@ -135,7 +137,7 @@ actor class UserMain() {
     };
   };
 
-  private func _createUserObject(internetIdentity : Principal, username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : User {
+  private func _createUserObject(internetIdentity : Principal, username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob, numFollowers: Nat64, numFollowing:Nat64) : User {
 
     return {
       internetIdentity = internetIdentity;
@@ -145,6 +147,8 @@ actor class UserMain() {
       bio = bio;
       profileImage = profileImage;
       bannerImage = bannerImage;
+      numFollowers = numFollowers;
+      numFollowing = numFollowing;
     };
   };
 

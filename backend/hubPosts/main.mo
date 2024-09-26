@@ -20,7 +20,7 @@ actor class HubPosts() {
   type Role = HubType.Role;
 
   //hubID + "-" + post ID as key
-  let hubPostData = HashMap.HashMap<Text, HubPosts>(0, Text.equal, Text.hash);
+  let hubPostMap = HashMap.HashMap<Text, HubPosts>(0, Text.equal, Text.hash);
 
   //create hub posts
   public shared func createHubPosts(hubID : Nat64, postID : Nat64) : async Result.Result<HubPosts, Text> {
@@ -31,7 +31,7 @@ actor class HubPosts() {
 
     let key = Nat64.toText(hubID) # "-" # Nat64.toText(postID);
 
-    hubPostData.put(key, hubPost);
+    hubPostMap.put(key, hubPost);
 
     return #ok(hubPost);
 
@@ -48,7 +48,7 @@ actor class HubPosts() {
       case (#ok(role)) {
 
         if (role.permissions.canDeletePost) {
-          hubPostData.delete(key);
+          hubPostMap.delete(key);
 
           return #ok();
         } else {
@@ -66,7 +66,7 @@ actor class HubPosts() {
   public shared func getAllPostByHubID(hubID : Nat64, postCanisterId : Text) : async Result.Result<[Post], Text> {
     var buffer = Buffer.Buffer<Post>(0);
     let postActor = actor (postCanisterId) : PostModule.PostActor;
-    for (hubPost in hubPostData.vals()) {
+    for (hubPost in hubPostMap.vals()) {
       if (hubPost.hubID == hubID) {
         let result : Result.Result<Post, Text> = await postActor.getPostByID(?hubPost.postID);
         switch (result) {
@@ -83,7 +83,7 @@ actor class HubPosts() {
 
   //get hub posts by post id
   public shared query func getHubPostByPostID(postID : Nat64) : async Result.Result<HubPosts, Text> {
-    for (hubPost in hubPostData.vals()) {
+    for (hubPost in hubPostMap.vals()) {
       if (hubPost.postID == postID) {
         return #ok(hubPost);
       };
