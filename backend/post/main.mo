@@ -133,6 +133,7 @@ actor class PostMain() {
       };
     };
   };
+  
   //update downvote num
   public shared func updateDownvoteNum(postID : Nat64, downvoteNum : Nat64) : async Result.Result<Post, Text> {
     switch (postMap.get(postID)) {
