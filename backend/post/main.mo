@@ -22,8 +22,8 @@ actor class PostMain() {
   var counter : Nat64 = 10;
 
   //create post
-  public shared ({ caller }) func createPost(postBody : Text, postImage : ?Blob, hubID : Nat64, hubPostsCanisterId : Text) : async Result.Result<Post, Text> {
-    let post : Post = createPostObject(counter, postBody, postImage, caller, 0, 0, 0);
+  public shared ({ caller }) func createPost(postTitle : Text, postBody : Text, postImage : ?Blob, hubID : Nat64, hubPostsCanisterId : Text) : async Result.Result<Post, Text> {
+    let post : Post = _createPostObject(counter, postTitle, postBody, postImage, caller, 0, 0, 0);
     postMap.put(counter, post);
 
     //sklian create relationship
@@ -40,15 +40,15 @@ actor class PostMain() {
     };
   };
 
-  public shared ({ caller }) func deletePost(postID : Nat64, hubID : Nat64, hubCanisterId : Text, hubPostsCanisterId : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
+  public shared ({ caller }) func deletePost(postId : Nat64, hubID : Nat64, hubCanisterId : Text, hubPostsCanisterId : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
 
     let hubPostsActor = actor (hubPostsCanisterId) : HubPostsModule.HubPostsActor;
 
-    let result : Result.Result<(), Text> = await hubPostsActor.deleteHubPosts(caller, hubID, postID, hubCanisterId, userHubMembershipCanisterId);
+    let result : Result.Result<(), Text> = await hubPostsActor.deleteHubPosts(caller, hubID, postId, hubCanisterId, userHubMembershipCanisterId);
     switch (result) {
       case (#ok(_)) {
         counter += 1;
-        postMap.delete(postID);
+        postMap.delete(postId);
         return #ok();
       };
       case (#err(errorMessage)) {
@@ -57,9 +57,10 @@ actor class PostMain() {
     };
   };
 
-  private func createPostObject(postID : Nat64, postBody : Text, postImage : ?Blob, creatorIdentity : Principal, numUpVotes : Nat64, numDownVotes : Nat64, numComments : Nat64) : Post {
+  private func _createPostObject(postId : Nat64, postTitle : Text, postBody : Text, postImage : ?Blob, creatorIdentity : Principal, numUpVotes : Nat64, numDownVotes : Nat64, numComments : Nat64) : Post {
     return {
-      postID = postID;
+      postId = postId;
+      postTitle = postTitle;
       postBody = postBody;
       postImage = postImage;
       internetIdentity = creatorIdentity;
@@ -79,8 +80,8 @@ actor class PostMain() {
   };
 
   //get post by ID
-  public shared query func getPostByID(postID : Nat64) : async Result.Result<Post, Text> {
-    switch (postMap.get(postID)) {
+  public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
       case null {
         return #err("Post not found");
       };
@@ -88,7 +89,7 @@ actor class PostMain() {
         return #ok(fetched_post);
       };
     };
-        return #err("Post not found");
+    return #err("Post not found");
   };
 
   //get post by internet identity -> get post by user
@@ -110,13 +111,14 @@ actor class PostMain() {
   };
 
   //update upvote num
-  public shared func updateUpvoteNum(postID : Nat64, upvoteNum : Nat64) : async Result.Result<Post, Text> {
-    switch (postMap.get(postID)) {
+  public shared func updateUpvoteNum(postId : Nat64, upvoteNum : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
       case (?res) {
         let post : Post = res;
 
-        let updatedPost = {
-          postID = post.postID;
+        let updatedPost : Post = {
+          postId = post.postId;
+          postTitle = post.postTitle;
           postBody = post.postBody;
           postImage = post.postImage;
           internetIdentity = post.internetIdentity;
@@ -125,7 +127,7 @@ actor class PostMain() {
           numComments = post.numComments;
         };
 
-        postMap.put(updatedPost.postID, updatedPost);
+        postMap.put(updatedPost.postId, updatedPost);
         return #ok(updatedPost);
       };
       case null {
@@ -133,15 +135,16 @@ actor class PostMain() {
       };
     };
   };
-  
+
   //update downvote num
-  public shared func updateDownvoteNum(postID : Nat64, downvoteNum : Nat64) : async Result.Result<Post, Text> {
-    switch (postMap.get(postID)) {
+  public shared func updateDownvoteNum(postId : Nat64, downvoteNum : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
       case (?res) {
         let post : Post = res;
 
-        let updatedPost = {
-          postID = post.postID;
+        let updatedPost : Post = {
+          postId = post.postId;
+          postTitle = post.postTitle;
           postBody = post.postBody;
           postImage = post.postImage;
           internetIdentity = post.internetIdentity;
@@ -150,7 +153,7 @@ actor class PostMain() {
           numComments = post.numComments;
         };
 
-        postMap.put(updatedPost.postID, updatedPost);
+        postMap.put(updatedPost.postId, updatedPost);
         return #ok(updatedPost);
       };
       case null {
@@ -160,13 +163,14 @@ actor class PostMain() {
   };
 
   //update comment num
-  public shared func updateCommentNum(postID : Nat64, commentNum : Nat64) : async Result.Result<Post, Text> {
-    switch (postMap.get(postID)) {
+  public shared func updateCommentNum(postId : Nat64, commentNum : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
       case (?res) {
         let post : Post = res;
 
-        let updatedPost = {
-          postID = post.postID;
+        let updatedPost : Post = {
+          postId = post.postId;
+          postTitle = post.postTitle;
           postBody = post.postBody;
           postImage = post.postImage;
           internetIdentity = post.internetIdentity;
@@ -175,7 +179,7 @@ actor class PostMain() {
           numComments = commentNum;
         };
 
-        postMap.put(updatedPost.postID, updatedPost);
+        postMap.put(updatedPost.postId, updatedPost);
         return #ok(updatedPost);
       };
       case null {

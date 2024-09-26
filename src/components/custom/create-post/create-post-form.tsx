@@ -17,30 +17,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CloudUpload } from 'lucide-react';
 import { useRef } from 'react';
 import CreatePostSelectHubComboBox from './create-post-select-hub-combobox';
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.',
-  }),
-  body: z.string().min(10, {
-    message: 'Body must be at least 10 characters.',
-  }),
-});
+import { PostDto, PostSchema } from '@/lib/model/schema/post/post.dto';
 
 export default function CreatePostForm() {
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<PostDto>({
+    resolver: zodResolver(PostSchema),
     defaultValues: {
-      title: '',
-      body: '',
+      postTitle: '',
+      postBody: '',
     },
+    
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = (values: PostDto) => {
     console.log(values);
-  }
+  };
+
+  const onHubChange = (hubId: string) => {
+    form.setValue('hubId', hubId);
+  };
 
   return (
     <Form {...form}>
@@ -48,10 +45,10 @@ export default function CreatePostForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-y-8"
       >
-        <CreatePostSelectHubComboBox />
+        <CreatePostSelectHubComboBox onHubChange={onHubChange} />
         <FormField
           control={form.control}
-          name="title"
+          name="postTitle"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
@@ -71,7 +68,7 @@ export default function CreatePostForm() {
         />
         <FormField
           control={form.control}
-          name="title"
+          name="postBody"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Body</FormLabel>

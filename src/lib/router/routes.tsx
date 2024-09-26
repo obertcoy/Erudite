@@ -4,8 +4,8 @@ import MainLayout from '@/layout/main-layout';
 import { RouteEnum } from '@/lib/enum/route-enum';
 
 import AccountPage from '@/pages/(protected)/user/account-page';
-import CreatePostPage from '@/pages/(protected)/create-post-page';
-import PostPage from '@/pages/(protected)/post-page';
+import CreatePostPage from '@/pages/(protected)/post/create-post-page';
+import PostPage from '@/pages/(protected)/post/post-page';
 import EditProfilePage from '@/pages/(protected)/user/edit-profile-page';
 import ProfilePage from '@/pages/(protected)/user/profile-page';
 import HomePage from '@/pages/(public)/home-page';
@@ -14,10 +14,10 @@ import NotFound from '@/pages/(public)/not-found';
 import RegisterPage from '@/pages/(public)/register-page';
 import { getUserQuery } from '@/services/user-service';
 import { LoaderFunctionArgs, RouteObject } from 'react-router-dom';
-import HubPage from '@/pages/(protected)/hub-page';
-import CreateHubPage from '@/pages/(protected)/create-hub-page';
-import ExploreHubsPage from '@/pages/(protected)/explore-hubs-page';
-import ManageHubPage from '@/pages/(protected)/manage-hub-page';
+import HubPage from '@/pages/(protected)/hub/hub-page';
+import CreateHubPage from '@/pages/(protected)/hub/create-hub-page';
+import ExploreHubsPage from '@/pages/(protected)/hub/explore-hubs-page';
+import ManageHubPage from '@/pages/(protected)/hub/manage-hub-page';
 
 export const ROUTES: RouteObject[] = [
   {

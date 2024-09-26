@@ -16,33 +16,19 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useState } from 'react';
+import { useHubContext } from '@/contexts/hub-context';
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
+interface CreatePostSelectHubComboBoxProps {
+  onHubChange: (hubId: string) => void;
+}
 
-export default function CreatePostSelectHubComboBox() {
+export default function CreatePostSelectHubComboBox({
+  onHubChange,
+}: CreatePostSelectHubComboBoxProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
+
+  const { joinedHubs } = useHubContext();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -54,7 +40,7 @@ export default function CreatePostSelectHubComboBox() {
           className="w-[300px] justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
+            ? joinedHubs.find((hub) => hub.hubID === value)?.hubName
             : 'Select hub...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -63,24 +49,25 @@ export default function CreatePostSelectHubComboBox() {
         <Command>
           <CommandInput placeholder="Search hub..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No joined hub.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {joinedHubs.map((hub) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={hub.hubID}
+                  value={hub.hubID}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
+                    onHubChange(currentValue);
                   }}
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === framework.value ? 'opacity-100' : 'opacity-0',
+                      value === hub.hubName ? 'opacity-100' : 'opacity-0',
                     )}
                   />
-                  {framework.label}
+                  {hub.hubName}
                 </CommandItem>
               ))}
             </CommandGroup>
