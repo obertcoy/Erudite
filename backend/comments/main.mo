@@ -39,6 +39,7 @@ actor class CommentMain() {
     let postCommentsActor = actor(postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
     let result : Result.Result<PostComments, Text> = await postCommentsActor.createPostComments(postID, counter);
 
+    //update num comments in post
     switch (result) {
       case (#ok(_)) {
         counter += 1;

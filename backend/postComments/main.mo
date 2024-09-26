@@ -84,7 +84,7 @@ actor class PostComments(){
                             switch (res) {
                                 case (#ok(post)) {
                                     let temp : PostCommentsProfile = {
-                                            postID = post.postID;
+                                            postID = post.postId;
                                             postBody = post.postBody;
                                             postImage = post.postImage;
                                             postInternetIdentity = post.internetIdentity;
