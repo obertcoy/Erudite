@@ -70,7 +70,7 @@ actor class PostMain() {
   };
 
   //get all post
-  public func getAllPost() : async Result.Result<[Post], Text> {
+  public shared query func getAllPost() : async Result.Result<[Post], Text> {
     var buffer = Buffer.Buffer<Post>(0);
     for (post in postMap.vals()) {
       buffer.add(post);
@@ -79,27 +79,20 @@ actor class PostMain() {
   };
 
   //get post by ID
-  public func getPostByID(postID : ?Nat64) : async Result.Result<Post, Text> {
-    switch postID {
+  public shared query func getPostByID(postID : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postID)) {
       case null {
-        return #err("Post ID is invalid");
-      };
-      case (?validPostID) {
-        switch (postMap.get(validPostID)) {
-          case null {
-            return #err("Post not found");
-          };
-          case (?fetched_post) {
-            return #ok(fetched_post);
-          };
-        };
         return #err("Post not found");
       };
+      case (?fetched_post) {
+        return #ok(fetched_post);
+      };
     };
+        return #err("Post not found");
   };
 
   //get post by internet identity -> get post by user
-  public func getPostByPrincipal(principal : ?Principal) : async Result.Result<[Post], Text> {
+  public shared query func getPostByPrincipal(principal : ?Principal) : async Result.Result<[Post], Text> {
     switch principal {
       case null {
         return #err("Principal ID is invalid");
@@ -117,7 +110,7 @@ actor class PostMain() {
   };
 
   //update upvote num
-  public func updateUpvoteNum(postID : Nat64, upvoteNum : Nat64) : async Result.Result<Post, Text> {
+  public shared func updateUpvoteNum(postID : Nat64, upvoteNum : Nat64) : async Result.Result<Post, Text> {
     switch (postMap.get(postID)) {
       case (?res) {
         let post : Post = res;
@@ -141,7 +134,7 @@ actor class PostMain() {
     };
   };
   //update downvote num
-  public func updateDownvoteNum(postID : Nat64, downvoteNum : Nat64) : async Result.Result<Post, Text> {
+  public shared func updateDownvoteNum(postID : Nat64, downvoteNum : Nat64) : async Result.Result<Post, Text> {
     switch (postMap.get(postID)) {
       case (?res) {
         let post : Post = res;
@@ -166,7 +159,7 @@ actor class PostMain() {
   };
 
   //update comment num
-  public func updateCommentNum(postID : Nat64, commentNum : Nat64) : async Result.Result<Post, Text> {
+  public shared func updateCommentNum(postID : Nat64, commentNum : Nat64) : async Result.Result<Post, Text> {
     switch (postMap.get(postID)) {
       case (?res) {
         let post : Post = res;

@@ -48,27 +48,20 @@ actor class CommentMain() {
     };
   };
   //get comment by ID
-  public func getCommentByID(commentID : ?Nat64) : async Result.Result<Comment, Text> {
-    switch commentID {
+  public shared query func getCommentByID(commentID : Nat64) : async Result.Result<Comment, Text> {
+    switch (commentData.get(commentID)) {
       case null {
-        return #err("Comment ID is invalid");
-      };
-      case (?validCommentID) {
-        switch (commentData.get(validCommentID)) {
-          case null {
-            return #err("Comment not found");
-          };
-          case (?fetched_comment) {
-            return #ok(fetched_comment);
-          };
-        };
         return #err("Comment not found");
       };
+      case (?fetched_comment) {
+        return #ok(fetched_comment);
+      };
     };
+    return #err("Comment not found");
   };
 
   //get comment by principal
-  public func getCommentByPrincipal(principal : ?Principal) : async Result.Result<[Comment], Text> {
+  public shared query func getCommentByPrincipal(principal : ?Principal) : async Result.Result<[Comment], Text> {
     switch principal {
       case null {
         return #err("Principal ID is invalid");

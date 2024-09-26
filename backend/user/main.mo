@@ -97,22 +97,16 @@ actor class UserMain() {
   };
 
   //get user by username
-  public func getUserByUsername(username : ?Text) : async Result.Result<User, Text> {
-    switch username {
-      case null {
-        return #err("Username is invalid");
-      };
-      case (?validUsername) {
-        for (user in userMap.vals()) {
-          if (user.username == validUsername) {
-            return #ok(user);
-          };
+  public shared query func getUserByUsername(username : Text) : async Result.Result<User, Text> {
+    for (user in userMap.vals()) {
+      if (user.username == username) {
+          return #ok(user);
         };
-
-        return #err("User not found");
       };
-    };
+
+      return #err("User not found");
   };
+
 
   public shared ({ caller }) func updateUser(username : Text, email : Text, gender : Text, bio : Text, profileImage : Blob, bannerImage : Blob) : async Result.Result<(), Text> {
 

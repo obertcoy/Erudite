@@ -174,23 +174,16 @@ actor class HubMain() {
   };
 
   //get hub by ID
-  public shared query func getHubByID(hubID : ?Nat64) : async Result.Result<Hub, Text> {
-    switch hubID {
+  public shared query func getHubByID(hubID : Nat64) : async Result.Result<Hub, Text> {
+    switch (hubMap.get(hubID)) {
       case null {
-        return #err("Hub ID is invalid");
-      };
-      case (?validHubID) {
-        switch (hubMap.get(validHubID)) {
-          case null {
-            return #err("Hub not found");
-          };
-          case (?fetched_hub) {
-            return #ok(fetched_hub);
-          };
-        };
         return #err("Hub not found");
       };
+      case (?fetched_hub) {
+        return #ok(fetched_hub);
+      };
     };
+    return #err("Hub not found");
   };
 
   //get all hub
