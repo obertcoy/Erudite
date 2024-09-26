@@ -17,6 +17,7 @@ import { getUserQuery } from '@/services/user-service';
 import { LoaderFunctionArgs, RouteObject } from 'react-router-dom';
 import HubPage from '@/pages/(protected)/hub-page';
 import CreateHubPage from '@/pages/(protected)/create-hub-page';
+import ManageHubPage from '@/pages/(protected)/manage-hub-page';
 
 export const ROUTES: RouteObject[] = [
   {
@@ -61,6 +62,10 @@ export const ROUTES: RouteObject[] = [
           {
             path: RouteEnum.CREATE_HUB,
             element: <CreateHubPage />,
+          },
+          {
+            path: '/hubs/adeptus-mechanicus/settings',
+            element: <ManageHubPage />,
           },
         ],
       },

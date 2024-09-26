@@ -19,30 +19,22 @@ import { useState } from 'react';
 
 const frameworks = [
   {
-    value: 'next.js',
-    label: 'Next.js',
+    value: 'member',
+    label: 'Member',
   },
   {
-    value: 'sveltekit',
-    label: 'SvelteKit',
+    value: 'admin',
+    label: 'Admin',
   },
   {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
+    value: 'owner',
+    label: 'Owner',
   },
 ];
 
-export default function CreatePostSelectHubComboBox() {
+export default function ManageHubRoleCombobox() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('member');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

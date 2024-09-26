@@ -5,6 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
 import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Wrench } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -40,13 +42,21 @@ export default function HubPage() {
   return (
     <main className="w-full flex flex-col gap-y-4  items-center pb-4">
       <div className="w-full flex flex-col border-b shadow-sm dark:shadow-none">
-        <div className="flex items-center justify-start w-full bg-gray-200 dark:bg-gray-800 h-48" />
+        <div className="flex items-center justify-start w-full bg-gray-200 dark:bg-gray-800 h-64" />
         <div className="flex flex-col p-8 gap-y-2">
           <div className="flex items-center gap-x-2">
             <h1 className="text-2xl font-medium">Adeptus Mechanicus</h1>
             <Badge variant="outline">21K Members</Badge>
           </div>
-          <Button className="w-fit">Join</Button>
+          <div className="flex items-center gap-x-2">
+            <Button className="w-fit">Join</Button>
+            <Link to="/hubs/adeptus-mechanicus/settings">
+              <Button variant="secondary">
+                <Wrench className="size-4 mr-2" />
+                Manage
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
       <div className="w-full max-w-[69rem]">

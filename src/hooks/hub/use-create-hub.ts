@@ -5,7 +5,7 @@ import { createHubUpdate } from '@/services/hub-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export function useCreateHub(hub: HubDto): Promise<HubEntity | null> {
+export function useCreateHub(hub: HubDto) {
   const [hubData, setHubData] = useState<HubEntity | null>();
   const { createHub, userHubMembershipCanisterId } = createHubUpdate();
 
@@ -18,7 +18,7 @@ export function useCreateHub(hub: HubDto): Promise<HubEntity | null> {
           hub.hubName,
           hub.hubDescription,
           profileImage,
-          userHubMembershipCanisterId
+          userHubMembershipCanisterId,
         ]);
       } catch (err) {
         toast.error('Error: Failed to create hub');
