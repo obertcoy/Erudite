@@ -3,6 +3,7 @@ import PostCard from '@/components/custom/post-card/post-card';
 import { Separator } from '@/components/ui/separator';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
 import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
+import React from 'react';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -46,10 +47,10 @@ export default function HomePage() {
         <div className="flex justify-center gap-x-4">
           <div className="flex flex-col items-center gap-y-4">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-              <>
+              <React.Fragment key={item}>
                 <Separator />
                 <PostCard key={item} />
-              </>
+              </React.Fragment>
             ))}
           </div>
           <FloatingFeedSidebar />

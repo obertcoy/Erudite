@@ -17,30 +17,44 @@ import { CloudUpload } from 'lucide-react';
 import { useRef } from 'react';
 import CreateHubSetRulesList from './create-hub-set-rules-list';
 import { Separator } from '@/components/ui/separator';
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  description: z.string().min(10, {
-    message: 'Descripition must be at least 10 characters.',
-  }),
-});
+import { HubDto, HubSchema } from '@/lib/model/schema/hub/hub.dto';
+import { RuleDto } from '@/lib/model/schema/hub/rule.dto';
+import { useCreateHub } from '@/hooks/hub/use-create-hub';
+import { useNavigate } from 'react-router';
+import { generateDynamicRoutePath } from '@/lib/utils';
+import { RouteEnum } from '@/lib/enum/route-enum';
+import { useHubContext } from '@/contexts/hub-context';
 
 export default function CreateHubForm() {
   const fileRef = useRef<HTMLInputElement>(null);
+  const { execute } = useCreateHub();
+  const { fetchJoinedHubs } = useHubContext();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const navigate = useNavigate();
+
+  const form = useForm<HubDto>({
+    resolver: zodResolver(HubSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      hubName: '',
+      hubDescription: '',
+      hubBannerImage: undefined,
+      hubRules: [],
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onRulesChange = (rules: RuleDto[]) => {
+    form.setValue('hubRules', rules);
+  };
+
+  const onSubmit = async (hubDto: HubDto) => {
+    const result = await execute(hubDto);
+    if (result) {
+      fetchJoinedHubs();
+      navigate(
+        generateDynamicRoutePath(RouteEnum.HUB, { hubId: result.hubID }),
+      );
+    }
+  };
 
   return (
     <Form {...form}>
@@ -50,7 +64,7 @@ export default function CreateHubForm() {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="hubName"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -71,7 +85,7 @@ export default function CreateHubForm() {
         />
         <FormField
           control={form.control}
-          name="description"
+          name="hubDescription"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
@@ -90,27 +104,51 @@ export default function CreateHubForm() {
             </FormItem>
           )}
         />
-        <div className="space-y-2">
-          <h1 className="text-sm font-medium">Hub Banner</h1>
-          <p className="text-xs">
-            Upload a banner image for your hub. This image will be displayed at
-            the top of your hub.
-          </p>
-          <div>
-            <div
-              onClick={() => {
-                fileRef.current?.click();
-              }}
-              className="w-full h-44 border-2 border-dashed flex flex-col items-center justify-center rounded-md text-muted-foreground text-sm cursor-pointer"
-            >
-              <CloudUpload className="size-6" />
-              Click to upload files
-            </div>
-            <Input ref={fileRef} type="file" className="hidden" />
-          </div>
-        </div>
+        <FormField
+          control={form.control}
+          name="hubBannerImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Hub Banner</FormLabel>
+              <FormDescription>
+                Upload a banner image for your hub. This image will be displayed
+                at the top of your hub.
+              </FormDescription>
+              <FormControl>
+                <>
+                  <div
+                    onClick={() => fileRef.current?.click()}
+                    className="w-full h-44 border-2 border-dashed flex flex-col items-center justify-center rounded-md text-muted-foreground text-sm cursor-pointer"
+                  >
+                    {!field.value ? (
+                      <>
+                        <CloudUpload className="size-6" />
+                        Click to upload files
+                      </>
+                    ) : (
+                      <img
+                        src={URL.createObjectURL(field.value)}
+                        alt="Uploaded Preview"
+                        className="h-44 w-full object-cover rounded-md"
+                      />
+                    )}
+                  </div>
+                  <Input
+                    ref={fileRef}
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      field.onChange(e.target.files?.[0]);
+                    }}
+                  />
+                </>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Separator />
-        <CreateHubSetRulesList />
+        <CreateHubSetRulesList onRulesChange={onRulesChange} />
         <Button type="submit" className="w-fit self-end">
           Create
         </Button>

@@ -21,7 +21,7 @@ module {
       
       commentID : Nat64;
       commentBody: Text;
-      commentImage: ?Blob;
+      commentImage: Blob;
       commentInternetIdentity : Principal;
    };
 };

@@ -78,6 +78,8 @@ export function SignupForm() {
   });
 
   const onSubmit = async (data: RegisterUserDto) => {
+    const toastId = toast.loading('Signing you in...');
+
     await login({
       onSuccess: async () => {
         const principal: Principal | undefined = getIdentity()?.getPrincipal();
@@ -100,8 +102,6 @@ export function SignupForm() {
         }
 
         // console.log('Register: ' + result);
-
-        const toastId = toast.loading('Signing you in...');
 
         if (result && 'err' in result) {
           toast.error(`Failed to sign in : ${result.err}`, { id: toastId });

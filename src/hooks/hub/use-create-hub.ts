@@ -1,32 +1,48 @@
-import { HubEntity } from '@/lib/model/entity/hub/hub.entity';
+import {
+  HubEntity,
+  convertRawHubEntityToHubEntity,
+} from '@/lib/model/entity/hub/hub.entity';
 import { HubDto } from '@/lib/model/schema/hub/hub.dto';
-import { convertFileToUint8Array } from '@/lib/utils';
+import {
+  compressImageURLToUint8Array,
+  convertFileToUint8Array,
+} from '@/lib/utils';
 import { createHubUpdate } from '@/services/hub-service';
-import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export function useCreateHub(hub: HubDto) {
-  const [hubData, setHubData] = useState<HubEntity | null>();
+export function useCreateHub() {
   const { createHub, userHubMembershipCanisterId } = createHubUpdate();
 
-  useEffect(() => {
-    const create = async () => {
-      try {
-        const profileImage = await convertFileToUint8Array(hub.hubProfileImage);
+  const execute = async (hubDto: HubDto) => {
+    try {
+      const hubBannerImage = await compressImageURLToUint8Array(
+        URL.createObjectURL(hubDto.hubBannerImage),
+      );
 
-        const result = await createHub([
-          hub.hubName,
-          hub.hubDescription,
-          profileImage,
-          userHubMembershipCanisterId,
-        ]);
-      } catch (err) {
-        toast.error('Error: Failed to create hub');
+      const toastId = toast.loading('Creating hub...');
+      if (!hubBannerImage) return;
+
+      const result = await createHub([
+        hubDto.hubName,
+        hubDto.hubDescription,
+        hubBannerImage,
+        hubDto.hubRules,
+        userHubMembershipCanisterId,
+      ]);
+
+      if (!result || 'err' in result) {
+        toast.error(result?.err, { id: toastId });
+        return null;
       }
-    };
 
-    create();
-  }, [hub]);
+      toast.success('Hub created successfuly', { id: toastId });
 
-  return hubData;
+      return convertRawHubEntityToHubEntity(result.ok);
+    } catch (err) {
+      toast.error('Error: Failed to create hub');
+      return null;
+    }
+  };
+
+  return { execute };
 }

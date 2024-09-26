@@ -2,7 +2,8 @@ import useServiceContext from '@/hooks/use-service-context';
 
 export function createHubUpdate() {
   const { useUpdateCall: hubUpdate } = useServiceContext().hubService;
-  const userHubMembershipCanisterId = useServiceContext().userHubMembershipCanisterId
+  const userHubMembershipCanisterId =
+    useServiceContext().userHubMembershipCanisterId;
 
   const { call: createHub } = hubUpdate({
     functionName: 'createHub',
@@ -10,13 +11,13 @@ export function createHubUpdate() {
   return { createHub, userHubMembershipCanisterId };
 }
 
-export function hubProfileUpdate() {
+export function hubInformationUpdate() {
   const { useUpdateCall: hubUpdate } = useServiceContext().hubService;
 
-  const { call: updateHubProfile } = hubUpdate({
-    functionName: 'updateHubProfile',
+  const { call: updateHubInformation } = hubUpdate({
+    functionName: 'updateHubInformation',
   });
-  return { updateHubProfile };
+  return { updateHubInformation };
 }
 
 export function createEditHubRolesUpdate() {
@@ -30,9 +31,18 @@ export function createEditHubRolesUpdate() {
 
 export function getHubByIdQuery() {
   const { useQueryCall: hubQuery } = useServiceContext().hubService;
-
+  
   const { call: getHubByID, loading: getHubLoading } = hubQuery({
     functionName: 'getHubByID',
   });
   return { getHubByID, getHubLoading };
+}
+
+export function getAllHubsQuery() {
+  const { useQueryCall: hubQuery } = useServiceContext().hubService;
+
+  const { call: getAllHubs, loading: getAllHubsLoading } = hubQuery({
+    functionName: 'getAllHubs',
+  });
+  return { getAllHubs, getAllHubsLoading };
 }

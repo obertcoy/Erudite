@@ -13,6 +13,7 @@ actor class HubMain() {
   type Hub = Types.Hub;
   type UserHubMembership = UserHubMembershipType.UserHubMembership;
   type Role = Types.Role;
+  type Rule = Types.Rule;
   type Permission = Types.Permission;
 
   private func _hash32(n : Nat64) : Nat32 {
@@ -24,12 +25,15 @@ actor class HubMain() {
   var counter : Nat64 = 10;
 
   //create hub
-  public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubProfileImage : Blob, userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
+  public shared ({ caller }) func createHub(hubName : Text, hubDescription : Text, hubBannerImage : Blob, hubRules : [Rule], userHubMembershipCanisterId : Text) : async Result.Result<Hub, Text> {
+
     for (hub in hubMap.vals()) {
       if (hub.hubName == hubName) {
-        return #err("Hub name already exist");
+        return #err("Failed: Hub name already exist");
       };
     };
+
+    // Default roles
 
     let ownerPermissions : Permission = {
       canDeletePost = true;
@@ -42,23 +46,38 @@ actor class HubMain() {
 
       roleName = "Owner";
       permissions = ownerPermissions;
+      default = false;
+    };
 
+    let memberPermissions : Permission = {
+      canDeletePost = false;
+      canEditHub = false;
+      canCreateEditRoles = false;
+      canKickMember = false;
+    };
+
+    let memberRole : Role = {
+      roleName = "Member";
+      permissions = memberPermissions;
+      default = true;
     };
 
     let hub : Hub = {
       hubID = counter;
       hubName = hubName;
       hubDescription = hubDescription;
-      hubProfileImage = hubProfileImage;
-      hubRoles = [ownerRole];
+      hubBannerImage = hubBannerImage;
+      hubRoles = [ownerRole, memberRole];
+      hubRules = hubRules;
     };
-    hubMap.put(counter, hub);
 
     //create membership -> admin
     let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
-    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(counter, "Owner", ?caller);
+    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ownerRole.roleName);
+
     switch (result) {
       case (#ok(_)) {
+        hubMap.put(counter, hub);
         counter += 1;
         return #ok(hub);
       };
@@ -69,7 +88,7 @@ actor class HubMain() {
   };
 
   //edit hub
-  public shared ({ caller }) func updateHubProfile(hubID : Nat64, hubDescription : Text, hubProfileImage : Blob, hubCanisterID : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
+  public shared ({ caller }) func updateHubInformation(hubID : Nat64, hubDescription : Text, hubBannerImage : Blob, hubCanisterID : Text, userHubMembershipCanisterId : Text) : async Result.Result<(), Text> {
     switch (hubMap.get(hubID)) {
       case (?hub) {
         let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
@@ -78,12 +97,12 @@ actor class HubMain() {
         switch (callerRoleResult) {
           case (#ok(role)) {
             if (role.permissions.canEditHub) {
-              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hubDescription, hubProfileImage, hub.hubRoles);
+              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hubDescription, hubBannerImage, hub.hubRules, hub.hubRoles);
 
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
             } else {
-              return #err("Error: Insufficient permissions to update the hub profile.");
+              return #err("Failed: Insufficient permissions to update the hub profile.");
             };
           };
 
@@ -93,7 +112,7 @@ actor class HubMain() {
         };
       };
       case null {
-        return #err("Error: hub not found");
+        return #err("Error: Hub not found");
       };
     };
   };
@@ -109,12 +128,12 @@ actor class HubMain() {
           case (#ok(role)) {
 
             if (role.permissions.canCreateEditRoles) {
-              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hub.hubDescription, hub.hubProfileImage, hubRoles);
+              let updatedHubProfile = _createHubObject(hub.hubID, hub.hubName, hub.hubDescription, hub.hubBannerImage, hub.hubRules, hubRoles);
 
               hubMap.put(hubID, updatedHubProfile);
               return #ok();
             } else {
-              return #err("Error: Insufficient permissions to update the hub roles.");
+              return #err("Failed: Insufficient permissions to update the hub roles.");
             };
           };
 
@@ -124,17 +143,18 @@ actor class HubMain() {
         };
       };
       case null {
-        return #err("Error: hub not found");
+        return #err("Error: Hub not found");
       };
     };
   };
 
-  private func _createHubObject(hubID : Nat64, hubName : Text, hubDescription : Text, hubProfileImage : Blob, hubRoles : [Role]) : Hub {
+  private func _createHubObject(hubID : Nat64, hubName : Text, hubDescription : Text, hubBannerImage : Blob, hubRules : [Rule], hubRoles : [Role]) : Hub {
     return {
       hubID = hubID;
       hubName = hubName;
       hubDescription = hubDescription;
-      hubProfileImage = hubProfileImage;
+      hubBannerImage = hubBannerImage;
+      hubRules = hubRules;
       hubRoles = hubRoles;
     };
   };
@@ -148,32 +168,25 @@ actor class HubMain() {
       };
     };
 
-    return #err("User not found");
+    return #err("Error: Hub not found");
 
   };
 
   //get hub by ID
-  public shared query func getHubByID(hubID : ?Nat64) : async Result.Result<Hub, Text> {
-    switch hubID {
+  public shared query func getHubByID(hubID : Nat64) : async Result.Result<Hub, Text> {
+    switch (hubMap.get(hubID)) {
       case null {
-        return #err("Hub ID is invalid");
-      };
-      case (?validHubID) {
-        switch (hubMap.get(validHubID)) {
-          case null {
-            return #err("Hub not found");
-          };
-          case (?fetched_hub) {
-            return #ok(fetched_hub);
-          };
-        };
         return #err("Hub not found");
       };
+      case (?fetched_hub) {
+        return #ok(fetched_hub);
+      };
     };
+    return #err("Hub not found");
   };
 
   //get all hub
-  public func getAllHub() : async Result.Result<[Hub], Text> {
+  public shared query func getAllHubs() : async Result.Result<[Hub], Text> {
     var buffer = Buffer.Buffer<Hub>(0);
     for (hub in hubMap.vals()) {
       buffer.add(hub);

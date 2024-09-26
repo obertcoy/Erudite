@@ -4,13 +4,16 @@ import { createHubUpdate, getHubByIdQuery } from '@/services/hub-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export function useGetHubById(hubId: string) {
+export function useGetHubById(hubId: string | undefined) {
   const [hubData, setHubData] = useState<HubEntity | null>(null);
   const { getHubByID, getHubLoading } = getHubByIdQuery(); 
 
   useEffect(() => {
     const fetchHub = async () => {
-
+      if (!hubId) {
+        toast('Error: Hub id is required');
+        return;
+      }
       try {
         const result = await getHubByID([[BigInt(hubId)]]);
         if (!result || 'err' in result) {

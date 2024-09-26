@@ -71,28 +71,72 @@ export function convertUint8ArrayToImageURL(uint8Array: Uint8Array | number[]) {
 }
 
 export async function validateFile(file: File) {
-  if (!file || !file.type.startsWith('image/') || file.size > MAX_IMAGE_SIZE) {
-    return false;
+  if (!file || !file.type.startsWith('image/')) {
+    return false; 
   }
-  return true;
+
+  try {
+    const compressedBlob: Blob = await new Promise((resolve, reject) => {
+      new Compressor(file, {
+        quality: 0.9,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        mimeType: 'image/jpeg',
+        success(result) {
+          resolve(result);
+        },
+        error(error) {
+          reject(error);
+        },
+      });
+    });
+
+
+    if (compressedBlob.size > MAX_IMAGE_SIZE) {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error during file compression:', error);
+    return false; 
+  }
+
+  return true
 }
 
 export async function validateImageURL(imageUrl: string) {
-  try {
-    const blob = await convertImageURLToBlob(imageUrl);
 
-    if (
-      !blob ||
-      !blob.type.startsWith('image/') ||
-      blob.size > MAX_IMAGE_SIZE
-    ) {
+  const blob = await convertImageURLToBlob(imageUrl)
+
+  if (!blob || !blob.type.startsWith('image/')) {
+    return false; 
+  }
+
+  try {
+    const compressedBlob: Blob = await new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: 0.9,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        mimeType: 'image/jpeg',
+        success(result) {
+          resolve(result);
+        },
+        error(error) {
+          reject(error);
+        },
+      });
+    });
+
+
+    if (compressedBlob.size > MAX_IMAGE_SIZE) {
       return false;
     }
-
-    return true;
   } catch (error) {
-    return false;
+    console.error('Error during file compression:', error);
+    return false; 
   }
+
+  return true
 }
 
 export async function compressImageURLToUint8Array(
@@ -127,4 +171,9 @@ export async function compressImageURLToUint8Array(
     console.error('Error in compressing image: ', error);
     return null;
   }
+}
+
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + '...';
 }

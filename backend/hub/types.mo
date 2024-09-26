@@ -10,13 +10,15 @@ module {
     hubID : Nat64;
     hubName : Text;
     hubDescription : Text;
-    hubProfileImage : Blob;
+    hubBannerImage : Blob;
     hubRoles : [Role];
+    hubRules : [Rule];
   };
 
   public type Role = {
     roleName : Text;
     permissions : Permission;
+    default: Bool;
   };
 
   public type Permission = {
@@ -24,5 +26,10 @@ module {
     canEditHub : Bool;
     canCreateEditRoles : Bool;
     canKickMember : Bool;
+  };
+
+  public type Rule = {
+    ruleTitle : Text;
+    ruleDescription : Text;
   };
 };
