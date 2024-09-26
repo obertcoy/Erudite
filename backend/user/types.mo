@@ -15,5 +15,7 @@ module {
       bio: Text;
       profileImage: Blob;
       bannerImage: Blob;
+      numFollowers: Nat64;
+      numFollowing: Nat64;
    };
 };

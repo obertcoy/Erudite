@@ -19,7 +19,7 @@ actor class PostComments(){
     type Post = PostType.Post;
 
     //postID + "-" + commentID
-    let postCommentsData = HashMap.HashMap<Text, PostComments>(0, Text.equal, Text.hash);
+    let postCommentsMap = HashMap.HashMap<Text, PostComments>(0, Text.equal, Text.hash);
 
     //create post comments
     public shared ({caller}) func createPostComments(postID : Nat64, commentID: Nat64):async Result.Result<PostComments, Text>{
@@ -30,7 +30,7 @@ actor class PostComments(){
 
         let key = Nat64.toText(postID) # "-" # Nat64.toText(commentID);
 
-        postCommentsData.put(key, postComment);
+        postCommentsMap.put(key, postComment);
 
         return #ok(postComment);
     };
@@ -39,7 +39,7 @@ actor class PostComments(){
     public func getAllCommentByPostID(postID : Nat64, commentCanisterId: Text): async Result.Result<[Comment], Text>{
         var buffer = Buffer.Buffer<Comment>(0);
         let commentActor = actor (commentCanisterId) : CommentModule.CommentsActor;
-        for (postComment in postCommentsData.vals()){
+        for (postComment in postCommentsMap.vals()){
             if(postComment.postID == postID){
                 let result: Result.Result<Comment, Text> = await commentActor.getCommentByID(?postComment.commentID);
                 switch (result) {
@@ -57,7 +57,7 @@ actor class PostComments(){
 
     //get post comment by comment id
     public func getPostCommentByCommentID(commentID : Nat64): async Result.Result<PostComments, Text>{
-        for (postComment in postCommentsData.vals()){
+        for (postComment in postCommentsMap.vals()){
             if(postComment.commentID == commentID){
                 return #ok(postComment);
             };

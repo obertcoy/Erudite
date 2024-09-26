@@ -16,13 +16,13 @@ actor class CommentMain() {
     return Nat32.fromNat(Nat64.toNat(n));
   };
 
-  let commentData = TrieMap.TrieMap<Nat64, Comment>(Nat64.equal, _hash32);
+  let commentMap = TrieMap.TrieMap<Nat64, Comment>(Nat64.equal, _hash32);
   var counter : Nat64 = 10;
 
   //create comment
   public shared ({ caller }) func createComment(commentBody : Text, commentImage : Blob, postID : Nat64, postCommentsCanisterId : Text) : async Result.Result<Comment, Text> {
     let comment : Comment = _createCommentObject(counter, commentBody, commentImage, caller);
-    commentData.put(counter, comment);
+    commentMap.put(counter, comment);
 
     //sklian create relationship
     let postCommentsActor = actor (postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
@@ -49,7 +49,7 @@ actor class CommentMain() {
   };
   //get comment by ID
   public shared query func getCommentByID(commentID : Nat64) : async Result.Result<Comment, Text> {
-    switch (commentData.get(commentID)) {
+    switch (commentMap.get(commentID)) {
       case null {
         return #err("Comment not found");
       };
@@ -68,7 +68,7 @@ actor class CommentMain() {
       };
       case (?validPrincipal) {
         var buffer = Buffer.Buffer<Comment>(0);
-        for (comment in commentData.vals()) {
+        for (comment in commentMap.vals()) {
           if (comment.internetIdentity == validPrincipal) {
             buffer.add(comment);
           };
