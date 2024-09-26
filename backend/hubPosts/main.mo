@@ -105,7 +105,7 @@ actor class HubPosts() {
           let hubPost : Result.Result<HubPosts, Text> = await getHubPostByPostID(post.postID);
           switch (hubPost) {
             case (#ok(hubPost)) {
-              let res : Result.Result<Hub, Text> = await hubActor.getHubByID(?hubPost.hubID);
+              let res : Result.Result<Hub, Text> = await hubActor.getHubByID(hubPost.hubID);
               switch (res) {
                 case (#ok(hub)) {
                   let temp : HubPostProfile = {

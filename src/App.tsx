@@ -9,9 +9,9 @@ import {
 import { router } from './lib/router/router';
 import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/sonner';
-import { AuthProvider } from './contexts/auth-context';
 import { ServiceContextProvider } from './contexts/service-context';
 import { HubProvider } from './contexts/hub-context';
+import { AuthProvider } from './contexts/auth-context';
 
 function App() {
   return (

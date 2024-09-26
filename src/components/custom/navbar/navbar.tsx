@@ -6,14 +6,16 @@ import SearchBar from './search-bar';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import NavbarIcon from './navbar-icon';
 import SearchResult from './search-result';
-import useAuthContext from '@/hooks/use-auth-context';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import useAuthContext from '@/hooks/use-auth-context';
+
 interface NavbarProps {
   title: string;
 }
 export function Navbar({ title }: NavbarProps) {
   const { user } = useAuthContext();
+  console.log(user);
   
   return (
     <header className="sticky top-0 z-10 w-full bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">

@@ -15,7 +15,7 @@ export function useGetHubById(hubId: string | undefined) {
         return;
       }
       try {
-        const result = await getHubByID([[BigInt(hubId)]]);
+        const result = await getHubByID([BigInt(hubId)]);
         if (!result || 'err' in result) {
           toast.error('Error on fetching hub: ' + result?.err);
         } else {

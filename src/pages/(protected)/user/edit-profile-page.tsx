@@ -33,6 +33,7 @@ import { toast } from 'sonner';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import useAuthContext from '@/hooks/use-auth-context';
 
+
 export default function EditProfilePage() {
   const { user, fetchUser } = useAuthContext();
   const { updateUser } = userUpdate();

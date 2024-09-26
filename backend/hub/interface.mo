@@ -6,7 +6,7 @@ module {
     type Hub = Types.Hub;
 
     public type HubActor = actor {
-        getHubByID : (hubID:?Nat64) -> async Result.Result<Hub, Text>;
+        getHubByID : (hubID:Nat64) -> async Result.Result<Hub, Text>;
     };
 };
 

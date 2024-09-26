@@ -43,6 +43,8 @@ actor class UserHubMembershipMain() {
     let hubIDRepresentation : Text = Nat64.toText(hubId);
     let key = internetIdentity # "-" # hubIDRepresentation;
 
+    Debug.print("Create Membership: " # Nat64.toText(hubId));
+
     // Check if membership already exists
     if (membershipMap.get(key) != null) {
       return #err("Error: Membership already exists");
@@ -57,7 +59,7 @@ actor class UserHubMembershipMain() {
         switch (hubCanisterId) {
           case (?hubCanisterId) {
             let hubActor = actor (hubCanisterId) : HubModule.HubActor;
-            let foundHub = await hubActor.getHubByID(?hubId);
+            let foundHub = await hubActor.getHubByID(hubId);
 
             switch (foundHub) {
               case (#ok(foundHub)) {
@@ -101,7 +103,6 @@ actor class UserHubMembershipMain() {
 
     Debug.print("hub userIdentity: " # internetIdentity);
 
-    // Store the membership in the membership map
     membershipMap.put(key, membership);
 
     return #ok(membership);
@@ -128,10 +129,10 @@ actor class UserHubMembershipMain() {
     for (membership in membershipMap.vals()) {
       if (membership.userIdentity == principal) {
         try {
-          let hubResult = await hubActor.getHubByID(?membership.hubId);
+          let hubResult = await hubActor.getHubByID(membership.hubId);
           switch (hubResult) {
             case (#ok(foundHub)) {
-                Debug.print("found hub: " # foundHub.hubName);
+              Debug.print("found hub: " # foundHub.hubName);
               buffer.add(foundHub);
             };
             case (#err(_)) {};
@@ -161,13 +162,13 @@ actor class UserHubMembershipMain() {
           case null {
             return #err("Error: User not found while getting hub role");
           };
-          case (?fetched_membership) {
+          case (?fetchedMembership) {
             let hubActor = actor (hubCanisterId) : HubModule.HubActor;
-            let foundHub = await hubActor.getHubByID(?hubId);
+            let foundHub = await hubActor.getHubByID(hubId);
             switch (foundHub) {
               case (#ok(hub)) {
 
-                let foundRoleInHub = Array.find<Role>(hub.hubRoles, func role { role.roleName == fetched_membership.userRole });
+                let foundRoleInHub = Array.find<Role>(hub.hubRoles, func role { role.roleName == fetchedMembership.userRole });
 
                 switch (foundRoleInHub) {
                   case (?role) {
@@ -190,31 +191,48 @@ actor class UserHubMembershipMain() {
   };
 
   //update role -> Admin, Moderator, Member
-  public shared func updateRole(username : ?Text, newRole : Text, hubId : Nat64, userCanisterId : Text) : async Result.Result<Text, Text> {
-    let userActor = actor (userCanisterId) : UserModule.UserActor;
-    let result : Result.Result<User, Text> = await userActor.getUserByUsername(username);
+  public shared ({ caller }) func updateMembershipRole(userPrincipal : Text, newRole : Text, hubId : Nat64, hubCanisterId : Text) : async Result.Result<(), Text> {
+    
+    let internetIdentity = Principal.toText(caller);
+    let hubIDRepresentation : Text = Nat64.toText(hubId);
+    let key = internetIdentity # "-" # hubIDRepresentation;
 
-    switch (result) {
-      case (#ok(user)) {
-        let userIdentity = user.internetIdentity;
-        let internetIdentity = Principal.toText(userIdentity);
-        let hubIDRepresentation : Text = Nat64.toText(hubId);
-        let key = internetIdentity # "-" # hubIDRepresentation;
+    switch (membershipMap.get(internetIdentity)) {
+      case (?updater) {
 
-        let membership : UserHubMembership = {
-          hubId = hubId;
-          userIdentity = userIdentity;
-          userRole = newRole;
+        let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+
+        let updaterRoleResult : Result.Result<Role, Text> = await getMembershipRole(?updater.userIdentity, hubId, hubCanisterId);
+
+        switch (updaterRoleResult) {
+          case (#ok(role)) {
+
+            if (role.permissions.canCreateEditRoles) {
+
+              let membership : UserHubMembership = {
+                hubId = hubId;
+                userIdentity = Principal.fromText(userPrincipal);
+                userRole = newRole;
+              };
+
+              membershipMap.put(key, membership);
+              return #ok();
+            } else {
+              return #err("Failed: Insufficient permissions to update the user roles.");
+            };
+          };
+
+          case (#err(err)) {
+            return #err(err);
+          };
         };
-
-        membershipMap.put(key, membership);
-
-        return #ok("Role updated successfully");
       };
-      case (#err(errorMessage)) {
-        return #err(errorMessage);
+      case null {
+        return #err("Error: Membership not found");
       };
+
     };
+
   };
 
   //get all joined users by role

@@ -31,9 +31,9 @@ import { RouteEnum } from '@/lib/enum/route-enum';
 import Profile from '@/assets/rukia.jpg';
 import Banner from '@/assets/bg.jpg';
 import Prestige from '../ui/prestige';
-import useAuthContext from '@/hooks/use-auth-context';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
 import ProfileAvatar from '../ui/profile-avatar';
+import useAuthContext from '@/hooks/use-auth-context';
 
 interface UserNavProps {
   data: UserEntity;

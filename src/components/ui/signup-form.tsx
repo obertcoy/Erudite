@@ -20,6 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { registerUserUpdate } from '@/services/user-service';
 import useAuthContext from '@/hooks/use-auth-context';
+
 import { useForm } from 'react-hook-form';
 import {
   genders,

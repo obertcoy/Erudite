@@ -5,6 +5,9 @@ export default function useCreateMembership() {
   const { createMembership, hubCanisterId } = createMembershipUpdate();
 
   const execute = async (hubId: string) => {
+
+    console.log(BigInt(hubId), hubCanisterId);
+    
     try {
       const toastId = toast.loading('Joining hub...');
       const result = await createMembership([

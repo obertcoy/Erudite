@@ -16,8 +16,7 @@ interface EditProfileStoreProps {
   setBannerImage: (img: File) => void;
 }
 
-export const useEditProfileStore = create(
-  persist<EditUserProfileDto & EditProfileStoreProps>(
+export const useEditProfileStore = create<EditUserProfileDto & EditProfileStoreProps>(
     (set, get) => ({
       username: '',
       bio: '',
@@ -51,8 +50,4 @@ export const useEditProfileStore = create(
         set({ bannerImageUrl: imageUrl });
       },
     }),
-    {
-      name: 'edit-profile',
-    },
-  ),
 );

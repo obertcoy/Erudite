@@ -12,10 +12,10 @@ import {
   TooltipProvider,
 } from '@/components/ui/tooltip';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useAuthContext from '@/hooks/use-auth-context';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import useGetJoinedHubs from '@/hooks/membership/use-get-joined-hubs';
 import { useHubContext } from '@/contexts/hub-context';
+import useAuthContext from '@/hooks/use-auth-context';
 
 interface MenuProps {
   isOpen: boolean | undefined;

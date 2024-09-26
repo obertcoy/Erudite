@@ -1,10 +1,10 @@
 import { PanelsTopLeft } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import { useStore } from '@/hooks/use-store';
+import { useStore } from '@/hooks/store/use-store';
 import { Button } from '@/components/ui/button';
 import { Menu } from './menu';
-import { useSidebarToggle } from '@/hooks/use-sidebar-toggle';
+import { useSidebarToggle } from '@/hooks/store/use-sidebar-toggle-store';
 import { SidebarToggle } from './sidebar-toggle';
 import { Link } from 'react-router-dom';
 import { Icons } from '@/components/icons';

@@ -5,7 +5,6 @@ import Buffer "mo:base/Buffer";
 import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
-import Principal "mo:base/Principal";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
@@ -74,7 +73,7 @@ actor class HubMain() {
 
     //create membership -> admin
     let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
-    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ownerRole.roleName);
+    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ?ownerRole.roleName, null);
 
     switch (result) {
       case (#ok(_)) {

@@ -1,5 +1,3 @@
-import Profile from '@/assets/rukia.jpg';
-import Banner from '@/assets/bg.jpg';
 import {
   Camera,
   Image,
@@ -139,7 +137,7 @@ const ProfileImageSection = ({
   return (
     <div className="absolute bottom-4 left-4 md:left-8">
       <Avatar className="w-40 h-40 rounded-full border-4 border-white overflow-hidden">
-        <AvatarImage src={profileImageUrl || Profile} alt="@username" />
+        <AvatarImage src={profileImageUrl} alt="@username" />
         <AvatarFallback>KE</AvatarFallback>
       </Avatar>
       {isEditing && (
@@ -218,8 +216,8 @@ export const dummyUser: UserEntity = {
   email: 'kelvin@ices.com',
   gender: 'male',
   bio: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur qui, iste aspernatur accusantium ratione, molestiae esse facere rem quas omnis eius in nisi cumque velit, mollitia voluptatem molestias possimus ut?',
-  profileImageUrl: Profile,
-  bannerImageUrl: Banner,
+  profileImageUrl: '',
+  bannerImageUrl: '',
 };
 
 const BannerImageSectionSkeleton: React.FC = () => (

@@ -44,7 +44,7 @@ export function getMenuList(pathname: string, user: User | null, joinedHubs: Hub
     submenus: [],
   }));
 
-  const baseMenus: Group[] = [
+const baseMenus: Group[] = [
     {
       groupLabel: '',
       menus: [

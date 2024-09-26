@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { useSearchStore } from '@/hooks/use-search';
+import { useSearchStore } from '@/hooks/store/use-search-store';
 import { SearchResultsEntity } from '@/lib/model/entity/search-results.entity';
 import { Clock, Loader2 } from 'lucide-react';
 

@@ -65,7 +65,7 @@ interface ServiceProps {
 }
 
 export function ServiceContextProvider({ children }: ServiceProps) {
-  const agentManager = useAgentManager();
+  const agentManager = useAgentManager();  
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   useEffect(() => {
     const unsub = agentManager.subscribeAuthState((authState) => {
@@ -82,6 +82,9 @@ export function ServiceContextProvider({ children }: ServiceProps) {
   }, [agentManager]);
 
   const getUserService = () => {
+    console.log("User Service:", userCanisterId, userIdlFactory, agentManager);
+
+
     return createReactor<typeof user>({
       canisterId: userCanisterId,
       idlFactory: userIdlFactory,
@@ -121,8 +124,11 @@ export function ServiceContextProvider({ children }: ServiceProps) {
     });
   };
 
-  const userService = useMemo(() => getUserService(), [agentManager]);
-
+  const userService = useMemo(() => {
+    const service = getUserService();
+    return service;
+  }, [agentManager]);
+  
   const hubService = useMemo(() => getHubService(), [agentManager]);
   const userHubMembershipService = useMemo(
     () => getUserHubMembershipService(),

@@ -12,7 +12,7 @@ export function createMembershipUpdate() {
 }
 
 export function getJoinedHubsQuery() {
-  const { useUpdateCall: membershipQuery } =
+  const { useQueryCall: membershipQuery } =
     useServiceContext().userHubMembershipService;
   const hubCanisterId = useServiceContext().hubCanisterId;
 

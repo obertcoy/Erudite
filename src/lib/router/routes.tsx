@@ -2,8 +2,7 @@ import useServiceContext from '@/hooks/use-service-context';
 import ErrorBoundaryLayout from '@/layout/error-boundary-layout';
 import MainLayout from '@/layout/main-layout';
 import { RouteEnum } from '@/lib/enum/route-enum';
-import createUserLoader from '@/loader/user-loader';
-import getUserLoader from '@/loader/user-loader';
+
 import AccountPage from '@/pages/(protected)/user/account-page';
 import CreatePostPage from '@/pages/(protected)/create-post-page';
 import PostPage from '@/pages/(protected)/post-page';

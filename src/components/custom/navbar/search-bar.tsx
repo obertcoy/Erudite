@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Loader2, SearchIcon } from 'lucide-react';
-import { useSearchStore } from '@/hooks/use-search';
+import { useSearchStore } from '@/hooks/store/use-search-store';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { useNavigate } from 'react-router';
 
