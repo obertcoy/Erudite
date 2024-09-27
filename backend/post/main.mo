@@ -225,7 +225,7 @@ actor class PostMain() {
   };
 
   //get post by ID
-  public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
+  public shared query func getPostById(postId : Nat64) : async Result.Result<Post, Text> {
     switch (postMap.get(postId)) {
       case null {
         return #err("Post not found");

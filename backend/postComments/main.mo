@@ -80,7 +80,7 @@ actor class PostComments(){
                     let postComment : Result.Result<PostComments, Text> = await getPostCommentByCommentID(comment.commentID);
                     switch (postComment){
                         case(#ok(postComment)){
-                            let res: Result.Result<Post, Text> = await postActor.getPostByID(?postComment.postID);
+                            let res: Result.Result<Post, Text> = await postActor.getPostById(postComment.postID);
                             switch (res) {
                                 case (#ok(post)) {
                                     let temp : PostCommentsProfile = {
@@ -94,7 +94,6 @@ actor class PostComments(){
                                             
                                             commentID  = comment.commentID;
                                             commentBody = comment.commentBody;
-                                            commentImage = comment.commentImage;
                                             commentInternetIdentity = comment.internetIdentity;
                                     };
                                     buffer.add(temp);
