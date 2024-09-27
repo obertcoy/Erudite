@@ -27,8 +27,8 @@ export default function FloatingPostDetailsSidebar({
   return (
     <div className="sticky top-[4.5rem] min-w-80 w-80 p-4 h-fit rounded-md bg-gray-100 dark:bg-gray-900 flex flex-col gap-y-4">
       <div className="flex flex-col gap-y-2">
-        <div className="flex items-center justify-between">
-          <h1 className="font-medium text-lg">{hubData.hubName}</h1>
+        <div className="flex items-center justify-between gap-x-4">
+          <h1 className="font-medium text-lg truncate">{hubData.hubName}</h1>
           <Link
             to={generateDynamicRoutePath(RouteEnum.HUB, {
               hubId: hubData.hubID,

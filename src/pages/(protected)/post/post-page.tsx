@@ -53,7 +53,7 @@ export default function PostPage() {
     form.reset();
   };
 
-  if (!detailedPost || !joinedHubs) return null;
+  if (!detailedPost) return null;
 
   return (
     <main className="w-full flex items-center justify-center py-6">
