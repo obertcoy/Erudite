@@ -24,7 +24,6 @@ module {
     post : Post;
     user : User;
     hub : Hub;
-
   };
 
 };

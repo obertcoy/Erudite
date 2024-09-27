@@ -44,7 +44,7 @@ actor class CommentMain() {
         counter += 1;
 
         let postActor = actor(postCanisterId) : PostModule.PostActor;
-        let res : Result.Result<Post, Text> = await postActor.getPostByID(?postID);
+        let res : Result.Result<Post, Text> = await postActor.getPostById(?postID);
 
         switch (res) {
           case (#ok(fetchedPost)) {

@@ -223,4 +223,18 @@ actor class PostMain() {
       };
     };
   };
+
+  //get post by ID
+  public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
+      case null {
+        return #err("Post not found");
+      };
+      case (?fetched_post) {
+        return #ok(fetched_post);
+      }
+
+    }
+  };
+    
 };
