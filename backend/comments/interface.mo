@@ -6,7 +6,7 @@ module {
     type Comment = Types.Comment;
 
     public type CommentsActor = actor {
-        getCommentByPrincipal : (principal : ?Principal) -> async Result.Result<[Comment], Text>;
+        getUserComment : (principal : ?Principal) -> async Result.Result<[Comment], Text>;
         getCommentByID : (commentID:?Nat64) -> async Result.Result<Comment, Text>;
     };
 };

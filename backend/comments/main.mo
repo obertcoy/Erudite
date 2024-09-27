@@ -44,7 +44,7 @@ actor class CommentMain() {
         counter += 1;
 
         let postActor = actor(postCanisterId) : PostModule.PostActor;
-        let res : Result.Result<Post, Text> = await postActor.getPostByID(?postID);
+        let res : Result.Result<Post, Text> = await postActor.getPostByID(postID);
 
         switch (res) {
           case (#ok(fetchedPost)) {
@@ -95,7 +95,7 @@ actor class CommentMain() {
   };
 
   //get comment by principal
-  public shared query func getCommentByPrincipal(principal : ?Principal) : async Result.Result<[Comment], Text> {
+  public shared query func getUserComment(principal : ?Principal) : async Result.Result<[Comment], Text> {
     switch principal {
       case null {
         return #err("Principal ID is invalid");

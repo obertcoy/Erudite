@@ -18,10 +18,8 @@ module {
       numUpVotes: Nat64;
       numDownVotes: Nat64;
       numComments: Nat64;
-      
       commentID : Nat64;
       commentBody: Text;
-      commentImage: Blob;
       commentInternetIdentity : Principal;
    };
 };

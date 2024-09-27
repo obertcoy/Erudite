@@ -4,6 +4,7 @@ import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Nat64 "mo:base/Nat64";
 import Buffer "mo:base/Buffer";
+import Principal "mo:base/Principal";
 
 import PostModule "../post/interface";
 import PostType "../post/types";
@@ -22,7 +23,7 @@ actor class PostComments(){
     let postCommentsMap = HashMap.HashMap<Text, PostComments>(0, Text.equal, Text.hash);
 
     //create post comments
-    public shared ({caller}) func createPostComments(postID : Nat64, commentID: Nat64):async Result.Result<PostComments, Text>{
+    public shared func createPostComments(postID : Nat64, commentID: Nat64):async Result.Result<PostComments, Text>{
         let postComment: PostComments = {
             postID = postID;
             commentID = commentID;
@@ -36,7 +37,7 @@ actor class PostComments(){
     };
 
     //get all comment by post id
-    public func getAllCommentByPostID(postID : Nat64, commentCanisterId: Text): async Result.Result<[Comment], Text>{
+    public func getCommentsByPostID(postID : Nat64, commentCanisterId: Text): async Result.Result<[Comment], Text>{
         var buffer = Buffer.Buffer<Comment>(0);
         let commentActor = actor (commentCanisterId) : CommentModule.CommentsActor;
         for (postComment in postCommentsMap.vals()){
@@ -67,10 +68,10 @@ actor class PostComments(){
     };
 
     //get post comment profile by principal
-    public shared ({caller}) func getAllPostProfileByPrincipal(commentCanisterId: Text, postCanisterId: Text) : async Result.Result<[PostCommentsProfile], Text> {
+    public shared  func getUserPostCommentsProfile(userPrincipal: Text, commentCanisterId: Text, postCanisterId: Text) : async Result.Result<[PostCommentsProfile], Text> {
         var buffer = Buffer.Buffer<PostCommentsProfile>(0);
         let commentActor = actor (commentCanisterId) : CommentModule.CommentsActor;
-        let result: Result.Result<[Comment], Text> = await commentActor.getCommentByPrincipal(?caller);
+        let result: Result.Result<[Comment], Text> = await commentActor.getUserComment(?Principal.fromText(userPrincipal));
 
         let postActor = actor (postCanisterId) : PostModule.PostActor;
 
@@ -80,7 +81,7 @@ actor class PostComments(){
                     let postComment : Result.Result<PostComments, Text> = await getPostCommentByCommentID(comment.commentID);
                     switch (postComment){
                         case(#ok(postComment)){
-                            let res: Result.Result<Post, Text> = await postActor.getPostByID(?postComment.postID);
+                            let res: Result.Result<Post, Text> = await postActor.getPostByID(postComment.postID);
                             switch (res) {
                                 case (#ok(post)) {
                                     let temp : PostCommentsProfile = {
@@ -91,10 +92,8 @@ actor class PostComments(){
                                             numUpVotes = post.numUpVotes;
                                             numDownVotes = post.numDownVotes;
                                             numComments = post.numComments;
-                                            
                                             commentID  = comment.commentID;
                                             commentBody = comment.commentBody;
-                                            commentImage = comment.commentImage;
                                             commentInternetIdentity = comment.internetIdentity;
                                     };
                                     buffer.add(temp);
