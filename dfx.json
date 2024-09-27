@@ -39,6 +39,20 @@
         "node_compatibility": true
       }
     },
+    "comments": {
+      "type": "motoko",
+      "main": "backend/comments/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
+    "postComments": {
+      "type": "motoko",
+      "main": "backend/postComments/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
     "frontend": {
       "dependencies": ["user", "userHubMembership"],
       "type": "assets",

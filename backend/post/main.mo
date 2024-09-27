@@ -128,6 +128,18 @@ actor class PostMain() {
     return #err("Post not found");
   };
 
+  public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
+
+    switch (postMap.get(postId)) {
+      case null {
+        return #err("Post not found");
+      };
+      case (?fetchedPost) {
+        return #ok(fetchedPost);
+      };
+    };
+  };
+
   //get post by internet identity -> get post by user
   public shared query func getPostByPrincipal(principal : ?Principal) : async Result.Result<[Post], Text> {
     switch principal {
@@ -223,4 +235,18 @@ actor class PostMain() {
       };
     };
   };
+
+  //get post by ID
+  public shared query func getPostById(postId : Nat64) : async Result.Result<Post, Text> {
+    switch (postMap.get(postId)) {
+      case null {
+        return #err("Post not found");
+      };
+      case (?fetched_post) {
+        return #ok(fetched_post);
+      }
+
+    }
+  };
+    
 };
