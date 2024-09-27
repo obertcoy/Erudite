@@ -94,14 +94,12 @@ export default function HubPage() {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-[69rem]">
-        <div className="p-3 flex items-center gap-x-2 bg-background">
-          {renderFeedFilterTitle(filter)}
-        </div>
-      </div>
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
           <div className="flex flex-col items-center gap-y-4">
+            <div className="p-3 flex self-start  items-center gap-x-2 bg-background">
+              {renderFeedFilterTitle(filter)}
+            </div>
             {getHubPostsLoading
               ? [1, 2, 3, 4, 5].map((_, index) => (
                   <React.Fragment key={index}>

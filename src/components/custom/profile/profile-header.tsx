@@ -7,8 +7,25 @@ import { toast } from 'sonner';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetUser } from '@/hooks/user/use-get-user';
+import { cn } from '@/lib/utils';
 
-export default function ProfileHeader() {
+interface ProfileHeaderProps {
+  activeTab:
+    | 'Recents'
+    | 'Posts'
+    | 'Comments'
+    | 'Awarded'
+    | 'Upvoted'
+    | 'Downvoted';
+  setActiveTab: (
+    tab: 'Recents' | 'Posts' | 'Comments' | 'Awarded' | 'Upvoted' | 'Downvoted',
+  ) => void;
+}
+
+export default function ProfileHeader({
+  activeTab,
+  setActiveTab,
+}: ProfileHeaderProps) {
   const { userId } = useParams<{ userId?: string }>();
   const { userData, getUserLoading } = useGetUser(userId);
 
@@ -33,11 +50,27 @@ export default function ProfileHeader() {
                   <Button
                     variant="ghost"
                     className="w-fit h-full hover:bg-inherit"
+                    onClick={() =>
+                      setActiveTab(
+                        item as
+                          | 'Recents'
+                          | 'Posts'
+                          | 'Comments'
+                          | 'Awarded'
+                          | 'Upvoted'
+                          | 'Downvoted',
+                      )
+                    }
                   >
                     {item}
                   </Button>
 
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 hidden group-hover:block"></div>
+                  <div
+                    className={cn(
+                      'absolute bottom-0 left-0 w-full h-0.5 bg-red-500 group-hover:block',
+                      activeTab !== item && 'hidden',
+                    )}
+                  ></div>
                 </div>
               ))}
             </nav>

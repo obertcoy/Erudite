@@ -11,13 +11,14 @@ import { Button } from '@/components/ui/button';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import CommentsSection from '@/components/custom/comments-section/comments-section';
 import useGetHubDetailedPostByPostID from '@/hooks/hub-posts/use-get-hub-detailed-post-by-post-id';
+import useGetJoinedHubs from '@/hooks/membership/use-get-joined-hubs';
 
 export default function PostPage() {
   const { postId } = useParams();
-
   const { detailedPost } = useGetHubDetailedPostByPostID(postId ?? '');
+  const { joinedHubs } = useGetJoinedHubs();
 
-  if (!detailedPost) return;
+  if (!detailedPost || !joinedHubs) return null;
 
   return (
     <main className="w-full flex items-center justify-center py-6">
@@ -47,7 +48,10 @@ export default function PostPage() {
             </div>
           </div>
         </div>
-        <FloatingPostDetailsSidebar />
+        <FloatingPostDetailsSidebar
+          hubId={detailedPost.hub.hubID}
+          joinedHubs={joinedHubs}
+        />
       </div>
       <ScrollRestoration />
     </main>
