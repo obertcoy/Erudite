@@ -1,4 +1,4 @@
-import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
+import { RoleEntityWithHubId } from '@/lib/model/entity/hub/role.entity';
 import { ColumnDef } from '@tanstack/react-table';
 import {
   Dialog,
@@ -22,8 +22,9 @@ import {
 import { Settings, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ManageHubAddRoleForm from './manage-hub-add-role-form';
+import { useCreateEditHubRoles } from '@/hooks/hub/use-create-edit-hub-roles';
 
-export const rolesColumns: ColumnDef<RoleEntity>[] = [
+export const rolesColumns: ColumnDef<RoleEntityWithHubId>[] = [
   {
     accessorKey: 'roleName',
     header: 'Name',
@@ -35,6 +36,9 @@ export const rolesColumns: ColumnDef<RoleEntity>[] = [
     ),
     cell: ({ row }) => {
       const roleEntity = row.original;
+      const hubId = row.original.hubId;
+
+      const { execute } = useCreateEditHubRoles();
 
       return (
         <div className="flex items-center gap-x-2 justify-end">
@@ -51,7 +55,7 @@ export const rolesColumns: ColumnDef<RoleEntity>[] = [
                   Edit the role and its permissions.
                 </DialogDescription>
               </DialogHeader>
-              <ManageHubAddRoleForm roleEntity={roleEntity} />
+              <ManageHubAddRoleForm roleEntity={roleEntity} hubId={hubId} />
             </DialogContent>
           </Dialog>
           <AlertDialog>
@@ -69,7 +73,9 @@ export const rolesColumns: ColumnDef<RoleEntity>[] = [
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
+                <AlertDialogAction onClick={async() => {
+                  await execute(hubId, roleEntity, false, roleEntity.roleName, true)
+                }}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

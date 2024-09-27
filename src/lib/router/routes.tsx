@@ -78,7 +78,7 @@ export const ROUTES: RouteObject[] = [
             element: <ExploreHubsPage />,
           },
           {
-            path: '/hubs/adeptus-mechanicus/settings',
+            path: RouteEnum.MANAGE_HUB,
             element: <ManageHubPage />,
           },
         ],

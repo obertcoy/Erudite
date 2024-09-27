@@ -10,12 +10,48 @@ import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import CommentsSection from '@/components/custom/comments-section/comments-section';
-import useGetHubDetailedPostByPostID from '@/hooks/hub-posts/use-get-hub-detailed-post-by-post-id';
+import useGetHubDetailedPostByPostId from '@/hooks/hub-posts/use-get-hub-detailed-post-by-post-id';
+import {
+  Form,
+  FormItem,
+  FormControl,
+  FormLabel,
+  FormMessage,
+  FormField,
+  FormDescription,
+} from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import {
+  CommentDto,
+  CommentSchema,
+} from '@/lib/model/schema/comment/comment.dto';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateComment } from '@/hooks/comment/use-create-comment';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function PostPage() {
   const { postId } = useParams();
 
-  const { detailedPost } = useGetHubDetailedPostByPostID(postId ?? '');
+  const { detailedPost } = useGetHubDetailedPostByPostId(postId ?? '');
+  const { execute } = useCreateComment();
+
+  const [refetchComment, setRefetchComment] = useState(false);
+
+  const form = useForm<CommentDto>({
+    resolver: zodResolver(CommentSchema),
+    defaultValues: {
+      commentBody: '',
+      postId: postId,
+    },
+  });
+
+  const onSubmit = async (commentDto: CommentDto) => {
+    await execute(commentDto);
+
+    setRefetchComment(!refetchComment);
+    form.reset();
+  };
 
   if (!detailedPost) return;
 
@@ -41,13 +77,50 @@ export default function PostPage() {
               />
             </Card>
             <div className="w-full max-w-3xl px-6  flex flex-col gap-y-8">
-              <Input className="px-4" placeholder="Add a comment" />
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-8"
+                >
+                  <FormField
+                    control={form.control}
+                    name="commentBody"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Add a comment</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Write your comment here"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Enter your comment here. Be respectful and follow
+                          community guidelines.
+                        </FormDescription>
+                        <div className="hidden">
+                          {form.formState.errors.commentBody &&
+                            toast.error(
+                              form.formState.errors.commentBody.message,
+                            )}
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="hidden">
+                    Submit Comment
+                  </Button>
+                </form>
+              </Form>
               <Separator />
-              <CommentsSection />
+              <CommentsSection
+                postId={postId ?? ''}
+                refetchComment={refetchComment}
+              />
             </div>
           </div>
         </div>
-        <FloatingPostDetailsSidebar />
+        <FloatingPostDetailsSidebar hubData={detailedPost.hub} />
       </div>
       <ScrollRestoration />
     </main>

@@ -120,9 +120,6 @@ actor class UserHubMembershipMain() {
       };
     };
 
-    Debug.print("Determined principal: " # Principal.toText(principal));
-    Debug.print("hubCanisterId: " # hubCanisterId);
-
     let hubActor = actor (hubCanisterId) : HubModule.HubActor;
     let buffer = Buffer.Buffer<Hub>(0);
 
@@ -190,53 +187,138 @@ actor class UserHubMembershipMain() {
     };
   };
 
-  //update role -> Admin, Moderator, Member
-  public shared ({ caller }) func updateMembershipRole(userPrincipal : Text, newRole : Text, hubId : Nat64, hubCanisterId : Text) : async Result.Result<(), Text> {
-    
-    let internetIdentity = Principal.toText(caller);
-    let hubIDRepresentation : Text = Nat64.toText(hubId);
-    let key = internetIdentity # "-" # hubIDRepresentation;
+  // get user memberships
+  public shared query func getUserMemberships(userPrincipal : ?Text) : async Result.Result<[UserHubMembership], Text> {
 
-    switch (membershipMap.get(internetIdentity)) {
-      case (?updater) {
+    switch userPrincipal {
+      case null {
+        return #err("Principal is invalid");
+      };
+      case (?userPrincipal) {
 
-        let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+        var buffer = Buffer.Buffer<UserHubMembership>(0);
 
-        let updaterRoleResult : Result.Result<Role, Text> = await getMembershipRole(?updater.userIdentity, hubId, hubCanisterId);
+        for (membership in membershipMap.vals()) {
 
-        switch (updaterRoleResult) {
-          case (#ok(role)) {
+          if (Principal.toText(membership.userIdentity) == userPrincipal) {
 
-            if (role.permissions.canCreateEditRoles) {
-
-              let membership : UserHubMembership = {
-                hubId = hubId;
-                userIdentity = Principal.fromText(userPrincipal);
-                userRole = newRole;
-              };
-
-              membershipMap.put(key, membership);
-              return #ok();
-            } else {
-              return #err("Failed: Insufficient permissions to update the user roles.");
-            };
-          };
-
-          case (#err(err)) {
-            return #err(err);
+            Debug.print("Found membership: " # debug_show (membership.hubId));
+            buffer.add(membership);
           };
         };
-      };
-      case null {
-        return #err("Error: Membership not found");
-      };
 
+        let memberships = Buffer.toArray(buffer);
+
+        return #ok(memberships);
+      };
     };
+  };
 
+  public shared ({ caller }) func removeMembership(removedUserPrincipal : ?Text, hubId : Nat64, hubCanisterId : Text) : async Result.Result<(), Text> {
+
+    switch (removedUserPrincipal) {
+      case null {
+        return #err("Error: User id required");
+      };
+      case (?removedUserPrincipal) {
+
+        let internetIdentity = Principal.toText(caller);
+        let hubIDRepresentation : Text = Nat64.toText(hubId);
+        let key = internetIdentity # "-" # hubIDRepresentation;
+
+        switch (membershipMap.get(key)) {
+          case (?updater) {
+
+            let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+
+            let updaterRoleResult : Result.Result<Role, Text> = await getMembershipRole(?updater.userIdentity, hubId, hubCanisterId);
+
+            switch (updaterRoleResult) {
+              case (#ok(role)) {
+
+                if (role.permissions.canKickMember) {
+
+                  let removeKey = removedUserPrincipal # "-" # hubIDRepresentation;
+
+                  let _ = membershipMap.remove(removeKey);
+
+                  return #ok();
+                } else {
+                  return #err("Failed: Insufficient permissions to update the user roles.");
+                };
+              };
+
+              case (#err(err)) {
+                return #err(err);
+              };
+            };
+          };
+          case null {
+            return #err("Error: Membership not found");
+          };
+
+        };
+      };
+    };
+  };
+
+  //update role -> Admin, Moderator, Member
+  public shared ({ caller }) func updateMembershipRole(userPrincipal : ?Text, newRole : Text, hubId : Nat64, hubCanisterId : Text) : async Result.Result<(), Text> {
+
+    switch (userPrincipal) {
+      case null {
+        return #err("Error: User id required");
+      };
+      case (?userPrincipal) {
+
+        let internetIdentity = Principal.toText(caller);
+        let hubIDRepresentation : Text = Nat64.toText(hubId);
+        let key = internetIdentity # "-" # hubIDRepresentation;
+
+        switch (membershipMap.get(key)) {
+          case (?updater) {
+
+            let hubActor = actor (hubCanisterId) : HubModule.HubActor;
+
+            let updaterRoleResult : Result.Result<Role, Text> = await getMembershipRole(?updater.userIdentity, hubId, hubCanisterId);
+
+            switch (updaterRoleResult) {
+              case (#ok(role)) {
+
+                if (role.permissions.canCreateEditRoles) {
+
+                  let updateKey = userPrincipal # "-" # hubIDRepresentation;
+
+                  let membership : UserHubMembership = {
+                    hubId = hubId;
+                    userIdentity = Principal.fromText(userPrincipal);
+                    userRole = newRole;
+                  };
+
+                  membershipMap.put(updateKey, membership);
+                  return #ok();
+                } else {
+                  return #err("Failed: Insufficient permissions to update the user roles.");
+                };
+              };
+
+              case (#err(err)) {
+                return #err(err);
+              };
+            };
+          };
+          case null {
+            return #err("Error: Membership not found");
+          };
+
+        };
+
+      };
+    };
   };
 
   //get all joined users by role
-  public shared func getUserHubByRole(hubId : Nat64, role : Text, userCanisterId : Text) : async Result.Result<[User], Text> {
+  public shared func getUsersInHubByRole(hubId : Nat64, role : Text, userCanisterId : Text) : async Result.Result<[User], Text> {
     var buffer = Buffer.Buffer<User>(0);
     let userActor = actor (userCanisterId) : UserModule.UserActor;
 

@@ -35,7 +35,9 @@ export function convertRawHubEntityToHubEntity(raw: RawHubEntity): HubEntity {
   };
 }
 
-export function convertAllRawHubEntityToHubEntity(raws: RawHubEntity[]): HubEntity[] {
+export function convertAllRawHubEntityToHubEntity(
+  raws: RawHubEntity[],
+): HubEntity[] {
   const converted: HubEntity[] = raws.map((raw) => {
     return convertRawHubEntityToHubEntity(raw);
   });
@@ -94,6 +96,7 @@ const dummyRoles: RoleEntity[] = [
       canCreateEditRoles: true,
       canKickMember: true,
     } as PermissionEntity,
+    default: false,
   },
   {
     roleName: 'Admin',
@@ -103,6 +106,7 @@ const dummyRoles: RoleEntity[] = [
       canCreateEditRoles: false,
       canKickMember: true,
     } as PermissionEntity,
+    default: false,
   },
   {
     roleName: 'Member',
@@ -112,6 +116,7 @@ const dummyRoles: RoleEntity[] = [
       canCreateEditRoles: false,
       canKickMember: false,
     } as PermissionEntity,
+    default: true,
   },
 ];
 

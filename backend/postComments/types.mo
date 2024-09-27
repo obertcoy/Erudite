@@ -7,7 +7,7 @@ module {
 
     public type PostComments = {
       postID : Nat64;
-      commentID : Nat64;
+      commentId : Nat64;
    };
 
     public type PostCommentsProfile = {
@@ -18,7 +18,7 @@ module {
       numUpVotes: Nat64;
       numDownVotes: Nat64;
       numComments: Nat64;
-      commentID : Nat64;
+      commentId : Nat64;
       commentBody: Text;
       commentInternetIdentity : Principal;
    };

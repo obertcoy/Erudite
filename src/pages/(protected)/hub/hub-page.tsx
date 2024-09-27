@@ -15,6 +15,9 @@ import { useHubContext } from '@/contexts/hub-context';
 import { Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useGetHubDetailedPosts from '@/hooks/hub-posts/use-get-hub-detailed-posts';
+import { useMembershipContext } from '@/contexts/membership-context';
+import { generateDynamicRoutePath } from '@/lib/utils';
+import { RouteEnum } from '@/lib/enum/route-enum';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -51,17 +54,24 @@ export default function HubPage() {
   const { detailedPosts, getHubPostsLoading } = useGetHubDetailedPosts(
     hubId ?? '',
   );
-  const { joinedHubs } = useHubContext();
+  const { joinedHubs, isHubJoined, fetchJoinedHubs } = useHubContext();
+
+  const { hasAnyPermissionInHub } = useMembershipContext();
 
   const { filter } = useFeedFilter();
 
   const handleJoin = async () => {
-    if (hubId) await execute(hubId);
+    if (hubId) {
+      await execute(hubId);
+      fetchJoinedHubs();
+    }
   };
 
-  if (!hubData) {
+  if (!hubData || !joinedHubs) {
     return;
   }
+
+  const isJoined = isHubJoined(hubId ?? hubData.hubID);
 
   return (
     <main className="w-full flex flex-col gap-y-4  items-center pb-4">
@@ -80,17 +90,22 @@ export default function HubPage() {
             <Badge variant="outline">21K Members</Badge>
           </div>
           <div className="flex items-center gap-x-2">
-            {!joinedHubs.find((h) => h.hubID === hubId) && (
+            {!isJoined ? (
               <Button className="w-fit" onClick={handleJoin}>
                 Join
               </Button>
+            ) : (
+              <>
+                {hasAnyPermissionInHub(hubId ?? hubData.hubID) && (
+                  <Link to={generateDynamicRoutePath(RouteEnum.MANAGE_HUB, {hubId: hubId ?? hubData.hubID})}>
+                    <Button variant="secondary">
+                      <Wrench className="size-4 mr-2" />
+                      Manage
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
-            <Link to="/hubs/adeptus-mechanicus/settings">
-              <Button variant="secondary">
-                <Wrench className="size-4 mr-2" />
-                Manage
-              </Button>
-            </Link>
           </div>
         </div>
       </div>

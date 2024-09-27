@@ -113,6 +113,8 @@ export default function EditProfilePage() {
               bio: bio ?? user?.bio ?? '',
               profileImageUrl: profileImageUrl ?? user?.profileImageUrl ?? '',
               bannerImageUrl: bannerImageUrl ?? user?.bannerImageUrl ?? '',
+              numFollowers: user?.numFollowers ?? 0,
+              numFollowing: user?.numFollowing ?? 0
             }}
             isCurrentUser={false}
             isEditing={true}

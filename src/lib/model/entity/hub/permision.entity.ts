@@ -1,6 +1,6 @@
 export type PermissionEntity = {
-  canDeletePost: Boolean;
-  canEditHub: Boolean;
-  canCreateEditRoles: Boolean;
-  canKickMember: Boolean;
+  canDeletePost: boolean;
+  canEditHub: boolean;
+  canCreateEditRoles: boolean;
+  canKickMember: boolean;
 };

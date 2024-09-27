@@ -77,6 +77,8 @@ export const useSearchStore = create<UseSearchStore>()(
               gender: 'male',
               profileImageUrl: '',
               bannerImageUrl: '',
+              numFollowers: 0,
+              numFollowing: 0,
             },
             {
               internetIdentity: '12',
@@ -86,6 +88,8 @@ export const useSearchStore = create<UseSearchStore>()(
               gender: 'male',
               profileImageUrl: '',
               bannerImageUrl: '',
+              numFollowers: 0,
+              numFollowing: 0,
             },
             {
               internetIdentity: '23',
@@ -95,6 +99,8 @@ export const useSearchStore = create<UseSearchStore>()(
               gender: 'male',
               profileImageUrl: '',
               bannerImageUrl: '',
+              numFollowers: 0,
+              numFollowing: 0,
             },
             {
               internetIdentity: '44',
@@ -104,6 +110,8 @@ export const useSearchStore = create<UseSearchStore>()(
               gender: 'male',
               profileImageUrl: '',
               bannerImageUrl: '',
+              numFollowers: 0,
+              numFollowing: 0,
             },
             {
               internetIdentity: '12',
@@ -113,6 +121,8 @@ export const useSearchStore = create<UseSearchStore>()(
               gender: 'male',
               profileImageUrl: '',
               bannerImageUrl: '',
+              numFollowers: 0,
+              numFollowing: 0,
             },
           ],
           hubs: dummyHubs,

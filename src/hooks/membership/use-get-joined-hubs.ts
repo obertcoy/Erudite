@@ -18,8 +18,6 @@ export default function useGetJoinedHubs(userId?: string) {
     try {
       const result = await getJoinedHubs([passedUserId, hubCanisterId]);
 
-      console.log('Result joined hubs: ' + result);
-
       if (!result || 'err' in result) {
         console.log(result?.err);
       } else {

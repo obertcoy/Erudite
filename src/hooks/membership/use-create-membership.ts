@@ -22,7 +22,7 @@ export default function useCreateMembership() {
         return null;
       }
 
-      toast.success('Hub created successfuly', { id: toastId });
+      toast.success('Joined hub succesfully', { id: toastId });
 
       return result.ok;
     } catch (err) {

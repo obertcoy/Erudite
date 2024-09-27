@@ -19,17 +19,17 @@ actor class PostComments(){
     type Comment = CommentType.Comment;
     type Post = PostType.Post;
 
-    //postID + "-" + commentID
+    //postID + "-" + commentId
     let postCommentsMap = HashMap.HashMap<Text, PostComments>(0, Text.equal, Text.hash);
 
     //create post comments
-    public shared func createPostComments(postID : Nat64, commentID: Nat64):async Result.Result<PostComments, Text>{
+    public shared func createPostComments(postID : Nat64, commentId: Nat64):async Result.Result<PostComments, Text>{
         let postComment: PostComments = {
             postID = postID;
-            commentID = commentID;
+            commentId = commentId;
         };
 
-        let key = Nat64.toText(postID) # "-" # Nat64.toText(commentID);
+        let key = Nat64.toText(postID) # "-" # Nat64.toText(commentId);
 
         postCommentsMap.put(key, postComment);
 
@@ -42,7 +42,7 @@ actor class PostComments(){
         let commentActor = actor (commentCanisterId) : CommentModule.CommentsActor;
         for (postComment in postCommentsMap.vals()){
             if(postComment.postID == postID){
-                let result: Result.Result<Comment, Text> = await commentActor.getCommentByID(?postComment.commentID);
+                let result: Result.Result<Comment, Text> = await commentActor.getCommentByID(postComment.commentId);
                 switch (result) {
                     case (#ok(comment)) {
                         buffer.add(comment); 
@@ -57,9 +57,9 @@ actor class PostComments(){
     };
 
     //get post comment by comment id
-    public func getPostCommentByCommentID(commentID : Nat64): async Result.Result<PostComments, Text>{
+    public func getPostCommentByCommentID(commentId : Nat64): async Result.Result<PostComments, Text>{
         for (postComment in postCommentsMap.vals()){
-            if(postComment.commentID == commentID){
+            if(postComment.commentId == commentId){
                 return #ok(postComment);
             };
         };
@@ -78,7 +78,7 @@ actor class PostComments(){
         switch (result) {
             case (#ok(comments)) {  
                 for (comment in comments.vals()) {
-                    let postComment : Result.Result<PostComments, Text> = await getPostCommentByCommentID(comment.commentID);
+                    let postComment : Result.Result<PostComments, Text> = await getPostCommentByCommentID(comment.commentId);
                     switch (postComment){
                         case(#ok(postComment)){
                             let res: Result.Result<Post, Text> = await postActor.getPostById(postComment.postID);
@@ -92,7 +92,7 @@ actor class PostComments(){
                                             numUpVotes = post.numUpVotes;
                                             numDownVotes = post.numDownVotes;
                                             numComments = post.numComments;
-                                            commentID  = comment.commentID;
+                                            commentId  = comment.commentId;
                                             commentBody = comment.commentBody;
                                             commentInternetIdentity = comment.internetIdentity;
                                     };

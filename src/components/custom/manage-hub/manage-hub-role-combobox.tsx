@@ -16,25 +16,28 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useState } from 'react';
+import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
+import { useGetHubById } from '@/hooks/hub/use-get-hub';
+import useUpdateMembershipRole from '@/hooks/membership/use-update-membership-role';
+import { useMembershipContext } from '@/contexts/membership-context';
 
-const frameworks = [
-  {
-    value: 'member',
-    label: 'Member',
-  },
-  {
-    value: 'admin',
-    label: 'Admin',
-  },
-  {
-    value: 'owner',
-    label: 'Owner',
-  },
-];
+interface ManageHubRoleComboboxProps {
+  roles: RoleEntity[];
+  currentRole: string;
+  userId: string;
+  hubId: string;
+}
 
-export default function ManageHubRoleCombobox() {
+export default function ManageHubRoleCombobox({
+  roles,
+  currentRole,
+  userId,
+  hubId,
+}: ManageHubRoleComboboxProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('member');
+  const [value, setValue] = useState(currentRole);
+
+  const { execute } = useUpdateMembershipRole();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,8 +49,8 @@ export default function ManageHubRoleCombobox() {
           className="w-[300px] justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : 'Select hub...'}
+            ? roles.find((role) => role.roleName === value)?.roleName
+            : 'Select role...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -55,24 +58,29 @@ export default function ManageHubRoleCombobox() {
         <Command>
           <CommandInput placeholder="Search hub..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No role found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {roles.map((role) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? '' : currentValue);
+                  key={role.roleName}
+                  value={role.roleName}
+                  onSelect={async (currentValue) => {
+                    const newValue = currentValue === value ? '' : currentValue;
+                    setValue(newValue);
                     setOpen(false);
+
+                    if (newValue !== value) {
+                      await execute(userId, newValue, hubId);
+                    }
                   }}
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === framework.value ? 'opacity-100' : 'opacity-0',
+                      value === role.roleName ? 'opacity-100' : 'opacity-0',
                     )}
                   />
-                  {framework.label}
+                  {role.roleName}
                 </CommandItem>
               ))}
             </CommandGroup>

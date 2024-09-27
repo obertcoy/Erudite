@@ -3,38 +3,11 @@ import { ManageHubMembersDataTable } from '@/components/custom/manage-hub/manage
 import { rolesColumns } from '@/components/custom/manage-hub/manage-hub-roles-columns';
 import { ManageHubRolesDataTable } from '@/components/custom/manage-hub/manage-hub-roles-data-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
+import { useGetHubById } from '@/hooks/hub/use-get-hub';
+import useGetUserHubByRole from '@/hooks/membership/use-get-users-in-hub-by-role';
+import { RoleEntityWithHubId } from '@/lib/model/entity/hub/role.entity';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
-
-export const roles: RoleEntity[] = [
-  {
-    roleName: 'Owner',
-    permissions: {
-      canCreateEditRoles: true,
-      canKickMember: true,
-      canDeletePost: true,
-      canEditHub: true,
-    },
-  },
-  {
-    roleName: 'Admin',
-    permissions: {
-      canCreateEditRoles: true,
-      canKickMember: true,
-      canDeletePost: true,
-      canEditHub: false,
-    },
-  },
-  {
-    roleName: 'Member',
-    permissions: {
-      canCreateEditRoles: false,
-      canKickMember: false,
-      canDeletePost: false,
-      canEditHub: false,
-    },
-  },
-];
+import { useParams } from 'react-router-dom';
 
 export const members: UserEntity[] = [
   {
@@ -45,6 +18,8 @@ export const members: UserEntity[] = [
     gender: 'Male',
     profileImageUrl: 'https://example.com/profile.jpg',
     bannerImageUrl: 'https://example.com/banner.jpg',
+    numFollowers: 0,
+    numFollowing: 0,
   },
   {
     internetIdentity: '728ed52f',
@@ -54,6 +29,8 @@ export const members: UserEntity[] = [
     gender: 'Male',
     profileImageUrl: 'https://example.com/profile.jpg',
     bannerImageUrl: 'https://example.com/banner.jpg',
+    numFollowers: 0,
+    numFollowing: 0,
   },
   {
     internetIdentity: '728ed52f',
@@ -63,10 +40,25 @@ export const members: UserEntity[] = [
     gender: 'Male',
     profileImageUrl: 'https://example.com/profile.jpg',
     bannerImageUrl: 'https://example.com/banner.jpg',
+    numFollowers: 0,
+    numFollowing: 0,
   },
 ];
 
 export default function ManageHubPage() {
+  const { hubId } = useParams();
+  const { hubData } = useGetHubById(hubId);
+
+  const { userMemberships, fetchUserHubByRoles, getUserMembershipsLoading } =
+    useGetUserHubByRole(hubData);
+
+  if (!hubData) return;
+  
+  const rolesWithHubId = hubData?.hubRoles.map((role) => ({
+    ...role,
+    hubId: hubData.hubID,
+  }));
+
   return (
     <main className="w-full flex flex-col gap-y-4 items-center justify-center p-8">
       <div className="container flex flex-col items-center gap-y-4">
@@ -82,10 +74,20 @@ export default function ManageHubPage() {
             <TabsTrigger value="roles">Roles</TabsTrigger>
           </TabsList>
           <TabsContent value="members" className="w-full">
-            <ManageHubMembersDataTable columns={memberColumns} data={members} />
+            <ManageHubMembersDataTable
+              columns={memberColumns}
+              data={userMemberships}
+              roles={hubData.hubRoles}
+              refetch={fetchUserHubByRoles}
+              isLoading={getUserMembershipsLoading}
+            />
           </TabsContent>
           <TabsContent value="roles" className="w-full">
-            <ManageHubRolesDataTable columns={rolesColumns} data={roles} />
+            <ManageHubRolesDataTable
+              columns={rolesColumns}
+              data={rolesWithHubId}
+              hubId={hubData.hubID}
+            />
           </TabsContent>
         </Tabs>
       </div>

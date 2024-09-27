@@ -31,7 +31,7 @@ export default function FloatingHubDetailsSidebar({
               {hubData.hubRules.map((rule, idx) => (
                 <AccordionItem value={`rule-${idx}`} key={idx}>
                   <AccordionTrigger>
-                    {idx}. {rule.ruleTitle}
+                    {idx + 1}. {rule.ruleTitle}
                   </AccordionTrigger>
                   <AccordionContent>{rule.ruleDescription}</AccordionContent>
                 </AccordionItem>

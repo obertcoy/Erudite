@@ -22,15 +22,18 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import ManageHubAddRoleButton from './manage-hub-add-role-button';
+import { useCreateEditHubRoles } from '@/hooks/hub/use-create-edit-hub-roles';
 
 interface ManageHubRolesDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  hubId: string;
 }
 
 export function ManageHubRolesDataTable<TData, TValue>({
   columns,
   data,
+  hubId,
 }: ManageHubRolesDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -66,7 +69,7 @@ export function ManageHubRolesDataTable<TData, TValue>({
             className="max-w-sm w-full px-8"
           />
         </div>
-        <ManageHubAddRoleButton />
+        <ManageHubAddRoleButton hubId={hubId} />
       </div>
       <div className="rounded-md border">
         <Table>
@@ -97,10 +100,10 @@ export function ManageHubRolesDataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, {
+                        ...cell.getContext(),
+                        hubId,
+                      })}
                     </TableCell>
                   ))}
                 </TableRow>

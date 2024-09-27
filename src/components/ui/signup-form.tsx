@@ -76,6 +76,11 @@ export function SignupForm() {
 
   const form = useForm<RegisterUserDto>({
     resolver: zodResolver(RegisterUserSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      gender: '',
+    },
   });
 
   const onSubmit = async (data: RegisterUserDto) => {

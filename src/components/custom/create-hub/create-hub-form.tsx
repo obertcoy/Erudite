@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router';
 import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
 import { useHubContext } from '@/contexts/hub-context';
+import { useMembershipContext } from '@/contexts/membership-context';
 
 export default function CreateHubForm() {
   const fileRef = useRef<HTMLInputElement>(null);

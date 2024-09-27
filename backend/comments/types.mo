@@ -6,7 +6,7 @@ module {
 
     //comment datatype
     public type Comment = {
-      commentID: Nat64;
+      commentId: Nat64;
       commentBody: Text;
       internetIdentity : Principal;
    };

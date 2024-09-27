@@ -23,10 +23,13 @@ export function hubInformationUpdate() {
 export function createEditHubRolesUpdate() {
   const { useUpdateCall: hubUpdate } = useServiceContext().hubService;
 
+  const hubCanisterId = useServiceContext().hubCanisterId;
+  const userHubMembershipCanisterId = useServiceContext().userHubMembershipCanisterId;
+
   const { call: createEditHubRoles } = hubUpdate({
     functionName: 'createEditHubRoles',
   });
-  return { createEditHubRoles };
+  return { createEditHubRoles, hubCanisterId, userHubMembershipCanisterId };
 }
 
 export function getHubByIdQuery() {

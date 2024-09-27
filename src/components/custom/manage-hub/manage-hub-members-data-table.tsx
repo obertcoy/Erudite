@@ -20,16 +20,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Loader, Loader2, Search } from 'lucide-react';
+import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
 
 interface ManageHubMembersDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  roles: RoleEntity[];
+  refetch: () => Promise<void>;
+  isLoading: boolean;
 }
 
 export function ManageHubMembersDataTable<TData, TValue>({
   columns,
   data,
+  roles,
+  refetch,
+  isLoading,
 }: ManageHubMembersDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -51,7 +58,7 @@ export function ManageHubMembersDataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="w-full flex items-center py-4 relative">
+      <div className="w-full flex items-center py-4 relative gap-x-4">
         <Search className="absolute top-5.5 left-2.5 text-muted-foreground size-4" />
         <Input
           placeholder="Filter members..."
@@ -63,6 +70,7 @@ export function ManageHubMembersDataTable<TData, TValue>({
           }
           className="max-w-sm w-full px-8"
         />
+        <Button className='ml-auto' onClick={async () => refetch}>Refresh</Button>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -93,10 +101,10 @@ export function ManageHubMembersDataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, {
+                        ...cell.getContext(),
+                        roles,
+                      })}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -107,7 +115,11 @@ export function ManageHubMembersDataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {isLoading ? (
+                    <Loader2 className="animate-spin mx-auto" />
+                  ) : (
+                    'No results.'
+                  )}
                 </TableCell>
               </TableRow>
             )}

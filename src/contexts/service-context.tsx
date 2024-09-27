@@ -28,11 +28,26 @@ import {
   hubPosts,
 } from '@/declarations/hubPosts';
 
+import {
+  canisterId as commentCanisterId,
+  idlFactory as commentIdlFactory,
+  comments,
+} from '@/declarations/comments';
+
+import {
+  canisterId as postCommentsCanisterId,
+  idlFactory as postCommentsIdlFactory,
+  postComments,
+} from '@/declarations/postComments';
+
 import { _SERVICE as _SERVICE_USER } from '@/declarations/user/user.did';
 import { _SERVICE as _SERVICE_HUB } from '@/declarations/hub/hub.did';
 import { _SERVICE as _SERVICE_USERHUBMEMBERSHIP } from '@/declarations/userHubMembership/userHubMembership.did';
 import { _SERVICE as _SERVICE_POST } from '@/declarations/post/post.did';
 import { _SERVICE as _SERVICE_HUBPOSTS } from '@/declarations/hubPosts/hubPosts.did';
+import { _SERVICE as _SERVICE_COMMENT } from '@/declarations/comments/comments.did';
+import { _SERVICE as _SERVICE_POSTCOMMENTS } from '@/declarations/postComments/postComments.did';
+
 import { createReactor, useAgentManager } from '@ic-reactor/react';
 import {
   ActorSubclass,
@@ -48,12 +63,18 @@ type Service = {
   >;
   postService: CreateReactorReturnType<ActorSubclass<_SERVICE_POST>>;
   hubPostsService: CreateReactorReturnType<ActorSubclass<_SERVICE_HUBPOSTS>>;
+  commentService: CreateReactorReturnType<ActorSubclass<_SERVICE_COMMENT>>;
+  postCommentsService: CreateReactorReturnType<
+    ActorSubclass<_SERVICE_POSTCOMMENTS>
+  >;
 
   userCanisterId: string;
   hubCanisterId: string;
   userHubMembershipCanisterId: string;
   postCanisterId: string;
   hubPostsCanisterId: string;
+  commentCanisterId: string;
+  postCommentsCanisterId: string;
 
   isAuthenticating: boolean;
 };
@@ -65,8 +86,9 @@ interface ServiceProps {
 }
 
 export function ServiceContextProvider({ children }: ServiceProps) {
-  const agentManager = useAgentManager();  
+  const agentManager = useAgentManager();
   const [isAuthenticating, setIsAuthenticating] = useState(true);
+
   useEffect(() => {
     const unsub = agentManager.subscribeAuthState((authState) => {
       if (authState.authenticating) {
@@ -82,9 +104,6 @@ export function ServiceContextProvider({ children }: ServiceProps) {
   }, [agentManager]);
 
   const getUserService = () => {
-    console.log("User Service:", userCanisterId, userIdlFactory, agentManager);
-
-
     return createReactor<typeof user>({
       canisterId: userCanisterId,
       idlFactory: userIdlFactory,
@@ -124,11 +143,25 @@ export function ServiceContextProvider({ children }: ServiceProps) {
     });
   };
 
-  const userService = useMemo(() => {
-    const service = getUserService();
-    return service;
-  }, [agentManager]);
-  
+  // Add services for `comment` and `postComments`
+  const getCommentService = () => {
+    return createReactor<typeof comments>({
+      canisterId: commentCanisterId,
+      idlFactory: commentIdlFactory,
+      agentManager,
+    });
+  };
+
+  const getPostCommentsService = () => {
+    return createReactor<typeof postComments>({
+      canisterId: postCommentsCanisterId,
+      idlFactory: postCommentsIdlFactory,
+      agentManager,
+    });
+  };
+
+  // Memoize the services
+  const userService = useMemo(() => getUserService(), [agentManager]);
   const hubService = useMemo(() => getHubService(), [agentManager]);
   const userHubMembershipService = useMemo(
     () => getUserHubMembershipService(),
@@ -136,6 +169,11 @@ export function ServiceContextProvider({ children }: ServiceProps) {
   );
   const postService = useMemo(() => getPostService(), [agentManager]);
   const hubPostsService = useMemo(() => getHubPostsService(), [agentManager]);
+  const commentService = useMemo(() => getCommentService(), [agentManager]);
+  const postCommentsService = useMemo(
+    () => getPostCommentsService(),
+    [agentManager],
+  );
 
   return (
     <ServiceContext.Provider
@@ -145,12 +183,16 @@ export function ServiceContextProvider({ children }: ServiceProps) {
         userHubMembershipService,
         postService,
         hubPostsService,
+        commentService,
+        postCommentsService,
         isAuthenticating,
         userCanisterId,
         hubCanisterId,
         userHubMembershipCanisterId,
         postCanisterId,
         hubPostsCanisterId,
+        commentCanisterId,
+        postCommentsCanisterId,
       }}
     >
       {children}

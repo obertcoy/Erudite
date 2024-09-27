@@ -2,33 +2,39 @@ import { convertUint8ArrayToImageURL } from '@/lib/utils';
 import { Principal } from '@ic-reactor/react/dist/types';
 
 export type RawUserEntity = {
-  internetIdentity: Principal
+  internetIdentity: Principal;
   bio: string;
   username: string;
   email: string;
   gender: string;
   profileImage: Uint8Array | number[];
   bannerImage: Uint8Array | number[];
+  numFollowers: BigInt;
+  numFollowing: BigInt;
 };
 
 export type UserEntity = {
-  internetIdentity: string
+  internetIdentity: string;
   bio: string;
   username: string;
   email: string;
   gender: string;
   profileImageUrl: string;
   bannerImageUrl: string;
+  numFollowers: number;
+  numFollowing: number;
 };
 
 export default class User {
-  internetIdentity: string
+  internetIdentity: string;
   bio: string;
   username: string;
   email: string;
   gender: string;
   profileImageUrl: string;
   bannerImageUrl: string;
+  numFollowers: number;
+  numFollowing: number;
 
   constructor({
     internetIdentity,
@@ -38,6 +44,8 @@ export default class User {
     bio,
     profileImage,
     bannerImage,
+    numFollowers,
+    numFollowing,
   }: RawUserEntity) {
     this.internetIdentity = internetIdentity.toString();
     this.username = username;
@@ -46,6 +54,8 @@ export default class User {
     this.bio = bio;
     this.profileImageUrl = convertUint8ArrayToImageURL(profileImage);
     this.bannerImageUrl = convertUint8ArrayToImageURL(bannerImage);
+    this.numFollowers = Number(numFollowers);
+    this.numFollowing = Number(numFollowing);
   }
 
   static castToUser(u: RawUserEntity): User {
@@ -57,6 +67,8 @@ export default class User {
       bio: u.bio,
       profileImage: u.profileImage,
       bannerImage: u.bannerImage,
+      numFollowers: u.numFollowers,
+      numFollowing: u.numFollowing,
     });
   }
 }
@@ -72,5 +84,17 @@ export function convertRawUserEntityToUserEntity(
     bio: raw.bio,
     profileImageUrl: convertUint8ArrayToImageURL(raw.profileImage),
     bannerImageUrl: convertUint8ArrayToImageURL(raw.bannerImage),
+    numFollowers: Number(raw.numFollowers),
+    numFollowing: Number(raw.numFollowing),
   };
+}
+
+export function convertAllRawUserEntityToUserEntity(
+  raws: RawUserEntity[],
+): UserEntity[] {
+  const converted: UserEntity[] = raws.map((raw) => {
+    return convertRawUserEntityToUserEntity(raw);
+  });
+
+  return converted;
 }

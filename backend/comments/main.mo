@@ -25,25 +25,23 @@ actor class CommentMain() {
 
   //create comment
   public shared ({ caller }) func createComment(
-    commentBody : Text, 
-    postID : Nat64, 
-    postCommentsCanisterId : Text, 
-    postCanisterId: Text
+    commentBody : Text,
+    postID : Nat64,
+    postCommentsCanisterId : Text,
+    postCanisterId : Text,
   ) : async Result.Result<Comment, Text> {
 
     let comment : Comment = _createCommentObject(counter, commentBody, caller);
-    commentMap.put(counter, comment);
 
     // Create relationship with PostCommentsActor
-    let postCommentsActor = actor(postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
+    let postCommentsActor = actor (postCommentsCanisterId) : PostCommentsModule.PostCommentsActor;
     let result : Result.Result<PostComments, Text> = await postCommentsActor.createPostComments(postID, counter);
 
     //update num comments in post
     switch (result) {
       case (#ok(_)) {
-        counter += 1;
 
-        let postActor = actor(postCanisterId) : PostModule.PostActor;
+        let postActor = actor (postCanisterId) : PostModule.PostActor;
         let res : Result.Result<Post, Text> = await postActor.getPostById(postID);
 
         switch (res) {
@@ -51,13 +49,15 @@ actor class CommentMain() {
             let updatedPost : Post = fetchedPost;
             let newCommentCount : Nat64 = updatedPost.numComments + 1;
 
-            let updateResult : Result.Result<Post, Text> = await postActor.updateCommentNum(postID,newCommentCount);
+            let updateResult : Result.Result<Post, Text> = await postActor.updateCommentNum(postID, newCommentCount);
 
             switch (updateResult) {
-              case (#ok(_)){
+              case (#ok(_)) {
+                commentMap.put(counter, comment);
+                counter += 1;
                 return #ok(comment);
               };
-              case (#err(updateErrorMessage)){
+              case (#err(updateErrorMessage)) {
                 return #err("Failed to update comment count: " # updateErrorMessage);
               };
             };
@@ -73,17 +73,16 @@ actor class CommentMain() {
     };
   };
 
-
-  private func _createCommentObject(commentID : Nat64, commentBody : Text, creatorIdentity : Principal) : Comment {
+  private func _createCommentObject(commentId : Nat64, commentBody : Text, creatorIdentity : Principal) : Comment {
     return {
-      commentID = commentID;
+      commentId = commentId;
       commentBody = commentBody;
       internetIdentity = creatorIdentity;
     };
   };
   //get comment by ID
-  public shared query func getCommentByID(commentID : Nat64) : async Result.Result<Comment, Text> {
-    switch (commentMap.get(commentID)) {
+  public shared query func getCommentByID(commentId : Nat64) : async Result.Result<Comment, Text> {
+    switch (commentMap.get(commentId)) {
       case null {
         return #err("Comment not found");
       };

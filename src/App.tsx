@@ -12,6 +12,7 @@ import { Toaster } from './components/ui/sonner';
 import { ServiceContextProvider } from './contexts/service-context';
 import { HubProvider } from './contexts/hub-context';
 import { AuthProvider } from './contexts/auth-context';
+import { MembershipProvider } from './contexts/membership-context';
 
 function App() {
   return (
@@ -19,7 +20,9 @@ function App() {
       <ServiceContextProvider>
         <AuthProvider>
           <HubProvider>
-            <RouterProvider router={router} />
+            <MembershipProvider>
+              <RouterProvider router={router} />
+            </MembershipProvider>
           </HubProvider>
         </AuthProvider>
       </ServiceContextProvider>

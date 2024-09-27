@@ -13,45 +13,46 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
-
-const formSchema = z.object({
-  roleName: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  permission: z.object({
-    canDeletePost: z.boolean(),
-    canEditHub: z.boolean(),
-    canCreateEditRoles: z.boolean(),
-    canKickMember: z.boolean(),
-  }),
-});
+import {
+  RoleEntity,
+  RoleEntityWithHubId,
+} from '@/lib/model/entity/hub/role.entity';
+import { RoleDto, RoleSchema } from '@/lib/model/schema/hub/role.dto';
+import { useCreateEditHubRoles } from '@/hooks/hub/use-create-edit-hub-roles';
+import { useMembershipContext } from '@/contexts/membership-context';
 
 interface ManageHubAddRoleFormProps {
   isNew?: boolean;
   roleEntity?: RoleEntity;
+  hubId: string;
 }
 
 export default function ManageHubAddRoleForm({
   roleEntity,
   isNew = false,
+  hubId,
 }: ManageHubAddRoleFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RoleDto>({
+    resolver: zodResolver(RoleSchema),
     defaultValues: {
       roleName: roleEntity?.roleName ?? '',
-      permission: {
+      permissions: {
         canCreateEditRoles: !!roleEntity?.permissions.canCreateEditRoles,
         canDeletePost: !!roleEntity?.permissions.canDeletePost,
         canEditHub: !!roleEntity?.permissions.canEditHub,
         canKickMember: !!roleEntity?.permissions.canKickMember,
       },
+      default: !!roleEntity?.default,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const { execute } = useCreateEditHubRoles();
+
+  const onSubmit = async (hubRoles: RoleDto) => {
+    console.log(hubId);
+
+    await execute(hubId ?? '', hubRoles, false, roleEntity?.roleName);
+  };
 
   return (
     <Form {...form}>
@@ -88,7 +89,7 @@ export default function ManageHubAddRoleForm({
           </div>
           <FormField
             control={form.control}
-            name="permission.canCreateEditRoles"
+            name="permissions.canCreateEditRoles"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
@@ -108,7 +109,7 @@ export default function ManageHubAddRoleForm({
           />
           <FormField
             control={form.control}
-            name="permission.canDeletePost"
+            name="permissions.canDeletePost"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
@@ -128,7 +129,7 @@ export default function ManageHubAddRoleForm({
           />
           <FormField
             control={form.control}
-            name="permission.canEditHub"
+            name="permissions.canEditHub"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">
@@ -146,7 +147,7 @@ export default function ManageHubAddRoleForm({
           />
           <FormField
             control={form.control}
-            name="permission.canKickMember"
+            name="permissions.canKickMember"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                 <div className="space-y-0.5">

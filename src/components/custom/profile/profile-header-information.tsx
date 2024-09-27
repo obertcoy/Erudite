@@ -93,11 +93,12 @@ const BannerImageSection = ({
   const bannerImageInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="h-[348px] overflow-hidden rounded-b-lg">
+    <div className="h-[348px] overflow-hidden rounded-b-lg bg-muted object-cover">
       <img
         src={bannerImageUrl}
         alt="Banner"
         className="object-cover w-full h-full"
+        onError={(e) => e.currentTarget.style.display = 'none'}
       />
 
       {isEditing && (
@@ -166,7 +167,7 @@ const ProfileImageSection = ({
   );
 };
 interface ProfileDetailsSectionProps {
-  data: User;
+  data: UserEntity;
   isCurrentUser: boolean;
 }
 
@@ -178,7 +179,7 @@ const ProfileDetailsSection = ({
     <div>
       <h1 className="text-3xl font-bold text-ellipsis">{data?.username}</h1>
       <p className="text-muted-foreground">
-        {formatShortNumber(1500)} followers
+        {formatShortNumber(data.numFollowers)} followers
       </p>
       <div className="flex items-center mt-2 max-w-lg text-sm break-words">
         {data?.bio}
@@ -218,6 +219,8 @@ export const dummyUser: UserEntity = {
   bio: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur qui, iste aspernatur accusantium ratione, molestiae esse facere rem quas omnis eius in nisi cumque velit, mollitia voluptatem molestias possimus ut?',
   profileImageUrl: '',
   bannerImageUrl: '',
+  numFollowers: 0,
+  numFollowing: 0,
 };
 
 const BannerImageSectionSkeleton: React.FC = () => (
@@ -231,7 +234,7 @@ const ProfileImageSectionSkeleton: React.FC = () => (
     <Skeleton className="w-40 h-40 rounded-full" />
     <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/4">
       <Skeleton className="w-16 h-6 rounded-full" />
-    </div>
+  </div>
   </div>
 );
 

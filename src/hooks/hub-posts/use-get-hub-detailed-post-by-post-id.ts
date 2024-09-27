@@ -7,7 +7,7 @@ import { getHubDetailedPostByPostIdQuery } from '@/services/hub-posts-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export default function useGetHubDetailedPostByPostID(postId: string) {
+export default function useGetHubDetailedPostByPostId(postId: string) {
   const [detailedPost, setDetailedPost] = useState<DetailedPostEntity>();
   const {
     getHubDetailedPostByPostID,
