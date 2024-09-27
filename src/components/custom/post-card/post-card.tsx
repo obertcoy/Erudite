@@ -20,8 +20,13 @@ interface PostCardProps {
 
 export default function PostCard({ data }: PostCardProps) {
   return (
-    <Link to={generateDynamicRoutePath(RouteEnum.POST, {postId: data.post.postId})}>
-      <Card className="w-full max-w-3xl rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
+    <Link
+      to={generateDynamicRoutePath(RouteEnum.POST, {
+        postId: data.post.postId,
+      })}
+      className="w-full"
+    >
+      <Card className="w-full rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
         <PostCardHeader data={data} />
         <PostCardContent postData={data.post} />
         <PostCardFooter postData={data.post} />
@@ -32,7 +37,7 @@ export default function PostCard({ data }: PostCardProps) {
 
 export function PostCardSkeleton() {
   return (
-    <Card className="flex w-full max-w-3xl rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
+    <Card className="flex w-full rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
       <CardHeader className="pb-3 flex flex-col justify-center gap-y-3">
         <Skeleton className="h-12 w-12 rounded-full" />
         <div className="flex-1 space-y-2">

@@ -1,12 +1,14 @@
 import FloatingFeedSidebar from '@/components/custom/floating-feed-sidebar/floating-feed-sidebar';
-import PostCard, { PostCardSkeleton } from '@/components/custom/post-card/post-card';
+import PostCard, {
+  PostCardSkeleton,
+} from '@/components/custom/post-card/post-card';
 import { Separator } from '@/components/ui/separator';
 import useGetUserDetailedPosts from '@/hooks/hub-posts/use-get-user-detailed-posts';
 import useAuthContext from '@/hooks/use-auth-context';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
-import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
+import { ChartNoAxesColumnIncreasing, Flame, Rabbit, Sun } from 'lucide-react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -47,27 +49,35 @@ export default function HomePage() {
 
   return (
     <main className="w-full flex flex-col items-center py-4">
-      <div className="w-full max-w-[69rem]">
-        <div className="p-3 flex items-center gap-x-2 bg-background">
-          {renderFeedFilterTitle(filter)}
-        </div>
-      </div>
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
           <div className="flex w-full flex-col items-center gap-y-4">
-            {getHubPostsLoading
-              ? [1, 2, 3, 4, 5].map((_, index) => (
-                  <React.Fragment key={index}>
-                    <Separator />
-                    <PostCardSkeleton key={index} />
-                  </React.Fragment>
-                ))
-              : detailedPosts.map((post, index) => (
-                  <React.Fragment key={index}>
-                    <Separator />
-                    <PostCard key={index} data={post} />
-                  </React.Fragment>
-                ))}
+            <div className="p-3 self-start flex items-center gap-x-2 bg-background">
+              {renderFeedFilterTitle(filter)}
+            </div>
+            {getHubPostsLoading ? (
+              [1, 2, 3, 4, 5].map((_, index) => (
+                <React.Fragment key={index}>
+                  <Separator />
+                  <PostCardSkeleton key={index} />
+                </React.Fragment>
+              ))
+            ) : detailedPosts.length === 0 ? (
+              <Alert className="w-[651px]">
+                <Rabbit className="h-4 w-4" />
+                <AlertTitle>No posts yet!</AlertTitle>
+                <AlertDescription>
+                  Start posting now to see your posts here or join hubs.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              detailedPosts.map((post, index) => (
+                <React.Fragment key={index}>
+                  <Separator />
+                  <PostCard key={index} data={post} />
+                </React.Fragment>
+              ))
+            )}
           </div>
           <FloatingFeedSidebar />
         </div>

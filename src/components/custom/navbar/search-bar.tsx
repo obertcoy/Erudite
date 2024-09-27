@@ -40,7 +40,7 @@ export default function SearchBar() {
     console.log('Url: ' + url);
     
     if(url) navigate(url)
-
+      
   }
 
   return (
