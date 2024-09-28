@@ -53,6 +53,13 @@
         "node_compatibility": true
       }
     },
+    "userPostVotes": {
+      "type": "motoko",
+      "main": "backend/userPostVotes/main.mo",
+      "declarations": {
+        "node_compatibility": true
+      }
+    },
     "frontend": {
       "dependencies": ["user", "userHubMembership"],
       "type": "assets",

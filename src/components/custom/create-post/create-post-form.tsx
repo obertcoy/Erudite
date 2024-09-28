@@ -22,6 +22,7 @@ import { useCreatePost } from '@/hooks/post/use-create-post';
 import { useNavigate } from 'react-router-dom';
 import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
+import { toast } from 'sonner';
 
 export default function CreatePostForm() {
   const { execute } = useCreatePost();
@@ -47,7 +48,9 @@ export default function CreatePostForm() {
 
     if (post) {
       navigate(
-        generateDynamicRoutePath(RouteEnum.HUB, { hubId: values.hubId.toString() }),
+        generateDynamicRoutePath(RouteEnum.HUB, {
+          hubId: values.hubId.toString(),
+        }),
       );
     }
   };
@@ -150,6 +153,10 @@ export default function CreatePostForm() {
         <Button type="submit" className="w-fit self-end">
           Post
         </Button>
+        <div className='hidden'>
+          {form.formState.errors.hubId &&
+            toast.error(form.formState.errors.hubId.message)}
+        </div>
       </form>
     </Form>
   );

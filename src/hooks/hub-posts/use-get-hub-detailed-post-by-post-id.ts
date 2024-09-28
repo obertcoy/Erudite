@@ -6,6 +6,8 @@ import {
 import { getHubDetailedPostByPostIdQuery } from '@/services/hub-posts-service';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useGetVoteByPostId } from '../vote/use-get-vote-by-post-id';
+import { VoteEntity } from '@/lib/model/entity/vote/vote.entity';
 
 export default function useGetHubDetailedPostByPostId(postId: string) {
   const [detailedPost, setDetailedPost] = useState<DetailedPostEntity>();
@@ -16,6 +18,8 @@ export default function useGetHubDetailedPostByPostId(postId: string) {
     hubCanisterId,
     userCanisterId,
   } = getHubDetailedPostByPostIdQuery();
+
+  const { fetchVote } = useGetVoteByPostId();
 
   useEffect(() => {
     const fetchHubPosts = async () => {
@@ -29,9 +33,15 @@ export default function useGetHubDetailedPostByPostId(postId: string) {
       if (!result || 'err' in result) {
         toast.error('Error: Failed to fetch posts');
       } else {
-        setDetailedPost(
-          convertRawDetailedPostEntityToDetailedPostEntity(result.ok),
+        const detailedPost = convertRawDetailedPostEntityToDetailedPostEntity(
+          result.ok,
         );
+
+        const vote = await fetchVote(detailedPost.post.postId);
+
+        if (vote) detailedPost.post.voteByCurrentUser = vote.voteType;
+
+        setDetailedPost(detailedPost);
       }
     };
 
