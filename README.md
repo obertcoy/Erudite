@@ -8,11 +8,11 @@ Erudite is a decentralized forum platform that enables users to create and parti
 
 ## Features
 
-- Create and participate in discussion hubs
+- Create and participate in discussion hubs to foster conversations around specific topics or interests.
 - Manage and moderate community hubs by assigning members with role that have customizable permissions
-- Upvote and downvote posts and comments
-- Review user profiles and prestige
-- Customize user profiles with flair and badges
+- Upvote and downvote posts and comments to express agreement or disagreement
+- Review user profiles and prestige, each user has a profile showcasing their activity
+- Customize user profiles with flair and banner to display their unique identity 
 
 ## Pre-requisites
 
