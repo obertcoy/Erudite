@@ -1,3 +1,27 @@
+<p align="center"><a href="https://identity.ic0.app" target="_blank" rel="noopener noreferrer"><img src="./src/assets/erudite-icon.svg" alt="Internet Identity"></a></p>
+
+## Introduction
+
+Erudite is a decentralized forum platform that enables users to create and participate in discussion threads. Built on the Internet Computer using the Motoko programming language, the platform emphasizes decentralization, security, and scalability. Erudite is designed to be user-friendly and accessible to everyone, fostering open and secure conversations across diverse topics.
+
+<p align="center"><a href="https://identity.ic0.app" target="_blank" rel="noopener noreferrer"><img width="800" src="assets/PreviewGIF.gif" alt="Internet Identity"></a></p>
+
+## Features
+
+- Create and participate in discussion hubs
+- Manage and moderate community hubs
+- Upvote and downvote posts and comments
+- Review user profiles and prestige
+- Customize user profiles with flair and badges
+
+## Pre-requisites
+
+- Node.js (v20)
+- DFX (v0.17.0)
+- NPM (v7.24.0)
+- WSL2 (Windows Subsystem for Linux)
+- Ubuntu-22.04 LTS (WSL2)
+
 ## How to run:
 
 First time running WSL:
