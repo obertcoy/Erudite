@@ -24,7 +24,8 @@ export function createEditHubRolesUpdate() {
   const { useUpdateCall: hubUpdate } = useServiceContext().hubService;
 
   const hubCanisterId = useServiceContext().hubCanisterId;
-  const userHubMembershipCanisterId = useServiceContext().userHubMembershipCanisterId;
+  const userHubMembershipCanisterId =
+    useServiceContext().userHubMembershipCanisterId;
 
   const { call: createEditHubRoles } = hubUpdate({
     functionName: 'createEditHubRoles',
@@ -34,7 +35,7 @@ export function createEditHubRolesUpdate() {
 
 export function getHubByIdQuery() {
   const { useQueryCall: hubQuery } = useServiceContext().hubService;
-  
+
   const { call: getHubByID, loading: getHubLoading } = hubQuery({
     functionName: 'getHubByID',
   });
@@ -48,4 +49,16 @@ export function getAllHubsQuery() {
     functionName: 'getAllHubs',
   });
   return { getAllHubs, getAllHubsLoading };
+}
+
+export function getHubsQuery() {
+  const { useQueryCall: hubQuery } = useServiceContext().hubService;
+
+  const { call: getHubs, loading: getHubsLoading } = hubQuery({
+    functionName: 'getHubs',
+    refetchOnMount: false,
+    refetchInterval: 0,
+  });
+
+  return { getHubs, getHubsLoading };
 }

@@ -27,3 +27,14 @@ export function deletePostUpdate() {
     userHubMembershipCanisterId,
   };
 }
+export function getPostsQuery() {
+  const { useQueryCall: postsQuery } = useServiceContext().postService;
+
+  const { call: getPosts, loading: getPostsLoading } = postsQuery({
+    functionName: 'getPosts',
+    refetchOnMount: false,
+    refetchInterval: 0,
+  });
+
+  return { getPosts, getPostsLoading };
+}

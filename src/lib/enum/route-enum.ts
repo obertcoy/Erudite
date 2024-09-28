@@ -12,5 +12,6 @@ export enum RouteEnum {
   USER = '/users/:userId',
   EDIT_PROFILE = '/users/edit',
   ACCOUNT = '/account',
-  EXPLORE_HUBS = '/hubs'
+  EXPLORE_HUBS = '/hubs',
+  ABOUT = '/about',
 }

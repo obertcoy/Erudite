@@ -5,6 +5,7 @@ import Buffer "mo:base/Buffer";
 import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
+import Text "mo:base/Text";
 
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
@@ -192,6 +193,18 @@ actor class HubMain() {
       buffer.add(hub);
     };
     return #ok(Buffer.toArray(buffer));
+  };
+
+  public shared query func getHubs(hubNameQuery : Text) : async [Hub] {
+    var hubs = Buffer.Buffer<Hub>(0);
+
+    for (hub in hubMap.vals()) {
+      if (Text.contains(hub.hubName, #text hubNameQuery)) {
+        hubs.add(hub);
+      };
+    };
+
+    return Buffer.toArray(hubs);
   };
 
 };
