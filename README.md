@@ -4,7 +4,7 @@
 
 Erudite is a decentralized forum platform that enables users to create and participate in discussion threads. Built on the Internet Computer using the Motoko programming language, the platform emphasizes decentralization, security, and scalability. Erudite is designed to be user-friendly and accessible to everyone, fostering open and secure conversations across diverse topics.
 
-<p align="center"><a href="https://identity.ic0.app" target="_blank" rel="noopener noreferrer"><img width="800" src="assets/PreviewGIF.gif" alt="Internet Identity"></a></p>
+<p align="center"><a href="https://identity.ic0.app" target="_blank" rel="noopener noreferrer"><img width="800" src="./src/assets/preview.gif" alt="Internet Identity"></a></p>
 
 ## Features
 
