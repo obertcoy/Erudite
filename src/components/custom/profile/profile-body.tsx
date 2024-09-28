@@ -1,8 +1,6 @@
 import { Separator } from '@/components/ui/separator';
 import ProfileCommentCard from './profile-comment-card';
 import { useParams } from 'react-router-dom';
-import { useGetUser } from '@/hooks/user/use-get-user';
-import { UserEntity } from '@/lib/model/entity/user/user.entity';
 
 interface ProfileBodyProps {
   activeTab:
@@ -22,7 +20,6 @@ function renderBody(
     | 'Awarded'
     | 'Upvoted'
     | 'Downvoted',
-  userData: UserEntity,
 ) {
   switch (activeTab) {
     case 'Recents':
@@ -52,9 +49,6 @@ function renderBody(
 }
 
 export default function ProfileBody({ activeTab }: ProfileBodyProps) {
-  const { userId } = useParams<{ userId?: string }>();
-  const { userData, getUserLoading } = useGetUser(userId);
-
   return (
     <div className="w-full lg:w-3/4 mx-auto px-4 mt-8">
       {renderBody(activeTab)}

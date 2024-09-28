@@ -6,6 +6,8 @@ import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
+import Buffer "mo:base/Buffer";
 import Types "types";
 
 actor class UserMain() {
@@ -107,6 +109,18 @@ actor class UserMain() {
       };
 
       return #err("User not found");
+  };
+
+  public shared query func getUsers(usernameQuery : Text) : async [User] {
+    var users = Buffer.Buffer<User>(0);
+    
+    for (user in userMap.vals()) {
+      if (Text.contains(user.username, #text usernameQuery)) {
+        users.add(user);
+      };
+    };
+    
+    return Buffer.toArray(users);
   };
 
 

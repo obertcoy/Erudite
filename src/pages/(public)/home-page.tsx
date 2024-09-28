@@ -52,7 +52,7 @@ export default function HomePage() {
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
           <div className="flex w-full flex-col items-center gap-y-4">
-            <div className="p-3 self-start flex items-center gap-x-2 bg-background">
+            <div className="p-3 self-start flex items-center gap-x-2 bg-background min-w-[682px]">
               {renderFeedFilterTitle(filter)}
             </div>
             {getHubPostsLoading ? (

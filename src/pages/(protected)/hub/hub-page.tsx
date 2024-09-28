@@ -5,7 +5,7 @@ import PostCard, {
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { FeedFilterState, useFeedFilter } from '@/hooks/use-feed-filter';
-import { ChartNoAxesColumnIncreasing, Flame, Sun } from 'lucide-react';
+import { ChartNoAxesColumnIncreasing, Flame, Rabbit, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGetHubById } from '@/hooks/hub/use-get-hub';
 import { useParams } from 'react-router';
@@ -18,6 +18,7 @@ import useGetHubDetailedPosts from '@/hooks/hub-posts/use-get-hub-detailed-posts
 import { useMembershipContext } from '@/contexts/membership-context';
 import { generateDynamicRoutePath } from '@/lib/utils';
 import { RouteEnum } from '@/lib/enum/route-enum';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
@@ -97,7 +98,11 @@ export default function HubPage() {
             ) : (
               <>
                 {hasAnyPermissionInHub(hubId ?? hubData.hubID) && (
-                  <Link to={generateDynamicRoutePath(RouteEnum.MANAGE_HUB, {hubId: hubId ?? hubData.hubID})}>
+                  <Link
+                    to={generateDynamicRoutePath(RouteEnum.MANAGE_HUB, {
+                      hubId: hubId ?? hubData.hubID,
+                    })}
+                  >
                     <Button variant="secondary">
                       <Wrench className="size-4 mr-2" />
                       Manage
@@ -112,23 +117,33 @@ export default function HubPage() {
       <div className="container flex flex-col items-center gap-y-4">
         <div className="flex justify-center gap-x-4">
           <div className="flex flex-col items-center gap-y-4">
-            <div className="p-3 flex self-start  items-center gap-x-2 bg-background">
+            <div className="p-3 flex self-start items-center gap-x-2 bg-background min-w-[682px]">
               {renderFeedFilterTitle(filter)}
             </div>
-            {getHubPostsLoading
-              ? [1, 2, 3, 4, 5].map((_, index) => (
-                  <React.Fragment key={index}>
-                    <Separator />
+            {getHubPostsLoading ? (
+              [1, 2, 3, 4, 5].map((_, index) => (
+                <React.Fragment key={index}>
+                  <Separator />
 
-                    <PostCardSkeleton key={index} />
-                  </React.Fragment>
-                ))
-              : detailedPosts.map((post, index) => (
-                  <React.Fragment key={index}>
-                    <Separator />
-                    <PostCard key={index} data={post} />
-                  </React.Fragment>
-                ))}
+                  <PostCardSkeleton key={index} />
+                </React.Fragment>
+              ))
+            ) : detailedPosts.length === 0 ? (
+              <Alert className="w-[651px]">
+                <Rabbit className="h-4 w-4" />
+                <AlertTitle>No posts yet!</AlertTitle>
+                <AlertDescription>
+                  Start posting now to see your posts here or join hubs.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              detailedPosts.map((post, index) => (
+                <React.Fragment key={index}>
+                  <Separator />
+                  <PostCard key={index} data={post} />
+                </React.Fragment>
+              ))
+            )}
           </div>
           <FloatingHubDetailsSidebar hubData={hubData} />
         </div>
