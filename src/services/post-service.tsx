@@ -10,3 +10,4 @@ export function createPostUpdate() {
   });
   return { createPost, hubPostsCanisterId };
 }
+
