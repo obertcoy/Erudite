@@ -3,7 +3,7 @@ import ErrorBoundaryLayout from '@/layout/error-boundary-layout';
 import MainLayout from '@/layout/main-layout';
 import { RouteEnum } from '@/lib/enum/route-enum';
 
-import AccountPage from '@/pages/(public)/(protected)/user/account-page';
+import AccountPage from '@/pages/(protected)/user/account-page';
 import CreatePostPage from '@/pages/(protected)/post/create-post-page';
 import PostPage from '@/pages/(protected)/post/post-page';
 import EditProfilePage from '@/pages/(protected)/user/edit-profile-page';
