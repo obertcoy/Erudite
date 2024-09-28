@@ -10,3 +10,12 @@ export function createCommentUpdate() {
   });
   return { createComment, postCanisterId, postCommentsCanisterId };
 }
+
+export function getUserCommentsQuery() {
+  const { useQueryCall: commentsQuery } = useServiceContext().commentService;
+
+  const { call: getUserComment } = commentsQuery({
+    functionName: 'getUserComment',
+  });
+  return { getUserComment };
+}

@@ -94,21 +94,14 @@ actor class CommentMain() {
   };
 
   //get comment by principal
-  public shared query func getUserComment(principal : ?Principal) : async Result.Result<[Comment], Text> {
-    switch principal {
-      case null {
-        return #err("Principal ID is invalid");
-      };
-      case (?validPrincipal) {
-        var buffer = Buffer.Buffer<Comment>(0);
-        for (comment in commentMap.vals()) {
-          if (comment.internetIdentity == validPrincipal) {
-            buffer.add(comment);
-          };
+  public shared query func getUserComment(principal : Text) : async Result.Result<[Comment], Text> {
+    var buffer = Buffer.Buffer<Comment>(0);
+      for (comment in commentMap.vals()) {
+        if (comment.internetIdentity == principal) {
+          buffer.add(comment);
         };
-        return #ok(Buffer.toArray(buffer));
       };
-    };
+    return #ok(Buffer.toArray(buffer));
   };
 
-};
+  };
