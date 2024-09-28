@@ -5,6 +5,7 @@ import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 import Buffer "mo:base/Buffer";
 import Nat32 "mo:base/Nat32";
+import Text "mo:base/Text";
 
 import HubPostsModule "../hubPosts/interface";
 import UserModule "../user/interface";
@@ -80,6 +81,18 @@ actor class PostMain() {
       buffer.add(post);
     };
     return #ok(Buffer.toArray(buffer));
+  };
+
+  public shared query func getPosts(postTitleQuery : Text) : async [Post] {
+    var posts = Buffer.Buffer<Post>(0);
+
+    for (post in postMap.vals()) {
+      if (Text.contains(post.postTitle, #text postTitleQuery)) {
+        posts.add(post);
+      };
+    };
+
+    return Buffer.toArray(posts);
   };
 
   //get post by ID

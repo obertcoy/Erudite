@@ -18,6 +18,7 @@ import HubPage from '@/pages/(protected)/hub/hub-page';
 import CreateHubPage from '@/pages/(protected)/hub/create-hub-page';
 import ExploreHubsPage from '@/pages/(protected)/hub/explore-hubs-page';
 import ManageHubPage from '@/pages/(protected)/hub/manage-hub-page';
+import AboutPage from '@/pages/(protected)/about/about-page';
 
 export const ROUTES: RouteObject[] = [
   {
@@ -82,6 +83,10 @@ export const ROUTES: RouteObject[] = [
             element: <ManageHubPage />,
           },
         ],
+      },
+      {
+        path: RouteEnum.ABOUT,
+        element: <AboutPage />,
       },
       {
         path: RouteEnum.LOGIN,

@@ -23,22 +23,23 @@ function renderBody(
     | 'Comments'
     | 'Awarded'
     | 'Upvoted'
-    | 'Downvoted', detailedPost:DetailedPostEntity[]
+    | 'Downvoted',
+  detailedPost: DetailedPostEntity[],
 ) {
   switch (activeTab) {
     case 'Recents':
       return <div>Recents</div>;
     case 'Posts':
-      return <div>
-        {
-          detailedPost.map((post,index) =>(
+      return (
+        <div>
+          {detailedPost.map((post, index) => (
             <React.Fragment key={index}>
-              <Separator/>
-              <PostCard key={index} data={post}/>
+              <Separator />
+              <PostCard key={index} data={post} />
             </React.Fragment>
-          ))
-        }
-      </div>;
+          ))}
+        </div>
+      );
     case 'Comments':
       return (
         <div className="flex flex-col">
@@ -63,9 +64,9 @@ function renderBody(
 
 export default function ProfileBody({ activeTab }: ProfileBodyProps) {
   const { userId } = useParams<{ userId?: string }>();
-  const { userData, getUserLoading } = useGetUser(userId);
-
-  const { detailedPosts, getHubPostsLoading } = useGetUserDetailedPosts(userId!);
+  const { detailedPosts, getHubPostsLoading } = useGetUserDetailedPosts(
+    userId!,
+  );
 
   return (
     <div className="w-full lg:w-3/4 mx-auto px-4 mt-8">

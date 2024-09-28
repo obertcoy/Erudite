@@ -30,9 +30,9 @@ export function userUpdate() {
 }
 
 export function getUsersQuery() {
-  const { useQueryCall: usersQuery } = useServiceContext().userService;
+  const { useQueryCall: userQuery } = useServiceContext().userService;
 
-  const { call: getUsers, loading: getUsersLoading } = usersQuery({
+  const { call: getUsers, loading: getUsersLoading } = userQuery({
     functionName: 'getUsers',
     refetchOnMount: false,
     refetchInterval: 0,

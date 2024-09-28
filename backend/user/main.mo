@@ -6,7 +6,6 @@ import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
-import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
 import Types "types";
 
