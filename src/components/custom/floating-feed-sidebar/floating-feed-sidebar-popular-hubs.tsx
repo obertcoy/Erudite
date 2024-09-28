@@ -17,7 +17,7 @@ const FloatingFeedSidebarPopularHubs = () => {
           key={index} 
           className="flex items-center gap-x-4 p-3 rounded-md cursor-pointer hover:bg-muted font-normal"
         >
-          <ProfileAvatar username={hub.hubName} profileImageUrl={hub.hubBannerImageUrl}/> 
+          <ProfileAvatar username={hub.hubName} profileImageUrl={hub.hubBannerImageUrl} internetIdentity={''}/> 
           <div className="flex flex-col">
             <div className="font-medium">{hub.hubName}</div> 
             {/* <div className="text-muted-foreground">{hub.membersCount} Members</div> Assuming `hub` has a `membersCount` property */}
