@@ -37,20 +37,59 @@ export function getHubDetailedPostByPostIdQuery() {
 }
 
 export function getUserDetailedPostsQuery() {
-    const { useQueryCall: hubPostsQuery } = useServiceContext().hubPostsService;
-    const postCanisterId = useServiceContext().postCanisterId;
-    const hubCanisterId = useServiceContext().hubCanisterId;
-    const userCanisterId = useServiceContext().userCanisterId;
-    const { call: getUserDetailedPosts, loading: getHubPostsLoading } =
-      hubPostsQuery({
-        functionName: 'getUserDetailedPosts',
-      });
-    return {
-        getUserDetailedPosts,
-      getHubPostsLoading,
-      postCanisterId,
-      hubCanisterId,
-      userCanisterId,
-    };
-  }
-  
+  const { useQueryCall: hubPostsQuery } = useServiceContext().hubPostsService;
+  const postCanisterId = useServiceContext().postCanisterId;
+  const hubCanisterId = useServiceContext().hubCanisterId;
+  const userCanisterId = useServiceContext().userCanisterId;
+  const { call: getUserDetailedPosts, loading: getHubPostsLoading } =
+    hubPostsQuery({
+      functionName: 'getUserDetailedPosts',
+    });
+  return {
+    getUserDetailedPosts,
+    getHubPostsLoading,
+    postCanisterId,
+    hubCanisterId,
+    userCanisterId,
+  };
+}
+
+export function getJoinedHubDetailedPostsQuery() {
+  const { useQueryCall: hubPostsQuery } = useServiceContext().hubPostsService;
+  const postCanisterId = useServiceContext().postCanisterId;
+  const hubCanisterId = useServiceContext().hubCanisterId;
+  const userCanisterId = useServiceContext().userCanisterId;
+  const userHubMembershipCanisterId =
+    useServiceContext().userHubMembershipCanisterId;
+  const { call: getJoinedHubDetailedPosts, loading: getHubPostsLoading } =
+    hubPostsQuery({
+      functionName: 'getJoinedHubDetailedPosts',
+    });
+  return {
+    getJoinedHubDetailedPosts,
+    getHubPostsLoading,
+    postCanisterId,
+    hubCanisterId,
+    userCanisterId,
+    userHubMembershipCanisterId,
+  };
+}
+
+export function getAllDetailedPostsQuery() {
+  const { useQueryCall: hubPostsQuery } = useServiceContext().hubPostsService;
+  const postCanisterId = useServiceContext().postCanisterId;
+  const hubCanisterId = useServiceContext().hubCanisterId;
+  const userCanisterId = useServiceContext().userCanisterId;
+
+  const { call: getAllDetailedPosts, loading: getHubPostsLoading } =
+    hubPostsQuery({
+      functionName: 'getAllDetailedPosts',
+    });
+  return {
+    getAllDetailedPosts,
+    getHubPostsLoading,
+    postCanisterId,
+    hubCanisterId,
+    userCanisterId,
+  };
+}

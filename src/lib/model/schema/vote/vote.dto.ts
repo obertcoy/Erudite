@@ -1,6 +1,6 @@
 export type VoteDto = {
   postId: string;
-  voteType: VoteType;
+  voteType: string;
 };
 
 export enum VoteType {

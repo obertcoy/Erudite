@@ -10,7 +10,7 @@ export function createPostUpdate() {
   return { createPost, hubPostsCanisterId };
 }
 
-export function removePostUpdate() {
+export function deletePostUpdate() {
   const { useUpdateCall: postUpdate } = useServiceContext().postService;
   const hubCanisterId = useServiceContext().hubCanisterId;
   const hubPostsCanisterId = useServiceContext().hubPostsCanisterId;

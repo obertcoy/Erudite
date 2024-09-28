@@ -18,6 +18,9 @@ export default function CommentCardHeader({
           key={userData.internetIdentity}
           username={userData.username}
           profileImageUrl={userData.profileImageUrl}
+          internetIdentity={userData.internetIdentity
+            
+          }
         />
         <div className="flex items-center">
           <div className="text-sm">{userData.username}</div>

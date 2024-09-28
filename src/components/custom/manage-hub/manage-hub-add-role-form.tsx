@@ -51,7 +51,7 @@ export default function ManageHubAddRoleForm({
   const onSubmit = async (hubRoles: RoleDto) => {
     console.log(hubId);
 
-    await execute(hubId ?? '', hubRoles, false, roleEntity?.roleName);
+    await execute(hubId ?? '', hubRoles, isNew, roleEntity?.roleName);
   };
 
   return (

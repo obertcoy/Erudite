@@ -30,14 +30,14 @@ const FloatingFeedSidebarFilter = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setFilter(FeedFilterState.Hot)}
-                className={cn(filter === FeedFilterState.Hot && 'bg-muted')}
+                onClick={() => setFilter(FeedFilterState.GlobalStream)}
+                className={cn(filter === FeedFilterState.GlobalStream && 'bg-muted')}
               >
                 <Flame className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Hot posts</p>
+              <p>Global stream</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -45,9 +45,9 @@ const FloatingFeedSidebarFilter = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setFilter(FeedFilterState.Trending)}
+                onClick={() => setFilter(FeedFilterState.FromYourHubs)}
                 className={cn(
-                  filter === FeedFilterState.Trending && 'bg-muted',
+                  filter === FeedFilterState.FromYourHubs && 'bg-muted',
                 )}
               >
                 <ChartNoAxesColumnIncreasing className="size-4" />
@@ -69,7 +69,7 @@ const FloatingFeedSidebarFilter = () => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Fresh posts</p>
+              <p>From Your Hubs</p>
             </TooltipContent>
           </Tooltip>
         </div>

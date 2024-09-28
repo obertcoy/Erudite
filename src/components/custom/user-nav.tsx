@@ -56,6 +56,7 @@ export function UserNav({ data }: UserNavProps) {
                 <ProfileAvatar
                   username={data.username}
                   profileImageUrl={data.profileImageUrl}
+                  internetIdentity={data.internetIdentity}
                 />
               </Button>
             </DropdownMenuTrigger>
@@ -85,6 +86,7 @@ export function UserNav({ data }: UserNavProps) {
                 <ProfileAvatar
                   username={data.username}
                   profileImageUrl={data.profileImageUrl}
+                  internetIdentity={data.internetIdentity}
                 />
               </div>
             </div>

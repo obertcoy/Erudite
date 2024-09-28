@@ -94,12 +94,20 @@ const BannerImageSection = ({
 
   return (
     <div className="h-[348px] overflow-hidden rounded-b-lg bg-muted object-cover">
-      <img
-        src={bannerImageUrl}
-        alt="Banner"
-        className="object-cover w-full h-full"
-        onError={(e) => e.currentTarget.style.display = 'none'}
-      />
+      {!isEditing ? (
+        <img
+          src={bannerImageUrl}
+          alt="Banner"
+          className="object-cover w-full h-full"
+          onError={(e) => (e.currentTarget.style.display = 'none')}
+        />
+      ) : (
+        <img
+          src={bannerImageUrl}
+          alt="Banner"
+          className="object-cover w-full h-full"
+        />
+      )}
 
       {isEditing && (
         <>
@@ -178,9 +186,12 @@ const ProfileDetailsSection = ({
   <div className="mt-4 px-4 md:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-x-4">
     <div>
       <h1 className="text-3xl font-bold text-ellipsis">{data?.username}</h1>
-      <p className="text-muted-foreground">
-        {formatShortNumber(data.numFollowers)} followers
-      </p>
+      <div className="flex flex-row gap-x-2">
+        <p className="text-muted-foreground">
+          {formatShortNumber(data.numFollowers)} followers
+        </p>
+        -<p className="text-muted-foreground">{data.gender}</p>
+      </div>
       <div className="flex items-center mt-2 max-w-lg text-sm break-words">
         {data?.bio}
       </div>
@@ -197,9 +208,9 @@ const ProfileDetailsSection = ({
           <Button variant="default">
             <UserPlus className="mr-2 h-4 w-4" /> Follow
           </Button>
-          <Button variant="secondary">
+          {/* <Button variant="secondary">
             <MessageCircle className="mr-2 h-4 w-4" /> Message
-          </Button>
+          </Button> */}
         </>
       )}
       <Button variant="secondary" size="icon">
@@ -234,7 +245,7 @@ const ProfileImageSectionSkeleton: React.FC = () => (
     <Skeleton className="w-40 h-40 rounded-full" />
     <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/4">
       <Skeleton className="w-16 h-6 rounded-full" />
-  </div>
+    </div>
   </div>
 );
 

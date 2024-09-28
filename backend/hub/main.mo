@@ -73,7 +73,7 @@ actor class HubMain() {
 
     //create membership -> admin
     let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
-    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ?ownerRole.roleName, null);
+    let result : Result.Result<UserHubMembership, Text> = await userHubMembershipActor.createMembership(?caller, counter, ownerRole.roleName, null);
 
     switch (result) {
       case (#ok(_)) {

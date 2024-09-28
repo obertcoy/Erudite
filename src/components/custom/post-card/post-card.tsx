@@ -20,18 +20,18 @@ interface PostCardProps {
 
 export default function PostCard({ data }: PostCardProps) {
   return (
-    <Link
-      to={generateDynamicRoutePath(RouteEnum.POST, {
-        postId: data.post.postId,
-      })}
-      className="w-full"
-    >
-      <Card className="w-full rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
+    <Card className="w-full rounded-xl hover:bg-gray-100 hover:dark:bg-gray-900 cursor-pointer shadow-none border-none">
+      <Link
+        to={generateDynamicRoutePath(RouteEnum.POST, {
+          postId: data.post.postId,
+        })}
+        className="w-full"
+      >
         <PostCardHeader data={data} />
         <PostCardContent postData={data.post} />
-        <PostCardFooter postData={data.post} />
-      </Card>
-    </Link>
+      </Link>
+      <PostCardFooter postData={data.post} hubId={data.hub.hubID} />
+    </Card>
   );
 }
 

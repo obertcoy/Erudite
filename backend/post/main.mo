@@ -127,7 +127,7 @@ actor class PostMain() {
     };
     return #err("Post not found");
   };
- 
+
   public shared query func getPostByID(postId : Nat64) : async Result.Result<Post, Text> {
 
     switch (postMap.get(postId)) {
@@ -244,9 +244,9 @@ actor class PostMain() {
       };
       case (?fetched_post) {
         return #ok(fetched_post);
-      }
+      };
 
-    }
+    };
   };
-    
+
 };

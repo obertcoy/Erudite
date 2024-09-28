@@ -64,18 +64,7 @@ const baseMenus: Group[] = [
         },
       ],
     },
-    {
-      groupLabel: 'Recent',
-      menus: [
-        {
-          path: '/dashboard',
-          label: 'Dashboard',
-          active: pathname.includes('/dashboard'),
-          icon: LayoutGrid,
-          submenus: [],
-        },
-      ],
-    },
+   
   ];
 
   // Add the "Joined Hubs" and "Settings" group only if the user is logged in

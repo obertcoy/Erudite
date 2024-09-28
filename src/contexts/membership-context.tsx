@@ -29,11 +29,11 @@ const MembershipContext = createContext<MembershipContextProps>({
 });
 
 export function MembershipProvider({ children }: MembershipProps) {
-  const { user, getIdentity } = useAuthContext();
+  const { user } = useAuthContext();
   const { joinedHubs } = useHubContext();
 
   const { userMemberships, fetchUserMemberships } = useGetUserMemberships(
-     getIdentity()?.getPrincipal().toString() ,
+     user?.internetIdentity.toString() ,
     );
         
 

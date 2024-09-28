@@ -63,6 +63,70 @@ actor class HubPosts() {
     };
   };
 
+  //get all detailed posts
+  public shared func getAllDetailedPosts(postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<[DetailedPost], Text> {
+    var buffer = Buffer.Buffer<DetailedPost>(0);
+
+    for (hubPost in hubPostMap.vals()) {
+
+      let detailedPosts : Result.Result<[DetailedPost], Text> = await getHubDetailedPosts(hubPost.hubID, postCanisterId, hubCanisterId, userCanisterId);
+
+      switch (detailedPosts) {
+        case (#err(err)) {
+          return #err(err);
+
+        };
+        case (#ok(detailedPosts)) {
+
+          let fetchedBuffer = Buffer.fromArray<DetailedPost>(detailedPosts);
+
+          buffer.insertBuffer(buffer.size(), fetchedBuffer);
+        };
+      };
+    };
+
+    return #ok(Buffer.toArray(buffer));
+  };
+
+  // get joined hub posts
+  public shared ({ caller }) func getJoinedHubDetailedPosts(postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text, userHubMembershipCanisterId : Text) : async Result.Result<[DetailedPost], Text> {
+
+    let userHubMembershipActor = actor (userHubMembershipCanisterId) : UserHubMembershipModule.UserHubMembershipActor;
+
+    let joinedHubs : Result.Result<[Hub], Text> = await userHubMembershipActor.getJoinedHubs(?Principal.toText(caller), hubCanisterId);
+    switch (joinedHubs) {
+      case (#err(err)) {
+        return #err(err);
+      };
+      case (#ok(joinedHubs)) {
+
+        var buffer = Buffer.Buffer<DetailedPost>(0);
+
+        for (hub in joinedHubs.vals()) {
+
+          let detailedPosts : Result.Result<[DetailedPost], Text> = await getHubDetailedPosts(hub.hubID, postCanisterId, hubCanisterId, userCanisterId);
+
+          switch (detailedPosts) {
+            case (#err(err)) {
+              return #err(err);
+
+            };
+            case (#ok(detailedPosts)) {
+
+              let fetchedBuffer = Buffer.fromArray<DetailedPost>(detailedPosts);
+
+              buffer.insertBuffer(buffer.size(), fetchedBuffer);
+            };
+          };
+
+        };
+
+        return #ok(Buffer.toArray(buffer));
+      };
+    };
+
+  };
+
   //get all post by hub ID
   public shared func getHubDetailedPosts(hubId : Nat64, postCanisterId : Text, hubCanisterId : Text, userCanisterId : Text) : async Result.Result<[DetailedPost], Text> {
     var buffer = Buffer.Buffer<DetailedPost>(0);

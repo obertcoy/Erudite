@@ -5,8 +5,9 @@ import { ManageHubRolesDataTable } from '@/components/custom/manage-hub/manage-h
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGetHubById } from '@/hooks/hub/use-get-hub';
 import useGetUserHubByRole from '@/hooks/membership/use-get-users-in-hub-by-role';
-import { RoleEntityWithHubId } from '@/lib/model/entity/hub/role.entity';
+import { UserMembershipEntity } from '@/lib/model/entity/membership.ts/membership.entity';
 import { UserEntity } from '@/lib/model/entity/user/user.entity';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 export const members: UserEntity[] = [
@@ -49,11 +50,25 @@ export default function ManageHubPage() {
   const { hubId } = useParams();
   const { hubData } = useGetHubById(hubId);
 
-  const { userMemberships, fetchUserHubByRoles, getUserMembershipsLoading } =
+  const [userMemberships, setUserMemberships] = useState<UserMembershipEntity[]>([]);
+  const { fetchUserHubByRoles, getUserMembershipsLoading } =
     useGetUserHubByRole(hubData);
 
-  if (!hubData) return;
-  
+  useEffect(() => {
+    const fetchMemberships = async () => {
+      const memberships = await fetchUserHubByRoles();
+      if (memberships) {
+        setUserMemberships(memberships); // Update state with fetched memberships
+      }
+    };
+
+    if (hubData) {
+      fetchMemberships();
+    }
+  }, [hubData]); // Dependency array to re-fetch when hubData changes
+
+  if (!hubData) return null;
+
   const rolesWithHubId = hubData?.hubRoles.map((role) => ({
     ...role,
     hubId: hubData.hubID,

@@ -16,9 +16,10 @@ export type VoteEntity = {
 export function convertRawVoteEntityToVoteEntity(
   raw: RawVoteEntity,
 ): VoteEntity {
+  
   return {
     postID: raw.postID.toString(),
     userIdentity: raw.userIdentity.toString(),
-    voteType: raw.voteType,
+    voteType: raw.voteType ?? '',
   };
 }
