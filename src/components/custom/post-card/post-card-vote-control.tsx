@@ -6,6 +6,7 @@ import { useCreateVote } from '@/hooks/vote/use-create-vote';
 import { useUpdateVote } from '@/hooks/vote/use-update-vote';
 import { VoteDto, VoteType } from '@/lib/model/schema/vote/vote.dto';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface PostCardVoteControlProps {
   postData: PostEntity;
@@ -21,35 +22,33 @@ export default function PostCardVoteControl({
     postData.voteByCurrentUser,
   );
   const [optimisticVoteCount, setOptimisticVoteCount] = useState(
-    Number(postData.numUpVotes) - Number(postData.numDownVotes),
+    Number(postData.numUpVotes),
   );
-
-  console.log(optimisticVoteType);
+  const [isVoting, setIsVoting] = useState(false);
 
   const handleVote = async (voteDto: VoteDto) => {
+    if (isVoting) return;
+    setIsVoting(true);
+
     const isVoted = optimisticVoteType !== '';
     const isUpvote = voteDto.voteType === VoteType.UP;
 
     const previousVote = optimisticVoteType;
     const previousVoteCount = optimisticVoteCount;
 
-    
     if (isVoted && optimisticVoteType == voteDto.voteType) {
-      setOptimisticVoteType('');
-      setOptimisticVoteCount((prevCount) =>
-        isUpvote ? prevCount - 1 : prevCount + 1,
-      );
-    } else {
-      if (optimisticVoteType == VoteType.UP) {
-        setOptimisticVoteCount((prevCount) => prevCount - 1);
-      } else if (optimisticVoteType == VoteType.DOWN) {
-        setOptimisticVoteCount((prevCount) => prevCount + 1);
-      }
-      setOptimisticVoteType(voteDto.voteType);
-      setOptimisticVoteCount((prevCount) =>
-        isUpvote ? prevCount + 1 : prevCount - 1,
-      );
+      toast.error('Cannot undo vote');
+      setIsVoting(false);
+      return;
     }
+
+    if (isUpvote) {
+      setOptimisticVoteCount((prev) => prev + 1);
+    } else {
+      setOptimisticVoteCount((prev) => prev - 1);
+    }
+
+    setOptimisticVoteType(voteDto.voteType);
 
     try {
       if (isVoted) {
@@ -61,6 +60,9 @@ export default function PostCardVoteControl({
       // Rollback optimistic update in case of error
       setOptimisticVoteType(previousVote);
       setOptimisticVoteCount(previousVoteCount);
+      toast.error('Failed to register vote');
+    } finally {
+      setIsVoting(false);
     }
   };
 
@@ -73,6 +75,7 @@ export default function PostCardVoteControl({
         onClick={async () =>
           handleVote({ postId: postData.postId, voteType: VoteType.UP })
         }
+        disabled={isVoting}
       >
         <ArrowUp className="size-4" />
       </Button>
@@ -80,12 +83,15 @@ export default function PostCardVoteControl({
         {formatShortNumber(Number(optimisticVoteCount))}
       </div>
       <Button
-        variant={`${optimisticVoteType == VoteType.DOWN ? 'default' : 'outline'}`}
+        variant={`${
+          optimisticVoteType == VoteType.DOWN ? 'default' : 'outline'
+        }`}
         size="icon"
         className="hover:bg-gray-200 hover:dark:bg-gray-800"
         onClick={async () =>
           handleVote({ postId: postData.postId, voteType: VoteType.DOWN })
         }
+        disabled={isVoting} // Disable while voting
       >
         <ArrowDown className="size-4" />
       </Button>
