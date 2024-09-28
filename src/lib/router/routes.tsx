@@ -19,6 +19,7 @@ import CreateHubPage from '@/pages/(protected)/hub/create-hub-page';
 import ExploreHubsPage from '@/pages/(protected)/hub/explore-hubs-page';
 import ManageHubPage from '@/pages/(protected)/hub/manage-hub-page';
 import AboutPage from '@/pages/(public)/about-page';
+import AboutPageV2 from '@/pages/(public)/about-page-v2';
 
 export const ROUTES: RouteObject[] = [
   {
@@ -86,7 +87,7 @@ export const ROUTES: RouteObject[] = [
       },
       {
         path: RouteEnum.ABOUT,
-        element: <AboutPage />,
+        element: <AboutPageV2 />,
       },
       {
         path: RouteEnum.LOGIN,

@@ -1,56 +1,29 @@
+import HomeFAQ from '@/components/custom/home/home-faq';
+import { HomeFeatures } from '@/components/custom/home/home-features';
+import HomeHero from '@/components/custom/home/home-hero';
+import HomeHIW from '@/components/custom/home/home-hiw';
 import { Icons } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import DotPattern from '@/components/ui/dot-pattern';
 import { Input } from '@/components/ui/input';
 import ProfileAvatar from '@/components/ui/profile-avatar';
 import { RouteEnum } from '@/lib/enum/route-enum';
-import { cn } from '@/lib/utils';
-import { Users, Zap, Globe } from 'lucide-react';
+import { Boxes, Globe, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function AboutPage() {
+export default function AboutPageV2() {
   return (
-    <div className="flex flex-col min-h-screen items-center w-full">
-      <header className="w-full px-4 lg:px-6 h-14 flex items-center justify-center  sticky top-0 bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
-        <div className="flex items-center justify-between container w-full px-4">
+    <>
+      <header className="z-50 w-full h-14 flex items-center justify-center sticky top-0 bg-background/95 shadow backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:shadow-secondary">
+        <div className="flex items-center justify-between container w-full">
           <Link className="flex items-center justify-center" to="#">
             <Icons.erudite className="h-6 w-6 mr-2" />
             <span className="font-bold">Erudite</span>
           </Link>
-          <div className="flex items-center text-xs font-medium">
-            Unleash your creativity and share your thoughts with the world 💭🔥
-          </div>
         </div>
       </header>
-      <main className="w-full flex-1 flex flex-col items-center">
-        <section className="w-full flex justify-center">
-          <div className="container py-4 px-4 md:px-6">
-            <div className="relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden">
-              <div className="z-50 flex flex-col items-center space-y-4 text-center">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                    Welcome to Erudite
-                  </h1>
-                  <p className="mx-auto max-w-[700px] text-gray-100 md:text-xl dark:text-gray-200">
-                    Join the conversation in our hubs. Connect with like-minded
-                    individuals. Share your thoughts and ideas.
-                  </p>
-                </div>
-                <div className="space-x-4">
-                  <Link to={RouteEnum.HOME}>
-                    <Button>Get Started</Button>
-                  </Link>
-                </div>
-              </div>
-              <DotPattern
-                className={cn(
-                  '[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]',
-                )}
-              />
-            </div>
-          </div>
-        </section>
+      <main className="flex flex-col gap-y-12">
+        <HomeHero />
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-900 flex justify-center">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-8">
@@ -65,7 +38,7 @@ export default function AboutPage() {
                 </p>
               </div>
               <div className="flex flex-col items-center text-center">
-                <Zap className="h-12 w-12 mb-4 text-primary" />
+                <Boxes className="h-12 w-12 mb-4 text-primary" />
                 <h3 className="text-lg font-bold">Decentralized Discussions</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Data is stored on the blockchain, ensuring privacy and
@@ -215,19 +188,21 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          © 2024 SROOMY Team. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-xs hover:underline underline-offset-4" to="#">
-            Terms of Service
-          </Link>
-          <Link className="text-xs hover:underline underline-offset-4" to="#">
-            Privacy
-          </Link>
-        </nav>
+      <footer className="w-full     border-t flex justify-center items-center">
+        <div className="container flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            © 2024 SROOMY Team. All rights reserved.
+          </p>
+          <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+            <Link className="text-xs hover:underline underline-offset-4" to="#">
+              Terms of Service
+            </Link>
+            <Link className="text-xs hover:underline underline-offset-4" to="#">
+              Privacy
+            </Link>
+          </nav>
+        </div>
       </footer>
-    </div>
+    </>
   );
 }
