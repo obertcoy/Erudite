@@ -1,19 +1,37 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { useGetHubs } from '@/hooks/hub-posts/use-get-hubs';
+import { useGetPosts } from '@/hooks/post/use-get-posts';
 import { useSearchStore } from '@/hooks/store/use-search-store';
+import { useGetUsers } from '@/hooks/user/use-get-users';
 import { SearchResultsEntity } from '@/lib/model/entity/search-results.entity';
 import { Clock, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function SearchResult() {
-  const { searchQuery, searchResults, recentSearchQuery, showDropdown } =
-    useSearchStore((state) => ({
-      searchQuery: state.searchQuery,
-      searchResults: state.searchResults,
-      recentSearchQuery: state.recentSearchQuery,
-      showDropdown: state.showDropdown,
-    }));
+  const {
+    searchQuery,
+    recentSearchQuery,
+    showDropdown,
+    setSearchQuery,
+    fetchSearchResults,
+  } = useSearchStore((state) => ({
+    searchQuery: state.searchQuery,
+    recentSearchQuery: state.recentSearchQuery,
+    showDropdown: state.showDropdown,
+    setSearchQuery: state.setSearchQuery,
+    fetchSearchResults: state.fetchSearchResults,
+  }));
 
-  // console.log(showDropdown, recentSearchQuery, searchResults);
+  const { usersData, getUsersLoading } = useGetUsers(searchQuery);
+  const { postsData, getPostsLoading } = useGetPosts(searchQuery);
+  const { hubsData, getHubsLoading } = useGetHubs(searchQuery);
+
+  const searchResults: SearchResultsEntity = {
+    users: usersData ?? [],
+    posts: postsData ?? [],
+    hubs: hubsData ?? [],
+  };
 
   return (
     <div

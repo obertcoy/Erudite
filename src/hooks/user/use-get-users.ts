@@ -9,16 +9,15 @@ export function useGetUsers(usernameQuery: string) {
   const { getUsers, getUsersLoading } = getUsersQuery();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUsers = async () => {
       if (!usernameQuery) {
-        toast('Error: Username query is required');
         return;
       }
 
       try {
         const result = await getUsers([usernameQuery]);
         if (!result || 'err' in result) {
-          toast.error('Error on fetching user: ' + result?.err);
+          toast.error('Error on fetching users: ' + result?.err);
         } else {
           let userEntites = [];
 
@@ -29,11 +28,11 @@ export function useGetUsers(usernameQuery: string) {
           setUsersData(userEntites);
         }
       } catch (error) {
-        toast.error('Error on fetching user: ' + error);
+        toast.error('Error on fetching users: ' + error);
       }
     };
 
-    fetchUser();
+    fetchUsers();
   }, [usernameQuery]);
 
   return { usersData, getUsersLoading };

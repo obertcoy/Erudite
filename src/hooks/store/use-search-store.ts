@@ -67,6 +67,7 @@ export const useSearchStore = create<UseSearchStore>()(
 
       fetchSearchResults: async () => {
         const query = get().searchQuery?.trim();
+
         const data: SearchResultsEntity = {
           users: [
             {

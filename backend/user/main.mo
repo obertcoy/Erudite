@@ -1,13 +1,14 @@
 import TrieMap "mo:base/TrieMap";
 import Principal "mo:base/Principal";
 import Result "mo:base/Result";
-import Text "mo:base/Text";
 import Blob "mo:base/Blob";
 import Debug "mo:base/Debug";
 import Int "mo:base/Int";
 import Iter "mo:base/Iter";
 import Buffer "mo:base/Buffer";
+import Text "mo:base/Text";
 import Types "types";
+import Prim "mo:prim";
 
 actor class UserMain() {
   stable var userEntries : [(Principal, Types.User)] = [];
@@ -114,7 +115,9 @@ actor class UserMain() {
     var users = Buffer.Buffer<User>(0);
     
     for (user in userMap.vals()) {
-      if (Text.contains(user.username, #text usernameQuery)) {
+      var lowerCaseUsername = Text.map(user.username, Prim.charToLower);
+      var lowerCaseUsernameQuery  = Text.map(usernameQuery, Prim.charToLower);
+      if (Text.contains(lowerCaseUsername, #text lowerCaseUsernameQuery)) {
         users.add(user);
       };
     };

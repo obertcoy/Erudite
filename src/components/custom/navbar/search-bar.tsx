@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Loader2, SearchIcon } from 'lucide-react';
+import { SearchIcon } from 'lucide-react';
 import { useSearchStore } from '@/hooks/store/use-search-store';
 import { SearchResultsEnum } from '@/lib/enum/search-results-enum';
 import { useNavigate } from 'react-router';
 
 export default function SearchBar() {
-
-  const { searchQuery, showDropdown, handleSearch, setSearchQuery, fetchSearchResults, toggleDropDown } = useSearchStore(state => ({
-    searchQuery: state.searchQuery ?? "",
+  const {
+    searchQuery,
+    showDropdown,
+    handleSearch,
+    setSearchQuery,
+    fetchSearchResults,
+    toggleDropDown,
+  } = useSearchStore((state) => ({
+    searchQuery: state.searchQuery ?? '',
     showDropdown: state.showDropdown,
     handleSearch: state.handleSearch,
     setSearchQuery: state.setSearchQuery,
     fetchSearchResults: state.fetchSearchResults,
-    toggleDropDown: state.toggleDropdown
-  }) );
+    toggleDropDown: state.toggleDropdown,
+  }));
+
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery ?? '');
 
   const debounceDuration = 500;
@@ -23,25 +30,23 @@ export default function SearchBar() {
     setSearchQuery(debouncedQuery);
     const handler = setTimeout(() => {
       fetchSearchResults();
-    }, debounceDuration); 
+    }, debounceDuration);
 
     return () => {
       clearTimeout(handler);
     };
   }, [debouncedQuery]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleNavigate = (e: React.FormEvent) => {
+    e.preventDefault();
 
-    e.preventDefault()
-
-    const url = handleSearch('', SearchResultsEnum.NAVIGATE, searchQuery)
+    const url = handleSearch('', SearchResultsEnum.NAVIGATE, searchQuery);
     console.log('Url: ' + url);
-    
-    if(url) navigate(url)
-      
-  }
+
+    if (url) navigate(url);
+  };
 
   return (
     <>
@@ -59,7 +64,6 @@ export default function SearchBar() {
           />
         </div>
       </form>
-    
     </>
   );
 }

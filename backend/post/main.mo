@@ -6,7 +6,7 @@ import Principal "mo:base/Principal";
 import Buffer "mo:base/Buffer";
 import Nat32 "mo:base/Nat32";
 import Text "mo:base/Text";
-
+import Prim "mo:prim";
 import HubPostsModule "../hubPosts/interface";
 import UserModule "../user/interface";
 import HubPostsType "../hubPosts/types";
@@ -87,7 +87,9 @@ actor class PostMain() {
     var posts = Buffer.Buffer<Post>(0);
 
     for (post in postMap.vals()) {
-      if (Text.contains(post.postTitle, #text postTitleQuery)) {
+      var lowerCasePostTitle = Text.map(post.postTitle, Prim.charToLower);
+      var lowerCasePostTitleQuery  = Text.map(postTitleQuery, Prim.charToLower);
+      if (Text.contains(lowerCasePostTitle, #text lowerCasePostTitleQuery)) {
         posts.add(post);
       };
     };

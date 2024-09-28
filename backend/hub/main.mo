@@ -6,7 +6,7 @@ import Blob "mo:base/Blob";
 import Nat64 "mo:base/Nat64";
 import Nat32 "mo:base/Nat32";
 import Text "mo:base/Text";
-
+import Prim "mo:prim";
 import UserHubMembershipModule "../userHubMembership/interface";
 import UserHubMembershipType "../userHubMembership/types";
 
@@ -199,7 +199,9 @@ actor class HubMain() {
     var hubs = Buffer.Buffer<Hub>(0);
 
     for (hub in hubMap.vals()) {
-      if (Text.contains(hub.hubName, #text hubNameQuery)) {
+      var lowerCaseHubName = Text.map(hub.hubName, Prim.charToLower);
+      var lowerCaseHubNameQuery  = Text.map(hubNameQuery, Prim.charToLower);
+      if (Text.contains(lowerCaseHubName, #text lowerCaseHubNameQuery)) {
         hubs.add(hub);
       };
     };
