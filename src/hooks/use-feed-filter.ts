@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 export enum FeedFilterState {
-  Hot = 0,
-  Trending = 1,
+  GlobalStream = 0,
+  FromYourHubs = 1,
   Fresh = 2,
 }
 
@@ -12,6 +12,6 @@ export interface UseFeedFilterState {
 }
 
 export const useFeedFilter = create<UseFeedFilterState>((set) => ({
-  filter: FeedFilterState.Hot,
+  filter: FeedFilterState.GlobalStream,
   setFilter: (filter) => set({ filter }),
 }));

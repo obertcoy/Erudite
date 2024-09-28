@@ -77,7 +77,8 @@ export default function PostPage() {
                   />
                   <PostCardFooter
                     postData={detailedPost.post}
-                    key={detailedPost.post.postId}
+                      key={detailedPost.post.postId}
+                      hubId={detailedPost.hub.hubID}
                   />
                 </Card>
                 <div className="w-full max-w-3xl px-6  flex flex-col gap-y-8">

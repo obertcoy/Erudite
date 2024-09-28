@@ -8,7 +8,6 @@ interface PostCardContentProps {
 }
 
 export default function PostCardContent({ postData }: PostCardContentProps) {
-  console.log(postData.postImageUrl);
 
   return (
     <CardContent className="flex flex-col justify-center gap-y-3">

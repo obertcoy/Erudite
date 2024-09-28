@@ -67,7 +67,7 @@ export default function useGetUserHubByRole(
 
       setUserMemberships(allMemberships);
 
-      return;
+      return allMemberships;
     } catch (error) {
       toast.error('Error: fetching user memberships failed');
     }

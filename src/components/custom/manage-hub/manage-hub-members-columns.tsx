@@ -33,6 +33,8 @@ export const memberColumns: ColumnDef<UserMembershipEntity>[] = [
             key={username}
             username={username}
             profileImageUrl={profileImageUrl}
+            internetIdentity={row.original.user.internetIdentity}
+            disabled={true}
           />
           <h1>{username}</h1>
         </div>

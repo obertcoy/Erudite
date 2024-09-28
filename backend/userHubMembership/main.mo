@@ -27,7 +27,7 @@ actor class UserHubMembershipMain() {
   public shared ({ caller }) func createMembership(
     owner : ?Principal,
     hubId : Nat64,
-    ownerRole : ?Text,
+    ownerRole : Text,
     hubCanisterId : ?Text,
   ) : async Result.Result<UserHubMembership, Text> {
 
@@ -50,11 +50,11 @@ actor class UserHubMembershipMain() {
       return #err("Error: Membership already exists");
     };
 
-    let roleName = switch (ownerRole) {
-      case (?role) {
-        role; // If ownerRole is provided, use it
+    let roleName = switch (ownerRole == "") {
+      case (false) {
+        ownerRole; // If ownerRole is provided, use it
       };
-      case null {
+      case true {
         // If ownerRole is not provided, fetch the default role from the hub
         switch (hubCanisterId) {
           case (?hubCanisterId) {

@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
-    'Recents' | 'Posts' | 'Comments' | 'Awarded' | 'Upvoted' | 'Downvoted'
-  >('Comments');
+    'Posts' | 'Comments'
+  >('Posts');
 
   return (
     <>

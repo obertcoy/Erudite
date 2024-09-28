@@ -22,12 +22,13 @@ import {
 import { useState } from 'react';
 import { Loader, Loader2, Search } from 'lucide-react';
 import { RoleEntity } from '@/lib/model/entity/hub/role.entity';
+import { UserMembershipEntity } from '@/lib/model/entity/membership.ts/membership.entity';
 
 interface ManageHubMembersDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   roles: RoleEntity[];
-  refetch: () => Promise<void>;
+  refetch: () => Promise<UserMembershipEntity[] | undefined>;
   isLoading: boolean;
 }
 
@@ -70,7 +71,7 @@ export function ManageHubMembersDataTable<TData, TValue>({
           }
           className="max-w-sm w-full px-8"
         />
-        <Button className='ml-auto' onClick={async () => refetch}>Refresh</Button>
+        <Button className='ml-auto' onClick={refetch}>Refresh</Button>
       </div>
       <div className="rounded-md border">
         <Table>

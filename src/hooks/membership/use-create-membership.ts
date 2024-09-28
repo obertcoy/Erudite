@@ -6,14 +6,14 @@ export default function useCreateMembership() {
 
   const execute = async (hubId: string) => {
 
-    console.log(BigInt(hubId), hubCanisterId);
+    console.log("Joining: ", BigInt(hubId), hubCanisterId);
     
     try {
       const toastId = toast.loading('Joining hub...');
       const result = await createMembership([
         [],
         BigInt(hubId),
-        [],
+        "",
         [hubCanisterId],
       ]);
 

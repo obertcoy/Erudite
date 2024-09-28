@@ -22,18 +22,18 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const renderFeedFilterTitle = (filter: FeedFilterState) => {
   switch (filter) {
-    case FeedFilterState.Hot:
+    case FeedFilterState.GlobalStream:
       return (
         <>
           <Flame className="size-4" />
-          <h1 className="font-bold">Hot Posts</h1>
+          <h1 className="font-bold">Global Stream</h1>
         </>
       );
-    case FeedFilterState.Trending:
+    case FeedFilterState.FromYourHubs:
       return (
         <>
           <ChartNoAxesColumnIncreasing className="size-4" />
-          <h1 className="font-bold">Trending Posts</h1>
+          <h1 className="font-bold">From Your Hubs</h1>
         </>
       );
     case FeedFilterState.Fresh:
@@ -57,7 +57,7 @@ export default function HubPage() {
   );
   const { joinedHubs, isHubJoined, fetchJoinedHubs } = useHubContext();
 
-  const { hasAnyPermissionInHub } = useMembershipContext();
+  const { hasAnyPermissionInHub, hasPermissionInHub } = useMembershipContext();
 
   const { filter } = useFeedFilter();
 
@@ -97,7 +97,7 @@ export default function HubPage() {
               </Button>
             ) : (
               <>
-                {hasAnyPermissionInHub(hubId ?? hubData.hubID) && (
+                {(hasPermissionInHub(hubId ?? hubData.hubID, 'canCreateEditRoles') || hasPermissionInHub(hubId ?? hubData.hubID, 'canEditHub'))  && (
                   <Link
                     to={generateDynamicRoutePath(RouteEnum.MANAGE_HUB, {
                       hubId: hubId ?? hubData.hubID,

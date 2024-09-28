@@ -26,12 +26,15 @@ export default function PostCardVoteControl({
   );
   const [isVoting, setIsVoting] = useState(false);
 
+  console.log(postData.voteByCurrentUser, postData.postTitle);
+  
+
   const handleVote = async (voteDto: VoteDto) => {
     if (isVoting) return;
     setIsVoting(true);
 
     const isVoted = optimisticVoteType !== '';
-    const isUpvote = voteDto.voteType === VoteType.UP;
+    const isUpvote = voteDto.voteType == VoteType.UP;
 
     const previousVote = optimisticVoteType;
     const previousVoteCount = optimisticVoteCount;
@@ -42,12 +45,16 @@ export default function PostCardVoteControl({
       return;
     }
 
-    if (isUpvote) {
-      setOptimisticVoteCount((prev) => prev + 1);
-    } else {
-      setOptimisticVoteCount((prev) => prev - 1);
+    if (optimisticVoteType == VoteType.UP) {
+      setOptimisticVoteCount((prevCount) => prevCount - 1);
+    } else if (optimisticVoteType == VoteType.DOWN) {
+      setOptimisticVoteCount((prevCount) => prevCount + 1);
     }
 
+    setOptimisticVoteType(voteDto.voteType);
+    setOptimisticVoteCount((prevCount) =>
+      isUpvote ? prevCount + 1 : prevCount - 1,
+    );
     setOptimisticVoteType(voteDto.voteType);
 
     try {
@@ -73,7 +80,7 @@ export default function PostCardVoteControl({
         size="icon"
         className="hover:bg-gray-200 hover:dark:bg-gray-800"
         onClick={async () =>
-          handleVote({ postId: postData.postId, voteType: VoteType.UP })
+          handleVote({ postId: postData.postId, voteType: 'up' })
         }
         disabled={isVoting}
       >
@@ -89,7 +96,7 @@ export default function PostCardVoteControl({
         size="icon"
         className="hover:bg-gray-200 hover:dark:bg-gray-800"
         onClick={async () =>
-          handleVote({ postId: postData.postId, voteType: VoteType.DOWN })
+          handleVote({ postId: postData.postId, voteType: 'down' })
         }
         disabled={isVoting} // Disable while voting
       >

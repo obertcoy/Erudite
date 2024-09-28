@@ -18,6 +18,7 @@ export default function PostCardHeader({ data }: PostCardHeaderProps) {
           <ProfileAvatar
             username={data.user.username}
             profileImageUrl={data.user.profileImageUrl}
+            internetIdentity={data.user.internetIdentity}
           />
           <div className="flex items-center">
             <div className="text-sm">{data.user.username}</div>
