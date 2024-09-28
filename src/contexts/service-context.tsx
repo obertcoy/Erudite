@@ -40,6 +40,12 @@ import {
   postComments,
 } from '@/declarations/postComments';
 
+import {
+  canisterId as userPostVotesCanisterId,
+  idlFactory as userPostVotesIdlFactory,
+  userPostVotes,
+} from '@/declarations/userPostVotes';
+
 import { _SERVICE as _SERVICE_USER } from '@/declarations/user/user.did';
 import { _SERVICE as _SERVICE_HUB } from '@/declarations/hub/hub.did';
 import { _SERVICE as _SERVICE_USERHUBMEMBERSHIP } from '@/declarations/userHubMembership/userHubMembership.did';
@@ -47,6 +53,7 @@ import { _SERVICE as _SERVICE_POST } from '@/declarations/post/post.did';
 import { _SERVICE as _SERVICE_HUBPOSTS } from '@/declarations/hubPosts/hubPosts.did';
 import { _SERVICE as _SERVICE_COMMENT } from '@/declarations/comments/comments.did';
 import { _SERVICE as _SERVICE_POSTCOMMENTS } from '@/declarations/postComments/postComments.did';
+import { _SERVICE as _SERVICE_USERPOSTVOTES } from '@/declarations/userPostVotes/userPostVotes.did';
 
 import { createReactor, useAgentManager } from '@ic-reactor/react';
 import {
@@ -67,6 +74,9 @@ type Service = {
   postCommentsService: CreateReactorReturnType<
     ActorSubclass<_SERVICE_POSTCOMMENTS>
   >;
+  userPostVotesService: CreateReactorReturnType<
+    ActorSubclass<_SERVICE_USERPOSTVOTES>
+  >;
 
   userCanisterId: string;
   hubCanisterId: string;
@@ -75,7 +85,7 @@ type Service = {
   hubPostsCanisterId: string;
   commentCanisterId: string;
   postCommentsCanisterId: string;
-
+  userPostVotesCanisterId: string;
   isAuthenticating: boolean;
 };
 
@@ -143,7 +153,6 @@ export function ServiceContextProvider({ children }: ServiceProps) {
     });
   };
 
-  // Add services for `comment` and `postComments`
   const getCommentService = () => {
     return createReactor<typeof comments>({
       canisterId: commentCanisterId,
@@ -160,6 +169,14 @@ export function ServiceContextProvider({ children }: ServiceProps) {
     });
   };
 
+  const getUserPostVotesService = () => {
+    return createReactor<typeof userPostVotes>({
+      canisterId: userPostVotesCanisterId,
+      idlFactory: userPostVotesIdlFactory,
+      agentManager,
+    });
+  };
+
   // Memoize the services
   const userService = useMemo(() => getUserService(), [agentManager]);
   const hubService = useMemo(() => getHubService(), [agentManager]);
@@ -172,6 +189,10 @@ export function ServiceContextProvider({ children }: ServiceProps) {
   const commentService = useMemo(() => getCommentService(), [agentManager]);
   const postCommentsService = useMemo(
     () => getPostCommentsService(),
+    [agentManager],
+  );
+  const userPostVotesService = useMemo(
+    () => getUserPostVotesService(),
     [agentManager],
   );
 
@@ -193,6 +214,8 @@ export function ServiceContextProvider({ children }: ServiceProps) {
         hubPostsCanisterId,
         commentCanisterId,
         postCommentsCanisterId,
+        userPostVotesCanisterId,
+        userPostVotesService,
       }}
     >
       {children}

@@ -12,7 +12,7 @@ export default function PostCardFooter({ postData }: PostCardFooterProps) {
   return (
     <CardFooter className="flex items-center justify-between">
       <div className="flex items-center gap-x-2">
-        <PostCardVoteControl numUpVotes={Number(postData.numUpVotes)} />
+        <PostCardVoteControl postData={postData} />
         <Button
           variant="outline"
           className="text-xs hover:bg-gray-200 hover:dark:bg-gray-800"

@@ -55,9 +55,11 @@ export default function ProfileBody({ activeTab }: ProfileBodyProps) {
   const { userId } = useParams<{ userId?: string }>();
   const { userData, getUserLoading } = useGetUser(userId);
 
+  if(!userData) return
+
   return (
     <div className="w-full lg:w-3/4 mx-auto px-4 mt-8">
-      {renderBody(activeTab)}
+      {renderBody(activeTab, userData)}
     </div>
   );
 }

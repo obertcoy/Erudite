@@ -1,5 +1,6 @@
 import { convertUint8ArrayToImageURL } from '@/lib/utils';
 import { Principal } from '@ic-reactor/react/dist/types';
+import { VoteType } from '../../schema/vote/vote.dto';
 
 export type RawPostEntity = {
   postId: BigInt;
@@ -21,6 +22,7 @@ export type PostEntity = {
   numUpVotes: BigInt;
   numDownVotes: BigInt;
   numComments: BigInt;
+  voteByCurrentUser: string | '';
 };
 
 export function convertRawPostEntityToPostEntity(
@@ -37,10 +39,13 @@ export function convertRawPostEntityToPostEntity(
     numUpVotes: raw.numUpVotes,
     numDownVotes: raw.numDownVotes,
     numComments: raw.numComments,
+    voteByCurrentUser: '',
   };
 }
 
-export function convertAllRawPostEntityToPostEntity(raws: RawPostEntity[]): PostEntity[] {
+export function convertAllRawPostEntityToPostEntity(
+  raws: RawPostEntity[],
+): PostEntity[] {
   const converted: PostEntity[] = raws.map((raw) => {
     return convertRawPostEntityToPostEntity(raw);
   });
@@ -59,6 +64,7 @@ export const dummyPosts: PostEntity[] = [
     numUpVotes: BigInt(120),
     numDownVotes: BigInt(5),
     numComments: BigInt(30),
+    voteByCurrentUser: 'up',
   },
   {
     postId: '345',
@@ -70,6 +76,7 @@ export const dummyPosts: PostEntity[] = [
     numUpVotes: BigInt(85),
     numDownVotes: BigInt(3),
     numComments: BigInt(12),
+    voteByCurrentUser: 'up',
   },
   {
     postId: '346',
@@ -80,6 +87,7 @@ export const dummyPosts: PostEntity[] = [
     numUpVotes: BigInt(150),
     numDownVotes: BigInt(8),
     numComments: BigInt(20),
+    voteByCurrentUser: 'up',
   },
   {
     postId: '347',
@@ -90,5 +98,6 @@ export const dummyPosts: PostEntity[] = [
     numUpVotes: BigInt(60),
     numDownVotes: BigInt(2),
     numComments: BigInt(10),
+    voteByCurrentUser: 'up',
   },
 ];
