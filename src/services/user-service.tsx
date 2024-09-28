@@ -28,15 +28,3 @@ export function userUpdate() {
   });
   return { updateUser };
 }
-
-export function getUsersQuery() {
-  const { useQueryCall: usersQuery } = useServiceContext().userService;
-
-  const { call: getUsers, loading: getUsersLoading } = usersQuery({
-    functionName: 'getUsers',
-    refetchOnMount: false,
-    refetchInterval: 0,
-  });
-
-  return { getUsers, getUsersLoading };
-}

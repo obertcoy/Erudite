@@ -63,7 +63,6 @@ function renderBody(
 
 export default function ProfileBody({ activeTab }: ProfileBodyProps) {
   const { userId } = useParams<{ userId?: string }>();
-  const { userData, getUserLoading } = useGetUser(userId);
 
   const { detailedPosts, getHubPostsLoading } = useGetUserDetailedPosts(userId!);
 

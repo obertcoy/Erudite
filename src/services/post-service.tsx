@@ -2,8 +2,7 @@ import useServiceContext from '@/hooks/use-service-context';
 
 export function createPostUpdate() {
   const { useUpdateCall: postUpdate } = useServiceContext().postService;
-  const hubPostsCanisterId =
-    useServiceContext().hubPostsCanisterId;
+  const hubPostsCanisterId = useServiceContext().hubPostsCanisterId;
 
   const { call: createPost } = postUpdate({
     functionName: 'createPost',
@@ -11,3 +10,20 @@ export function createPostUpdate() {
   return { createPost, hubPostsCanisterId };
 }
 
+export function removePostUpdate() {
+  const { useUpdateCall: postUpdate } = useServiceContext().postService;
+  const hubCanisterId = useServiceContext().hubCanisterId;
+  const hubPostsCanisterId = useServiceContext().hubPostsCanisterId;
+  const userHubMembershipCanisterId =
+    useServiceContext().userHubMembershipCanisterId;
+
+  const { call: deletePost } = postUpdate({
+    functionName: 'deletePost',
+  });
+  return {
+    deletePost,
+    hubCanisterId,
+    hubPostsCanisterId,
+    userHubMembershipCanisterId,
+  };
+}

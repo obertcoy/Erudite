@@ -44,7 +44,7 @@ export default function HomePage() {
   const { user, getIdentity } = useAuthContext();
 
   const { detailedPosts, getHubPostsLoading } = useGetUserDetailedPosts(
-    getIdentity()?.getPrincipal().toString() ?? user?.internetIdentity ?? '',
+    getIdentity()?.getPrincipal().toString() ?? '',
   ); // ini ngambil yang di post user -> temp
 
   return (
